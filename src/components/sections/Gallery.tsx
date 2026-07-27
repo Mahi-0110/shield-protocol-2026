@@ -3,18 +3,171 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { X, ZoomIn, Filter } from 'lucide-react'
 import SectionHeader from '../ui/SectionHeader'
 
-const categories = ['All', 'Opening', 'Workshops', 'Hackathon', 'CTF', 'Speakers', 'Closing']
+const categories = ['All', 'Opening', 'Speakers', 'Workshops', 'Hackathon', 'CTF', 'Awards']
 
-const galleryItems = Array.from({ length: 18 }, (_, i) => ({
-  id: i,
-  category: categories[(i % (categories.length - 1)) + 1],
-  title: `Event Moment ${i + 1}`,
-  span: [2, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1][i] || 1,
-  color: [
-    'from-blue-900/40', 'from-slate-800/40', 'from-blue-800/40', 'from-slate-900/40',
-    'from-blue-700/40', 'from-slate-700/40',
-  ][i % 6],
-}))
+interface GalleryItem {
+  id: number
+  src?: string
+  category: string
+  title: string
+  span: number
+  color: string
+}
+
+const galleryItems: GalleryItem[] = [
+  {
+    id: 0,
+    src: '/gallery/gallery-2.jpg',
+    category: 'Opening',
+    title: "The Shield Protocol '25 Inauguration & Keynote",
+    span: 2,
+    color: 'from-blue-900/40',
+  },
+  {
+    id: 1,
+    src: '/gallery/gallery-10.jpg',
+    category: 'Speakers',
+    title: 'Keynote Address by Mr.P.Joshua Raju',
+    span: 1,
+    color: 'from-slate-800/40',
+  },
+  {
+    id: 2,
+    src: '/gallery/gallery-6.jpg',
+    category: 'Speakers',
+    title: 'Student Session Speaker Presentation',
+    span: 1,
+    color: 'from-blue-800/40',
+  },
+  {
+    id: 3,
+    src: '/gallery/gallery-7.jpg',
+    category: 'Workshops',
+    title: 'Full Auditorium Workshop & Lab Session',
+    span: 2,
+    color: 'from-slate-900/40',
+  },
+  {
+    id: 4,
+    src: '/gallery/gallery-1.jpg',
+    category: 'Hackathon',
+    title: 'Team Collaboration & Live Coding',
+    span: 1,
+    color: 'from-blue-700/40',
+  },
+  {
+    id: 5,
+    src: '/gallery/gallery-3.jpg',
+    category: 'CTF',
+    title: 'Hands-on CTF Challenge Solving',
+    span: 1,
+    color: 'from-blue-900/40',
+  },
+  {
+    id: 6,
+    src: '/gallery/gallery-4.jpg',
+    category: 'Workshops',
+    title: 'Interactive Cybersecurity Lab Session',
+    span: 2,
+    color: 'from-slate-800/40',
+  },
+  {
+    id: 7,
+    src: '/gallery/gallery-8.jpg',
+    category: 'CTF',
+    title: 'Focused Cybersecurity Challenge Analysis',
+    span: 1,
+    color: 'from-blue-800/40',
+  },
+  {
+    id: 8,
+    src: '/gallery/gallery-5.jpg',
+    category: 'Workshops',
+    title: 'Mentorship & Technical Discussion',
+    span: 1,
+    color: 'from-slate-900/40',
+  },
+  {
+    id: 9,
+    src: '/gallery/gallery-9.jpg',
+    category: 'Opening',
+    title: 'Main Auditorium & Stage Setup',
+    span: 2,
+    color: 'from-blue-700/40',
+  },
+  {
+    id: 10,
+    src: '/gallery/gallery-11.jpg',
+    category: 'CTF',
+    title: 'Kali Linux, Nmap & Metasploit Lab Environment',
+    span: 2,
+    color: 'from-blue-900/40',
+  },
+  {
+    id: 11,
+    src: '/gallery/gallery-12.jpg',
+    category: 'Workshops',
+    title: 'Wireshark Network Packet Analysis Session',
+    span: 1,
+    color: 'from-slate-800/40',
+  },
+  {
+    id: 12,
+    src: '/gallery/gallery-13.jpg',
+    category: 'Opening',
+    title: 'Dignitaries & Chief Guests Panel on Stage',
+    span: 2,
+    color: 'from-blue-800/40',
+  },
+  {
+    id: 13,
+    src: '/gallery/gallery-14.jpg',
+    category: 'Speakers',
+    title: 'Eat Sleep Hack Repeat — Expert Speaker Address',
+    span: 1,
+    color: 'from-slate-900/40',
+  },
+  {
+    id: 14,
+    src: '/gallery/gallery-15.jpg',
+    category: 'Hackathon',
+    title: 'Full Auditorium Hackathon & Workshop Workspace',
+    span: 2,
+    color: 'from-blue-700/40',
+  },
+  {
+    id: 15,
+    src: '/gallery/gallery-16.jpg',
+    category: 'Workshops',
+    title: 'Hands-on Security Team Practice & Learning',
+    span: 1,
+    color: 'from-slate-800/40',
+  },
+  {
+    id: 16,
+    src: '/gallery/gallery-17.jpg',
+    category: 'Opening',
+    title: "The Shield Protocol '25 Official Podium Banner",
+    span: 1,
+    color: 'from-blue-900/40',
+  },
+  {
+    id: 17,
+    src: '/gallery/gallery-18.jpg',
+    category: 'Speakers',
+    title: 'Honoring Guests — Event Wall Signing Ceremony',
+    span: 1,
+    color: 'from-slate-900/40',
+  },
+  {
+    id: 18,
+    src: '/gallery/gallery-19.jpg',
+    category: 'Awards',
+    title: 'Department of Cyber Security Certificate & Felicitation',
+    span: 2,
+    color: 'from-blue-800/40',
+  },
+]
 
 const Gallery: React.FC = () => {
   const [filter, setFilter] = useState('All')
@@ -27,7 +180,7 @@ const Gallery: React.FC = () => {
       <div className="absolute inset-0 cyber-grid-bg opacity-10" aria-hidden="true" />
       <div className="absolute top-0 left-0 right-0 h-px neon-line" aria-hidden="true" />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <SectionHeader badge="Gallery" title="Event" highlight="Highlights" subtitle="A visual journey through The Shield Protocol 2025. From intense CTF battles to inspiring keynotes." />
+        <SectionHeader badge="Gallery" title="Event" highlight="Highlights" subtitle="A visual journey through The Shield Protocol 2025. Real moments captured during keynotes, workshops, CTF battles, and hackathons." />
 
         {/* Category filter */}
         <div className="flex flex-wrap justify-center gap-2 mt-10 mb-8">
@@ -39,21 +192,27 @@ const Gallery: React.FC = () => {
         </div>
 
         {/* Masonry grid */}
-        <motion.div layout className="columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4">
+        <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <AnimatePresence>
             {filtered.map((item) => (
-              <motion.div key={item.id} layout initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} transition={{ duration: 0.3 }} className={`break-inside-avoid mb-4 ${item.span === 2 ? 'aspect-video' : 'aspect-square'} relative rounded-xl overflow-hidden cursor-pointer group`} onClick={() => setLightbox(item.id)} role="button" tabIndex={0} aria-label={`View ${item.title}`} onKeyDown={(e) => e.key === 'Enter' && setLightbox(item.id)}>
-                <div className={`absolute inset-0 bg-gradient-to-br ${item.color} to-slate-900`} />
-                <div className="absolute inset-0 cyber-grid-bg opacity-20" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                <div className="absolute inset-0 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10">
-                  <ZoomIn size={24} className="text-white mb-2" />
-                  <span className="text-xs text-white font-space">{item.title}</span>
+              <motion.div key={item.id} layout initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} transition={{ duration: 0.3 }} className={`relative ${item.span === 2 ? 'md:col-span-2 aspect-[16/9]' : 'aspect-[4/3]'} rounded-xl overflow-hidden cursor-pointer group border border-white/10 glass-card`} onClick={() => setLightbox(item.id)} role="button" tabIndex={0} aria-label={`View ${item.title}`} onKeyDown={(e) => e.key === 'Enter' && setLightbox(item.id)}>
+                {item.src ? (
+                  <img src={item.src} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                ) : (
+                  <>
+                    <div className={`absolute inset-0 bg-gradient-to-br ${item.color} to-slate-900`} />
+                    <div className="absolute inset-0 cyber-grid-bg opacity-20" />
+                  </>
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent opacity-60 group-hover:opacity-90 transition-opacity" />
+                <div className="absolute inset-0 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10 p-4 text-center">
+                  <ZoomIn size={28} className="text-blue-accent mb-2 drop-shadow-md" />
+                  <span className="text-sm font-sora font-semibold text-white mb-1">{item.title}</span>
+                  <span className="text-xs text-muted font-space">{item.category}</span>
                 </div>
-                <div className="absolute top-2 left-2 z-10">
-                  <span className="text-xs px-2 py-1 rounded-full bg-black/50 backdrop-blur-sm text-blue-accent font-space">{item.category}</span>
+                <div className="absolute top-3 left-3 z-10">
+                  <span className="text-xs px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-blue-accent font-space border border-blue-primary/30">{item.category}</span>
                 </div>
-                <div className="absolute inset-0 flex items-center justify-center text-4xl md:text-6xl opacity-10 font-sora font-bold text-blue-primary">{item.id + 1}</div>
               </motion.div>
             ))}
           </AnimatePresence>
@@ -61,18 +220,27 @@ const Gallery: React.FC = () => {
 
         {/* Lightbox */}
         <AnimatePresence>
-          {lightbox !== null && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-50 bg-black/90 backdrop-blur-lg flex items-center justify-center p-4" onClick={() => setLightbox(null)} role="dialog" aria-modal="true" aria-label="Image lightbox">
-              <motion.div initial={{ scale: 0.9 }} animate={{ scale: 1 }} exit={{ scale: 0.9 }} className="relative max-w-3xl w-full aspect-video glass-card overflow-hidden" onClick={e => e.stopPropagation()}>
-                <div className={`absolute inset-0 bg-gradient-to-br ${galleryItems[lightbox]?.color || 'from-blue-900/40'} to-slate-900`} />
-                <div className="absolute inset-0 cyber-grid-bg opacity-20" />
-                <div className="absolute inset-0 flex items-center justify-center text-8xl font-sora font-bold text-blue-primary/20">{lightbox + 1}</div>
-                <button onClick={() => setLightbox(null)} className="absolute top-4 right-4 w-10 h-10 glass rounded-full flex items-center justify-center text-muted hover:text-white transition-colors" aria-label="Close lightbox">
+          {lightbox !== null && galleryItems[lightbox] && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-50 bg-black/90 backdrop-blur-lg flex items-center justify-center p-4 sm:p-8" onClick={() => setLightbox(null)} role="dialog" aria-modal="true" aria-label="Image lightbox">
+              <motion.div initial={{ scale: 0.9 }} animate={{ scale: 1 }} exit={{ scale: 0.9 }} className="relative max-w-4xl w-full glass-card overflow-hidden p-2 rounded-2xl border border-white/20" onClick={e => e.stopPropagation()}>
+                {galleryItems[lightbox].src ? (
+                  <img src={galleryItems[lightbox].src} alt={galleryItems[lightbox].title} className="w-full max-h-[75vh] object-contain rounded-xl" />
+                ) : (
+                  <div className="aspect-video flex items-center justify-center text-6xl font-sora text-blue-primary/30">
+                    {galleryItems[lightbox].title}
+                  </div>
+                )}
+                <button onClick={() => setLightbox(null)} className="absolute top-4 right-4 w-10 h-10 glass rounded-full flex items-center justify-center text-white bg-black/50 hover:bg-black/80 transition-colors z-20" aria-label="Close lightbox">
                   <X size={20} />
                 </button>
-                <div className="absolute bottom-4 left-4 right-4">
-                  <div className="font-space font-semibold text-white">{galleryItems[lightbox]?.title}</div>
-                  <div className="text-xs text-muted">{galleryItems[lightbox]?.category}</div>
+                <div className="p-4 bg-bg-secondary/80 backdrop-blur-md rounded-b-xl border-t border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <div>
+                    <div className="font-sora font-semibold text-white text-base">{galleryItems[lightbox].title}</div>
+                    <div className="text-xs text-muted font-space">The Shield Protocol 2025 • {galleryItems[lightbox].category}</div>
+                  </div>
+                  <span className="text-xs px-3 py-1 rounded-full bg-blue-primary/20 text-blue-accent font-space border border-blue-primary/30 self-start sm:self-auto">
+                    {galleryItems[lightbox].category}
+                  </span>
                 </div>
               </motion.div>
             </motion.div>

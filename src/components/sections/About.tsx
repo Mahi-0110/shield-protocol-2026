@@ -13,6 +13,7 @@ const pillars = [
     desc: 'Hands-on penetration testing and real-world defense strategies.',
     color: 'from-blue-primary/20 to-transparent',
   },
+
   {
     icon: <Lock size={24} />,
     title: 'Ethical Hacking',
@@ -25,12 +26,7 @@ const pillars = [
     desc: 'AI-driven security tools, machine learning for threat detection, and automation.',
     color: 'from-blue-highlight/20 to-transparent',
   },
-  {
-    icon: <Globe size={24} />,
-    title: 'Cloud Security',
-    desc: 'Securing cloud infrastructure, zero-trust architecture, and DevSecOps practices.',
-    color: 'from-blue-primary/20 to-transparent',
-  },
+
 ]
 
 const reasons = [
@@ -42,12 +38,12 @@ const reasons = [
   {
     icon: <Network size={20} />,
     title: 'Elite Networking',
-    desc: 'Connect with 1200+ participants, mentors, and recruiters from top tech companies.',
+    desc: 'Connect with 200+ participants, Teams, and Mentors.',
   },
   {
     icon: <Briefcase size={20} />,
     title: 'Career Opportunities',
-    desc: 'Direct interactions with hiring managers and placement opportunities.',
+    desc: 'Direct interactions with Cyber Experts and Internship opportunities.',
   },
   {
     icon: <TrendingUp size={20} />,
@@ -62,7 +58,7 @@ const reasons = [
   {
     icon: <Lightbulb size={20} />,
     title: 'Innovation Lab',
-    desc: 'Prototype real security tools, pitch ideas, and compete for prize pools.',
+    desc: 'Prototype real security tools and pitch ideas.',
   },
 ]
 
@@ -129,7 +125,7 @@ const About: React.FC = () => {
           >
             Core <span className="gradient-text">Domains</span>
           </motion.h3>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
             {pillars.map((p, i) => (
               <motion.div
                 key={i}
@@ -205,7 +201,7 @@ const About: React.FC = () => {
                 'Real-world cybersecurity project portfolio',
                 'Expert-led networking opportunities',
                 'Exposure to cutting-edge security tools',
-                'Career guidance from industry leaders',
+                'Career guidance from Cyber Experts',
               ].map((item, i) => (
                 <motion.div
                   key={i}

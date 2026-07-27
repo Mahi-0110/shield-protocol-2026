@@ -10,9 +10,9 @@ const timeline = [
   {
     icon: <Star size={20} />,
     title: 'Opening Ceremony',
-    date: 'Day 1 • 9:00 AM',
-    description: 'Keynote by the Chief Guest, inauguration of The Shield Protocol 2025, and an inspiring address from the Heads of Department setting the tone for three days of innovation.',
-    highlights: ['Chief Guest Address', 'Event Launch', 'Sponsor Showcase'],
+    date: 'Day 1 • 9:30 AM',
+    description: 'Keynote by the Mr.Santosh Chaluvadi , inauguration of The Shield Protocol 2025, and an inspiring address from the Heads of Department setting the tone for three days of innovation.',
+    highlights: ['Keynote by the Mr.Santosh Chaluvadi', 'Event Launch'],
     color: 'blue-primary',
   },
   {
@@ -26,31 +26,33 @@ const timeline = [
   {
     icon: <BookOpen size={20} />,
     title: 'Hands-on Workshops',
-    date: 'Day 1-2 • All Day',
+    date: 'Day 2 • All Day',
     description: 'Technical workshops covering Penetration Testing, Cloud Security, Digital Forensics, AI Security Tools, and Secure Software Development. Participants got hands-on lab access.',
-    highlights: ['12 Workshops', '600+ Participants', 'Live Labs'],
+    highlights: ['3 Workshops', '200+ Participants', 'Live Labs'],
     color: 'blue-highlight',
+  },
+
+  {
+    icon: <Flag size={20} />,
+    title: 'Capture The Flag',
+    date: 'Day 3 • 10:00 AM',
+    description: 'A high-stakes CTF competition with 50 challenges across Web Exploitation, Cryptography, Reverse Engineering, Forensics, and OSINT. The scoreboard kept everyone on edge.',
+    highlights: ['50 Challenges', '200+ Players', 'Live Leaderboard'],
+    color: 'blue-accent',
+
   },
   {
     icon: <Code2 size={20} />,
     title: 'Shield X Hackathon',
-    date: 'Day 1-2 • 36 Hours',
-    description: 'An intense 36-hour hackathon where 120+ teams built innovative cybersecurity solutions across AI, Blockchain, IoT, and Cloud domains. Mentored by 25+ industry experts.',
-    highlights: ['120+ Teams', '36 Hours', '₹50,000 Prize Pool'],
+    date: 'Day 4 • 9 Hours',
+    description: 'An intense 9-hour hackathon where 120+ teams built innovative cybersecurity solutions across AI, Blockchain, IoT, and Cloud domains. Mentored by 25+ industry experts.',
+    highlights: ['50+ Teams', '9 Hours', 'Internship Offers.'],
     color: 'blue-primary',
-  },
-  {
-    icon: <Flag size={20} />,
-    title: 'Capture The Flag',
-    date: 'Day 2 • 10:00 AM',
-    description: 'A high-stakes CTF competition with 50 challenges across Web Exploitation, Cryptography, Reverse Engineering, Forensics, and OSINT. The scoreboard kept everyone on edge.',
-    highlights: ['50 Challenges', '200+ Players', 'Live Leaderboard'],
-    color: 'blue-accent',
   },
   {
     icon: <Users size={20} />,
     title: 'Competitions & Events',
-    date: 'Day 2 • Full Day',
+    date: 'Day 4 ',
     description: 'Multiple side competitions including Bug Hunt, Social Engineering Awareness, Secure Coding Challenge, and Security Quiz Bowl added to the competitive spirit.',
     highlights: ['6 Competitions', 'All Levels Welcome', 'Special Awards'],
     color: 'blue-highlight',
@@ -58,17 +60,17 @@ const timeline = [
   {
     icon: <Trophy size={20} />,
     title: 'Prize Distribution',
-    date: 'Day 3 • 4:00 PM',
-    description: 'The grand prize distribution ceremony honored the best hackers, builders, and innovators. Cash prizes, internship offers, goodies, and trophies were awarded to top performers.',
-    highlights: ['₹1L+ Total Prizes', 'Internship Offers', 'Certificates'],
+    date: 'Day 4 • 4:00 PM',
+    description: 'The Internship Offer Letters ceremony honored the best hackers and builders internship offers and Participation Certificates were awarded to  performers.',
+    highlights: ['Internship Offers', 'Certificates'],
     color: 'blue-primary',
   },
   {
     icon: <Gift size={20} />,
     title: 'Closing Ceremony',
-    date: 'Day 3 • 6:00 PM',
+    date: 'Day 4 • 6:00 PM',
     description: 'A memorable closing ceremony with performances, reflections, and announcements for The Shield Protocol 2026. The community came together to celebrate achievement and growth.',
-    highlights: ['Cultural Performances', 'Announcements', 'Networking Dinner'],
+    highlights: ['Announcements'],
     color: 'blue-accent',
   },
 ]
@@ -86,7 +88,7 @@ const PreviousEvent: React.FC = () => {
           badge="Event Proceedings"
           title="Previous Event"
           highlight="Highlights"
-          subtitle="Relive the incredible journey of The Shield Protocol 2025 — a three-day cybersecurity extravaganza that brought together over 1000+ participants."
+          subtitle="Relive the incredible journey of The Shield Protocol 2025 — a three-day cybersecurity extravaganza that brought together over 200+ participants."
         />
 
         {/* Event meta */}
@@ -97,9 +99,9 @@ const PreviousEvent: React.FC = () => {
           className="flex flex-wrap justify-center gap-6 mt-8 mb-16 text-sm text-muted"
         >
           {[
-            { icon: <Calendar size={14} />, label: 'March 10–12, 2025' },
-            { icon: <MapPin size={14} />, label: 'Engineering College Auditorium' },
-            { icon: <Users size={14} />, label: '1000+ Participants' },
+            { icon: <Calendar size={14} />, label: 'September 8–11, 2025' },
+            { icon: <MapPin size={14} />, label: 'BITS VIZAG Auditorium' },
+            { icon: <Users size={14} />, label: '200+ Participants' },
           ].map((item, i) => (
             <div key={i} className="flex items-center gap-2 glass px-4 py-2 rounded-full border border-white/10">
               <span className="text-blue-accent">{item.icon}</span>
@@ -121,9 +123,8 @@ const PreviousEvent: React.FC = () => {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true, margin: '-50px' }}
                 transition={{ duration: 0.6, delay: i * 0.05 }}
-                className={`relative flex flex-col md:flex-row gap-6 ${
-                  i % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'
-                }`}
+                className={`relative flex flex-col md:flex-row gap-6 ${i % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'
+                  }`}
               >
                 {/* Timeline node */}
                 <div className="absolute left-4 md:left-1/2 w-8 h-8 -translate-x-1/2 flex items-center justify-center z-10">
@@ -145,9 +146,8 @@ const PreviousEvent: React.FC = () => {
                   <motion.div
                     whileHover={{ scale: 1.01 }}
                     onClick={() => setSelected(selected === i ? null : i)}
-                    className={`glass-card p-6 cursor-pointer transition-all ${
-                      selected === i ? 'border-blue-primary/50 shadow-[0_0_20px_rgba(14,165,233,0.15)]' : ''
-                    }`}
+                    className={`glass-card p-6 cursor-pointer transition-all ${selected === i ? 'border-blue-primary/50 shadow-[0_0_20px_rgba(14,165,233,0.15)]' : ''
+                      }`}
                     role="button"
                     aria-expanded={selected === i}
                   >
@@ -197,10 +197,10 @@ const PreviousEvent: React.FC = () => {
           </h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {[
-              { value: '1000+', label: 'Total Participants' },
-              { value: '8', label: 'Events & Competitions' },
+              { value: '200+', label: 'Total Participants' },
+              { value: '6', label: 'Events & Competitions' },
               { value: '3', label: 'Days of Action' },
-              { value: '₹1L+', label: 'Prize Money' },
+              { value: '1', label: 'Day of Hackathon' },
             ].map((s, i) => (
               <div key={i} className="text-center">
                 <div className="font-sora font-bold text-3xl gradient-text mb-1">{s.value}</div>

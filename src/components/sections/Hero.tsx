@@ -7,7 +7,7 @@ import StatCard from '../ui/StatCard'
 import { randomBetween } from '../../lib/utils'
 
 // Countdown timer
-const TARGET_DATE = new Date('2026-09-15T09:00:00')
+const TARGET_DATE = new Date('2026-08-06T09:00:00')
 
 function useCountdown() {
   const [time, setTime] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 })
@@ -217,10 +217,6 @@ const Hero: React.FC = () => {
     }
   }, [])
 
-  const scrollToRegister = () => {
-    document.querySelector('#register')?.scrollIntoView({ behavior: 'smooth' })
-  }
-
   const scrollToExplore = () => {
     document.querySelector('#about')?.scrollIntoView({ behavior: 'smooth' })
   }
@@ -337,7 +333,7 @@ const Hero: React.FC = () => {
           transition={{ delay: 0.6 }}
           className="flex items-center gap-4 text-xs font-space text-muted mb-10 flex-wrap justify-center"
         >
-          {['September 15–17, 2026', 'Engineering Campus', 'Free Entry'].map((item, i) => (
+          {['August 6-8, 2026', 'Engineering Campus'].map((item, i) => (
             <span key={i} className="flex items-center gap-2">
               {i > 0 && <span className="text-blue-primary/40">•</span>}
               {item}
@@ -353,18 +349,9 @@ const Hero: React.FC = () => {
           className="flex flex-col sm:flex-row gap-4 mb-16"
         >
           <GlowButton
-            onClick={scrollToRegister}
+            onClick={scrollToExplore}
             size="lg"
             icon={<ArrowRight size={18} />}
-            className="font-space font-semibold tracking-wide"
-          >
-            Register Now
-          </GlowButton>
-          <GlowButton
-            onClick={scrollToExplore}
-            variant="outline"
-            size="lg"
-            icon={<ChevronDown size={18} />}
             className="font-space font-semibold tracking-wide"
           >
             Explore Event
@@ -400,10 +387,10 @@ const Hero: React.FC = () => {
           className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-3xl"
         >
           {[
-            { value: 1200, suffix: '+', label: 'Participants' },
-            { value: 30, suffix: '+', label: 'Speakers' },
-            { value: 20, suffix: '+', label: 'Workshops' },
-            { value: 48, suffix: 'h', label: 'Hackathon' },
+            { value: 200, suffix: '+', label: 'Participants' },
+            { value: 50, label: 'Teams' },
+            { value: 3, label: 'Workshops' },
+            { value: 9, suffix: 'hrs', label: 'Hackathon' },
           ].map((stat, i) => (
             <StatCard key={i} {...stat} delay={1.1 + i * 0.1} />
           ))}

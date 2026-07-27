@@ -13,8 +13,8 @@ const quickLinks = [
 const sponsors = ['TechCorp India', 'CyberLabs', 'SecureNet', 'InnovateTech', 'CloudVault', 'DefendIQ']
 
 const socials = [
-  { label: 'Twitter/X', href: '#' }, { label: 'LinkedIn', href: '#' },
-  { label: 'Instagram', href: '#' }, { label: 'GitHub', href: '#' }, { label: 'Discord', href: '#' },
+  { label: 'Instagram', href: '#' },
+  { label: 'WhatsApp', href: '#' },
 ]
 
 const Footer: React.FC = () => {

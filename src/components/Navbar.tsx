@@ -19,6 +19,7 @@ const navLinks = [
   { label: 'Gallery', href: '#gallery' },
   { label: 'Testimonials', href: '#testimonials' },
   { label: 'FAQs', href: '#faqs' },
+  { label: 'Register', href: '#register' },
   { label: 'Contact', href: '#contact' },
 ]
 
@@ -147,15 +148,8 @@ const Navbar: React.FC = () => {
               ))}
             </div>
 
-            {/* Right — Register button + mobile toggle */}
+            {/* Right — mobile toggle */}
             <div className="flex items-center gap-3">
-              <GlowButton
-                onClick={() => handleNav('#register')}
-                size="sm"
-                className="hidden sm:flex font-space font-semibold tracking-wide"
-              >
-                Register Now
-              </GlowButton>
 
               <motion.button
                 whileTap={{ scale: 0.9 }}
@@ -245,11 +239,6 @@ const Navbar: React.FC = () => {
                   ))}
                 </nav>
 
-                <div className="mt-8 pt-6 border-t border-white/10">
-                  <GlowButton onClick={() => handleNav('#register')} fullWidth size="md">
-                    Register Now
-                  </GlowButton>
-                </div>
               </div>
             </motion.div>
           </>

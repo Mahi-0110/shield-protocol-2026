@@ -347,24 +347,6 @@ const CurrentEvent: React.FC = () => {
           )}
         </AnimatePresence>
 
-        {/* Register CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="mt-16 text-center"
-        >
-          <GlowButton
-            onClick={() => document.querySelector('#register')?.scrollIntoView({ behavior: 'smooth' })}
-            size="xl"
-            className="font-space font-bold tracking-wide"
-          >
-            Secure Your Spot Now
-          </GlowButton>
-          <p className="text-muted text-sm mt-4 font-space">
-            Registration is free. Limited seats available.
-          </p>
-        </motion.div>
       </div>
     </section>
   )
