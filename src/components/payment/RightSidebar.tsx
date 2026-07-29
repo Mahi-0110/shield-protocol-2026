@@ -15,14 +15,13 @@ import {
 import { PAYMENT_CONFIG } from '../../config/paymentConfig';
 
 const RightSidebar: React.FC = () => {
-  const [timeLeft, setTimeLeft] = useState({ hours: 14, minutes: 32, seconds: 45 });
+  const [timeLeft, setTimeLeft] = useState({ minutes: 30, seconds: 0 });
 
   useEffect(() => {
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev.seconds > 0) return { ...prev, seconds: prev.seconds - 1 };
-        if (prev.minutes > 0) return { ...prev, minutes: 59, seconds: 59 };
-        if (prev.hours > 0) return { hours: prev.hours - 1, minutes: 59, seconds: 59 };
+        if (prev.minutes > 0) return { minutes: prev.minutes - 1, seconds: 59 };
         return prev;
       });
     }, 1000);
@@ -89,15 +88,17 @@ const RightSidebar: React.FC = () => {
 
         {/* Countdown Timer Badge */}
         <div className="mt-6 p-4 rounded-2xl bg-blue-primary/10 border border-blue-primary/30 text-center">
-          <span className="text-[10px] font-space text-muted uppercase tracking-widest block mb-1.5 flex items-center justify-center gap-1">
+          <span className="text-[10px] font-space text-muted uppercase tracking-widest block mb-2 flex items-center justify-center gap-1.5">
             <Clock size={12} className="text-warning animate-spin" /> Seat Reservation Countdown
           </span>
           <div className="flex items-center justify-center gap-2 font-mono font-bold text-lg text-white">
-            <span className="px-2 py-1 rounded bg-bg-primary border border-white/10">{String(timeLeft.hours).padStart(2, '0')}h</span>
-            <span className="text-blue-accent">:</span>
-            <span className="px-2 py-1 rounded bg-bg-primary border border-white/10">{String(timeLeft.minutes).padStart(2, '0')}m</span>
-            <span className="text-blue-accent">:</span>
-            <span className="px-2 py-1 rounded bg-bg-primary border border-white/10">{String(timeLeft.seconds).padStart(2, '0')}s</span>
+            <span className="px-3 py-1.5 rounded-xl bg-bg-primary border border-blue-primary/40 text-blue-accent font-extrabold text-xl shadow-[0_0_15px_rgba(14,165,233,0.3)]">
+              {String(timeLeft.minutes).padStart(2, '0')}m
+            </span>
+            <span className="text-blue-accent font-bold text-xl">:</span>
+            <span className="px-3 py-1.5 rounded-xl bg-bg-primary border border-blue-primary/40 text-white font-extrabold text-xl">
+              {String(timeLeft.seconds).padStart(2, '0')}s
+            </span>
           </div>
         </div>
       </div>

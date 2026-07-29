@@ -1,6 +1,6 @@
 import React from 'react'
 import { motion } from 'framer-motion'
-import { ArrowUp } from 'lucide-react'
+import { ArrowUp, Mail, Clock } from 'lucide-react'
 import ShieldLogo from './ui/ShieldLogo'
 
 const quickLinks = [
@@ -9,8 +9,6 @@ const quickLinks = [
   { label: 'Current Event', href: '#current-event' }, { label: 'Gallery', href: '#gallery' },
   { label: 'Register', href: '#register' }, { label: 'Contact', href: '#contact' },
 ]
-
-const sponsors = ['TechCorp India', 'CyberLabs', 'SecureNet', 'InnovateTech', 'CloudVault', 'DefendIQ']
 
 const socials = [
   { label: 'Instagram', href: '#' },
@@ -24,9 +22,9 @@ const Footer: React.FC = () => {
     <footer className="relative bg-bg-secondary border-t border-white/5 overflow-hidden" role="contentinfo">
       <div className="absolute inset-0 cyber-grid-bg opacity-5" aria-hidden="true" />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid md:grid-cols-4 gap-10 mb-12">
+        <div className="grid md:grid-cols-3 gap-10 mb-12">
           {/* Brand */}
-          <div className="md:col-span-1">
+          <div>
             <div className="flex items-center gap-3 mb-5">
               <ShieldLogo size={48} animated />
               <div>
@@ -62,29 +60,24 @@ const Footer: React.FC = () => {
             </ul>
           </div>
 
-          {/* Sponsors */}
+          {/* Support */}
           <div>
-            <h3 className="font-space font-semibold text-white mb-4 text-sm uppercase tracking-wider">Partners & Sponsors</h3>
-            <div className="space-y-2">
-              {sponsors.map(s => (
-                <div key={s} className="text-muted text-sm font-outfit hover:text-white transition-colors cursor-pointer">{s}</div>
-              ))}
-            </div>
-          </div>
-
-          {/* Legal */}
-          <div>
-            <h3 className="font-space font-semibold text-white mb-4 text-sm uppercase tracking-wider">Legal & Info</h3>
-            <ul className="space-y-2">
-              {['Privacy Policy', 'Terms of Service', 'Code of Conduct', 'Cookie Policy', 'Accessibility'].map(item => (
-                <li key={item}>
-                  <a href="#" className="text-muted text-sm hover:text-blue-accent transition-colors font-outfit">{item}</a>
-                </li>
-              ))}
-            </ul>
-            <div className="mt-6">
-              <h4 className="font-space text-xs text-muted uppercase tracking-wider mb-2">Support</h4>
-              <a href="mailto:support@shieldprotocol2026.in" className="text-sm text-blue-accent hover:underline">support@shieldprotocol2026.in</a>
+            <h3 className="font-space font-semibold text-white mb-4 text-sm uppercase tracking-wider">Support</h3>
+            <p className="text-muted text-sm leading-relaxed mb-4 font-outfit">
+              Have questions or need assistance with registration, payments, or event details? Contact our support team.
+            </p>
+            <div className="space-y-3">
+              <a
+                href="mailto:theshieldprotocol@bitsvizag.com"
+                className="flex items-center gap-2.5 text-sm text-blue-accent hover:underline font-outfit"
+              >
+                <Mail size={16} className="text-blue-primary shrink-0" />
+                theshieldprotocol@bitsvizag.com
+              </a>
+              <div className="flex items-center gap-2.5 text-xs text-muted font-space">
+                <Clock size={14} className="text-blue-primary/60 shrink-0" />
+                Response time: Within 24 hours
+              </div>
             </div>
           </div>
         </div>

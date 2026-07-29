@@ -121,10 +121,9 @@ const PaymentMethods: React.FC = () => {
   };
 
   const handleDownloadQR = () => {
-    if (!qrDataUrl) return;
     const downloadLink = document.createElement('a');
-    downloadLink.href = qrDataUrl;
-    downloadLink.download = `${PAYMENT_CONFIG.eventName}-UPI-QR.png`;
+    downloadLink.href = '/phonepe-qr.png';
+    downloadLink.download = `Shield-Protocol-PhonePe-QR.png`;
     document.body.appendChild(downloadLink);
     downloadLink.click();
     document.body.removeChild(downloadLink);
@@ -206,26 +205,27 @@ const PaymentMethods: React.FC = () => {
               <div className="absolute -inset-2 bg-gradient-to-r from-blue-primary via-blue-accent to-blue-primary rounded-3xl blur-xl opacity-40 group-hover:opacity-75 transition duration-500" />
               
               <div className="relative glass p-6 rounded-3xl border border-blue-primary/40 bg-bg-primary flex flex-col items-center">
-                {/* Dynamically Generated Scannable QR Code */}
-                <div className="relative p-3 bg-white rounded-2xl shadow-2xl flex items-center justify-center min-w-[190px] min-h-[190px]">
-                  {qrDataUrl ? (
-                    <img
-                      id="shield-upi-qr-img"
-                      src={qrDataUrl}
-                      alt={`UPI QR Code for ${PAYMENT_CONFIG.upiId}`}
-                      className="w-[190px] h-[190px] rounded-lg object-contain"
-                    />
-                  ) : (
-                    <div className="w-[190px] h-[190px] flex items-center justify-center text-muted font-space text-xs">
-                      Generating QR...
-                    </div>
-                  )}
+                {/* Scannable PhonePe Official QR Code */}
+                <div className="relative p-2 bg-black rounded-2xl shadow-2xl flex flex-col items-center justify-center border border-white/10 overflow-hidden">
+                  <img
+                    id="shield-upi-qr-img"
+                    src="/phonepe-qr.png"
+                    alt={`UPI QR Code for ${PAYMENT_CONFIG.payeeName} (${PAYMENT_CONFIG.upiId})`}
+                    className="w-[210px] h-[340px] rounded-xl object-contain"
+                    onError={(e) => {
+                      // Fallback to generated QR if image not found
+                      if (qrDataUrl) (e.currentTarget as HTMLImageElement).src = qrDataUrl;
+                    }}
+                  />
                 </div>
 
                 <div className="mt-3 text-center">
+                  <div className="text-[12px] font-space font-bold text-white mb-0.5">
+                    {PAYMENT_CONFIG.payeeName}
+                  </div>
                   <div className="text-[11px] font-space text-muted flex items-center gap-1.5 justify-center">
                     <Zap size={12} className="text-warning animate-pulse" />
-                    Scan with any UPI App to pay ₹{PAYMENT_CONFIG.registrationFee}
+                    Scan & Pay using PhonePe / Any UPI App
                   </div>
                 </div>
               </div>

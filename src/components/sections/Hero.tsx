@@ -7,7 +7,7 @@ import StatCard from '../ui/StatCard'
 import { randomBetween } from '../../lib/utils'
 
 // Countdown timer
-const TARGET_DATE = new Date('2026-08-06T09:00:00')
+const TARGET_DATE = new Date('2026-08-11T09:00:00')
 
 function useCountdown() {
   const [time, setTime] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 })
@@ -333,7 +333,7 @@ const Hero: React.FC = () => {
           transition={{ delay: 0.6 }}
           className="flex items-center gap-4 text-xs font-space text-muted mb-10 flex-wrap justify-center"
         >
-          {['August 6-8, 2026', 'Engineering Campus'].map((item, i) => (
+          {['August 11-14, 2026', 'Engineering Campus'].map((item, i) => (
             <span key={i} className="flex items-center gap-2">
               {i > 0 && <span className="text-blue-primary/40">•</span>}
               {item}

@@ -1,8 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { motion } from 'framer-motion'
-import { ExternalLink, Shield, Award, Users, Zap, CheckCircle, ArrowRight, CreditCard } from 'lucide-react'
+import { ExternalLink, Shield, Award, Users, Zap, CheckCircle, ArrowRight, CreditCard, UserCheck } from 'lucide-react'
 import SectionHeader from '../ui/SectionHeader'
 import { PAYMENT_CONFIG } from '../../config/paymentConfig'
+import RegistrationModal from '../registration/RegistrationModal'
+import { RegistrationRecord } from '../../types/database'
 
 const REGISTRATION_FORM_URL = 'https://forms.google.com'
 
@@ -18,105 +20,114 @@ interface RegistrationProps {
 }
 
 const Registration: React.FC<RegistrationProps> = ({ onOpenPaymentPortal }) => {
-  return (
-    <section
-      id="register"
-      className="relative py-24 bg-bg-primary overflow-hidden"
-      aria-label="Event registration"
-    >
-      {/* Background elements */}
-      <div className="absolute inset-0 cyber-grid-bg opacity-10" aria-hidden="true" />
-      <div className="absolute top-0 left-0 right-0 h-px neon-line" aria-hidden="true" />
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background: 'radial-gradient(ellipse 70% 50% at 50% 50%, rgba(14,165,233,0.08) 0%, transparent 70%)',
-        }}
-        aria-hidden="true"
-      />
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <SectionHeader
-          badge="Join The Event"
-          title="Register"
-          highlight="Now"
-          subtitle="Secure your spot at The Shield Protocol 2026. Complete fee via our secure UPI payment portal."
+  const handleRegistrationSuccess = (_record: RegistrationRecord) => {
+    setIsModalOpen(false);
+    if (onOpenPaymentPortal) {
+      onOpenPaymentPortal();
+    } else {
+      window.location.hash = '#payment-portal';
+    }
+  };
+
+  return (
+    <>
+      <section
+        id="register"
+        className="relative py-24 bg-bg-primary overflow-hidden"
+        aria-label="Event registration"
+      >
+        {/* Background elements */}
+        <div className="absolute inset-0 cyber-grid-bg opacity-10" aria-hidden="true" />
+        <div className="absolute top-0 left-0 right-0 h-px neon-line" aria-hidden="true" />
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background: 'radial-gradient(ellipse 70% 50% at 50% 50%, rgba(14,165,233,0.08) 0%, transparent 70%)',
+          }}
+          aria-hidden="true"
         />
 
-        <div className="mt-14 max-w-4xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="glass-card p-8 md:p-12 relative overflow-hidden border border-blue-primary/30 text-center"
-          >
-            <div className="absolute top-0 right-0 w-64 h-64 bg-blue-primary/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl pointer-events-none" />
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <SectionHeader
+            badge="Join The Event"
+            title="Register"
+            highlight="Now"
+            subtitle="Secure your spot at The Shield Protocol 2026. Complete fee via our secure UPI payment portal."
+          />
 
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-primary/10 text-blue-accent border border-blue-primary/20 text-xs font-space font-semibold mb-6">
-              <CheckCircle size={14} /> Registration & Checkout Open
-            </div>
+          <div className="mt-14 max-w-4xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="glass-card p-8 md:p-12 relative overflow-hidden border border-blue-primary/30 text-center"
+            >
+              <div className="absolute top-0 right-0 w-64 h-64 bg-blue-primary/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl pointer-events-none" />
 
-            <h3 className="font-sora font-bold text-2xl md:text-4xl text-white mb-4">
-              Ready to Join <span className="gradient-text">{PAYMENT_CONFIG.eventName}?</span>
-            </h3>
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-primary/10 text-blue-accent border border-blue-primary/20 text-xs font-space font-semibold mb-6">
+                <CheckCircle size={14} /> Registration & Checkout Open
+              </div>
 
-            <p className="text-muted text-base max-w-2xl mx-auto mb-8 font-outfit leading-relaxed">
-              Complete your registration fee of <strong className="text-white">₹{PAYMENT_CONFIG.registrationFee}</strong> via our official 256-bit encrypted UPI payment portal.
-            </p>
+              <h3 className="font-sora font-bold text-2xl md:text-4xl text-white mb-4">
+                Ready to Join <span className="gradient-text">{PAYMENT_CONFIG.eventName}?</span>
+              </h3>
 
-            {/* Event Perks Grid */}
-            <div className="grid sm:grid-cols-2 gap-4 max-w-2xl mx-auto mb-10 text-left">
-              {perks.map((p, i) => (
-                <div key={i} className="flex items-center gap-3 glass p-4 rounded-xl border border-white/5">
-                  <div className="p-2 rounded-lg bg-blue-primary/10 text-blue-accent shrink-0">
-                    {p.icon}
+              <p className="text-muted text-base max-w-2xl mx-auto mb-8 font-outfit leading-relaxed">
+                Complete your registration fee of <strong className="text-white">₹{PAYMENT_CONFIG.registrationFee}</strong> via our official 256-bit encrypted UPI payment portal.
+              </p>
+
+              {/* Event Perks Grid */}
+              <div className="grid sm:grid-cols-2 gap-4 max-w-2xl mx-auto mb-10 text-left">
+                {perks.map((p, i) => (
+                  <div key={i} className="flex items-center gap-3 glass p-4 rounded-xl border border-white/5">
+                    <div className="p-2 rounded-lg bg-blue-primary/10 text-blue-accent shrink-0">
+                      {p.icon}
+                    </div>
+                    <span className="text-white text-sm font-space leading-snug">{p.text}</span>
                   </div>
-                  <span className="text-white text-sm font-space leading-snug">{p.text}</span>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
 
-            {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              {onOpenPaymentPortal ? (
+              {/* Action Buttons */}
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                 <button
-                  onClick={onOpenPaymentPortal}
+                  onClick={() => setIsModalOpen(true)}
                   className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-4 rounded-xl glow-btn text-white font-space font-bold text-base shadow-[0_0_30px_rgba(14,165,233,0.6)] hover:scale-[1.02] transition-all cursor-pointer"
                 >
-                  <CreditCard size={20} />
-                  <span>Proceed to Payment Portal (₹{PAYMENT_CONFIG.registrationFee})</span>
+                  <UserCheck size={20} />
+                  <span>Register & Pay Fee (₹{PAYMENT_CONFIG.registrationFee})</span>
                   <ArrowRight size={18} />
                 </button>
-              ) : (
+
                 <a
-                  href="#payment-portal"
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-4 rounded-xl glow-btn text-white font-space font-bold text-base shadow-[0_0_30px_rgba(14,165,233,0.6)] hover:scale-[1.02] transition-all"
+                  href={REGISTRATION_FORM_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-6 py-4 rounded-xl glass border border-white/10 text-muted hover:text-white hover:border-blue-primary/40 font-space font-semibold text-sm transition-all"
                 >
-                  <CreditCard size={20} />
-                  <span>Proceed to Payment Portal (₹{PAYMENT_CONFIG.registrationFee})</span>
-                  <ArrowRight size={18} />
+                  <span>Google Form</span>
+                  <ExternalLink size={16} />
                 </a>
-              )}
+              </div>
 
-              <a
-                href={REGISTRATION_FORM_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-6 py-4 rounded-xl glass border border-white/10 text-muted hover:text-white hover:border-blue-primary/40 font-space font-semibold text-sm transition-all"
-              >
-                <span>Google Form</span>
-                <ExternalLink size={16} />
-              </a>
-            </div>
-
-            <p className="text-xs text-muted font-space mt-4">
-              🔒 Instant UPI Payment • Safe • Trusted • 256-Bit SSL Encrypted
-            </p>
-          </motion.div>
+              <p className="text-xs text-muted font-space mt-4">
+                🔒 Instant UPI Payment • Safe • Trusted • 256-Bit SSL Encrypted
+              </p>
+            </motion.div>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+
+      {/* Registration Modal */}
+      <RegistrationModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSuccess={handleRegistrationSuccess}
+      />
+    </>
   )
 }
 

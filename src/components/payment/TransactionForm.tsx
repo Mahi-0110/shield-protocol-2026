@@ -15,6 +15,7 @@ import {
   X,
 } from 'lucide-react';
 import { PAYMENT_CONFIG } from '../../config/paymentConfig';
+import { submitPayment } from '../../services/paymentService';
 
 export interface SubmissionData {
   email: string;
@@ -23,6 +24,7 @@ export interface SubmissionData {
   amount: number;
   paymentDate: string;
   screenshotName?: string;
+  registrationId?: string;
 }
 
 interface TransactionFormProps {
@@ -87,7 +89,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ onSubmitSuccess }) =>
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) {
@@ -97,8 +99,16 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ onSubmitSuccess }) =>
     setErrors({});
     setLoading(true);
 
-    // Simulate real verification dispatch & server response delay
-    setTimeout(() => {
+    try {
+      const { registrationId } = await submitPayment({
+        email: formData.email,
+        phone: formData.phone,
+        transactionId: formData.transactionId,
+        amount: Number(formData.amount),
+        paymentDate: formData.paymentDate,
+        screenshotFile: selectedFile || undefined,
+      });
+
       setLoading(false);
       onSubmitSuccess({
         email: formData.email,
@@ -107,8 +117,12 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ onSubmitSuccess }) =>
         amount: Number(formData.amount),
         paymentDate: formData.paymentDate,
         screenshotName: selectedFile ? selectedFile.name : undefined,
+        registrationId,
       });
-    }, 1800);
+    } catch (err: any) {
+      setLoading(false);
+      setErrors({ form: err.message || 'Error submitting payment details. Please try again.' });
+    }
   };
 
   return (

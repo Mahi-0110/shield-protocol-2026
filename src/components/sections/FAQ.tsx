@@ -11,7 +11,7 @@ const faqs = [
   { q: 'Will accommodation be provided?', a: "Limited accommodation is available on request. Indicate your requirement during registration, and we'll confirm availability. Priority is given to participants traveling from outside the city." },
   { q: 'What should I bring on the event day?', a: "Bring your Registration ID (or QR code), a valid college ID card, and a laptop (required for workshops, CTF, and hackathon). Chargers and accessories are your responsibility." },
   { q: 'Are meals provided during the event?', a: "No, meals are not provided individually. Participants are requested to arrange their own food and refreshments during the event." },
-  { q: 'What if I register but cannot attend?', a: "Please notify us as soon as possible by emailing support@shieldprotocol2026.in with your Registration ID so we can assist you." },
+  { q: 'What if I register but cannot attend?', a: "Please notify us as soon as possible by emailing theshieldprotocol@bitsvizag.com with your Registration ID so we can assist you." },
   { q: 'Will I receive a certificate?', a: 'Yes. All participants receive a digital participation certificate. Workshop attendees receive completion certificates, and top performers receive special certificates.' },
   { q: 'Can I volunteer for The Shield Protocol 2026?', a: 'Yes! Interested persons can volunteer for The Shield Protocol 2026. Volunteers receive hands-on event management experience, networking opportunities, and volunteer certificates.' },
 ]
