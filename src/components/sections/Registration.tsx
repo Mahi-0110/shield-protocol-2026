@@ -1,13 +1,9 @@
 import React from 'react'
 import { motion } from 'framer-motion'
-import { ExternalLink, Shield, Award, Users, Zap, CheckCircle, ArrowRight } from 'lucide-react'
+import { ExternalLink, Shield, Award, Users, Zap, CheckCircle, ArrowRight, CreditCard } from 'lucide-react'
 import SectionHeader from '../ui/SectionHeader'
-import GlowButton from '../ui/GlowButton'
+import { PAYMENT_CONFIG } from '../../config/paymentConfig'
 
-// =================================================================
-//  REPLACE this URL with your actual Google Form or SurveyHeart link
-//  e.g. "https://forms.google.com/..." or "https://surveyheart.com/form/..."
-// =================================================================
 const REGISTRATION_FORM_URL = 'https://forms.google.com'
 
 const perks = [
@@ -17,7 +13,11 @@ const perks = [
   { icon: <Zap size={20} />, text: 'Compete in Shield X Hackathon & CTF' },
 ]
 
-const Registration: React.FC = () => {
+interface RegistrationProps {
+  onOpenPaymentPortal?: () => void;
+}
+
+const Registration: React.FC<RegistrationProps> = ({ onOpenPaymentPortal }) => {
   return (
     <section
       id="register"
@@ -40,7 +40,7 @@ const Registration: React.FC = () => {
           badge="Join The Event"
           title="Register"
           highlight="Now"
-          subtitle="Secure your spot at The Shield Protocol 2026. Click the link below to open the official registration form."
+          subtitle="Secure your spot at The Shield Protocol 2026. Complete fee via our secure UPI payment portal."
         />
 
         <div className="mt-14 max-w-4xl mx-auto">
@@ -54,15 +54,15 @@ const Registration: React.FC = () => {
             <div className="absolute top-0 right-0 w-64 h-64 bg-blue-primary/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl pointer-events-none" />
 
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-primary/10 text-blue-accent border border-blue-primary/20 text-xs font-space font-semibold mb-6">
-              <CheckCircle size={14} /> Registration Open
+              <CheckCircle size={14} /> Registration & Checkout Open
             </div>
 
             <h3 className="font-sora font-bold text-2xl md:text-4xl text-white mb-4">
-              Ready to Join <span className="gradient-text">The Shield Protocol 2026?</span>
+              Ready to Join <span className="gradient-text">{PAYMENT_CONFIG.eventName}?</span>
             </h3>
 
             <p className="text-muted text-base max-w-2xl mx-auto mb-8 font-outfit leading-relaxed">
-              Fill out our simple online form to complete your registration.— just click below to fill out the form!
+              Complete your registration fee of <strong className="text-white">₹{PAYMENT_CONFIG.registrationFee}</strong> via our official 256-bit encrypted UPI payment portal.
             </p>
 
             {/* Event Perks Grid */}
@@ -77,21 +77,41 @@ const Registration: React.FC = () => {
               ))}
             </div>
 
-            {/* Primary Action Button */}
+            {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              {onOpenPaymentPortal ? (
+                <button
+                  onClick={onOpenPaymentPortal}
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-4 rounded-xl glow-btn text-white font-space font-bold text-base shadow-[0_0_30px_rgba(14,165,233,0.6)] hover:scale-[1.02] transition-all cursor-pointer"
+                >
+                  <CreditCard size={20} />
+                  <span>Proceed to Payment Portal (₹{PAYMENT_CONFIG.registrationFee})</span>
+                  <ArrowRight size={18} />
+                </button>
+              ) : (
+                <a
+                  href="#payment-portal"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-4 rounded-xl glow-btn text-white font-space font-bold text-base shadow-[0_0_30px_rgba(14,165,233,0.6)] hover:scale-[1.02] transition-all"
+                >
+                  <CreditCard size={20} />
+                  <span>Proceed to Payment Portal (₹{PAYMENT_CONFIG.registrationFee})</span>
+                  <ArrowRight size={18} />
+                </a>
+              )}
+
               <a
                 href={REGISTRATION_FORM_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-4 rounded-xl bg-blue-primary text-white font-space font-bold text-base hover:shadow-[0_0_30px_rgba(14,165,233,0.6)] hover:scale-[1.02] transition-all"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-6 py-4 rounded-xl glass border border-white/10 text-muted hover:text-white hover:border-blue-primary/40 font-space font-semibold text-sm transition-all"
               >
-                <span>Complete Registration Form</span>
-                <ExternalLink size={18} />
+                <span>Google Form</span>
+                <ExternalLink size={16} />
               </a>
             </div>
 
             <p className="text-xs text-muted font-space mt-4">
-              ℹ️ Clicking will open the Registration Form in a new tab.
+              🔒 Instant UPI Payment • Safe • Trusted • 256-Bit SSL Encrypted
             </p>
           </motion.div>
         </div>

@@ -1,4 +1,4 @@
-import React, { useState, lazy, Suspense } from 'react'
+import React, { useState, useEffect, lazy, Suspense } from 'react'
 import { AnimatePresence } from 'framer-motion'
 
 import LoadingScreen from './components/LoadingScreen'
@@ -18,6 +18,7 @@ const Testimonials = lazy(() => import('./components/sections/Testimonials'))
 const FAQ          = lazy(() => import('./components/sections/FAQ'))
 const Registration = lazy(() => import('./components/sections/Registration'))
 const Contact      = lazy(() => import('./components/sections/Contact'))
+const PaymentPortalPage = lazy(() => import('./pages/PaymentPortalPage'))
 
 const SectionLoader = () => (
   <div className="flex items-center justify-center py-32" role="status" aria-label="Loading">
@@ -27,6 +28,19 @@ const SectionLoader = () => (
 
 const App: React.FC = () => {
   const [loading, setLoading] = useState(true)
+  const [showPaymentPortal, setShowPaymentPortal] = useState(false)
+
+  // Listen for hash changes like #payment or #payment-portal
+  useEffect(() => {
+    const handleHashChange = () => {
+      if (window.location.hash === '#payment' || window.location.hash === '#payment-portal') {
+        setShowPaymentPortal(true)
+      }
+    }
+    handleHashChange()
+    window.addEventListener('hashchange', handleHashChange)
+    return () => window.removeEventListener('hashchange', handleHashChange)
+  }, [])
 
   return (
     <>
@@ -37,23 +51,39 @@ const App: React.FC = () => {
       {!loading && (
         <>
           <CustomCursor />
-          <ScrollProgress />
-          <Navbar />
 
-          <main>
-            <Suspense fallback={<SectionLoader />}><Hero /></Suspense>
-            <Suspense fallback={<SectionLoader />}><About /></Suspense>
-            <Suspense fallback={<SectionLoader />}><PreviousEvent /></Suspense>
-            <Suspense fallback={<SectionLoader />}><Hackathon /></Suspense>
-            <Suspense fallback={<SectionLoader />}><CurrentEvent /></Suspense>
-            <Suspense fallback={<SectionLoader />}><Gallery /></Suspense>
-            <Suspense fallback={<SectionLoader />}><Testimonials /></Suspense>
-            <Suspense fallback={<SectionLoader />}><FAQ /></Suspense>
-            <Suspense fallback={<SectionLoader />}><Registration /></Suspense>
-            <Suspense fallback={<SectionLoader />}><Contact /></Suspense>
-          </main>
+          {showPaymentPortal ? (
+            <Suspense fallback={<SectionLoader />}>
+              <PaymentPortalPage
+                onBackToHome={() => {
+                  setShowPaymentPortal(false)
+                  window.location.hash = ''
+                }}
+              />
+            </Suspense>
+          ) : (
+            <>
+              <ScrollProgress />
+              <Navbar />
 
-          <Footer />
+              <main>
+                <Suspense fallback={<SectionLoader />}><Hero /></Suspense>
+                <Suspense fallback={<SectionLoader />}><About /></Suspense>
+                <Suspense fallback={<SectionLoader />}><PreviousEvent /></Suspense>
+                <Suspense fallback={<SectionLoader />}><Hackathon /></Suspense>
+                <Suspense fallback={<SectionLoader />}><CurrentEvent /></Suspense>
+                <Suspense fallback={<SectionLoader />}><Gallery /></Suspense>
+                <Suspense fallback={<SectionLoader />}><Testimonials /></Suspense>
+                <Suspense fallback={<SectionLoader />}><FAQ /></Suspense>
+                <Suspense fallback={<SectionLoader />}>
+                  <Registration onOpenPaymentPortal={() => setShowPaymentPortal(true)} />
+                </Suspense>
+                <Suspense fallback={<SectionLoader />}><Contact /></Suspense>
+              </main>
+
+              <Footer />
+            </>
+          )}
         </>
       )}
     </>
