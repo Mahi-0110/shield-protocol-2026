@@ -189,7 +189,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ onSubmitSuccess }) =>
                 <input
                   type="tel"
                   required
-                  placeholder="+91 98765 43210"
+                  placeholder="+91 82972 93834"
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                   className={`w-full pl-10 pr-4 py-3.5 rounded-xl input-cyber text-sm ${

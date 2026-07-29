@@ -23,9 +23,9 @@ export const PAYMENT_CONFIG: PaymentConfig = {
   payeeName: "THONDAVARAPU KEERTHANA",
   eventName: "The Shield Protocol 2026",
   eventSubtitle: "Cybersecurity Summit & Hackathon",
-  venue: "College Campus, Tech Auditorium",
-  eventDuration: "4 Days (March 15 - 18, 2026)",
-  registrationDeadline: "2026-08-15T23:59:59",
+  venue: "Bits College Campus, Seminar Hall",
+  eventDuration: "4 Days (August 11-14, 2026)",
+  registrationDeadline: "2026-08-8T23:59:59",
   supportEmail: "theshieldprotocol@bitsvizag.com",
-  supportPhone: "+91 98765 43210",
+  supportPhone: "+91 82972 93834",
 };

@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   Calendar, Clock, MapPin, Users, Trophy, Flag,
   BookOpen, Mic, Network, Award, ChevronRight,
-  DollarSign, FileText, HelpCircle, Shield
+  DollarSign, FileText, HelpCircle, Shield, Lock
 } from 'lucide-react'
 import SectionHeader from '../ui/SectionHeader'
 import GlowButton from '../ui/GlowButton'
@@ -13,7 +13,7 @@ const scheduleData = [
     day: 'Day 1',
     date: 'Aug 11, 2026',
     events: [
-      { time: '9:00 AM', title: 'Opening Ceremony & Keynote', type: 'ceremony', duration: '2h', venue: 'Main Auditorium' },
+      { time: '9:00 AM', title: 'Podcast with Santosh Chaluvadi', type: 'talk', duration: '2h', venue: 'Seminar hall' },
       { time: '11:30 AM', title: 'Workshop: Penetration Testing Fundamentals', type: 'workshop', duration: '2h', venue: 'Lab 1' },
       { time: '2:00 PM', title: 'Talk: AI in Cybersecurity', type: 'talk', duration: '1.5h', venue: 'Seminar Hall' },
       { time: '4:00 PM', title: 'Workshop: Cloud Security Best Practices', type: 'workshop', duration: '2h', venue: 'Lab 2' },
@@ -138,30 +138,46 @@ const CurrentEvent: React.FC = () => {
               <div className="space-y-3">
                 {scheduleData[activeDay].events.map((ev, i) => {
                   const cfg = typeConfig[ev.type]
+                  // Day 1, 9:00 AM (activeDay === 0 && i === 0) is UNLOCKED. All others are LOCKED.
+                  const isLocked = !(activeDay === 0 && i === 0)
+
                   return (
                     <motion.div
                       key={i}
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: i * 0.06 }}
-                      className="glass-card p-4 flex items-center gap-4 group"
+                      className="glass-card p-4 flex items-center gap-4 group relative overflow-hidden border border-white/5 hover:border-blue-primary/30 transition-all"
                     >
-                      <div className="w-20 shrink-0 text-center">
-                        <div className="font-space text-sm font-semibold text-white">{ev.time}</div>
-                        <div className="text-xs text-muted mt-0.5">{ev.duration}</div>
-                      </div>
-                      <div className="w-px h-10 bg-white/10 shrink-0" />
-                      <div className="flex-1 min-w-0">
-                        <div className="font-space font-semibold text-white truncate">{ev.title}</div>
-                        <div className="flex items-center gap-3 mt-1">
-                          <span className="flex items-center gap-1 text-xs text-muted">
-                            <MapPin size={11} /> {ev.venue}
-                          </span>
+                      {/* Inner event content (blurred if locked) */}
+                      <div className={`flex items-center gap-4 w-full ${isLocked ? 'filter blur-[5px] opacity-30 select-none pointer-events-none' : ''}`}>
+                        <div className="w-20 shrink-0 text-center">
+                          <div className="font-space text-sm font-semibold text-white">{ev.time}</div>
+                          <div className="text-xs text-muted mt-0.5">{ev.duration}</div>
                         </div>
+                        <div className="w-px h-10 bg-white/10 shrink-0" />
+                        <div className="flex-1 min-w-0">
+                          <div className="font-space font-semibold text-white truncate">{ev.title}</div>
+                          <div className="flex items-center gap-3 mt-1">
+                            <span className="flex items-center gap-1 text-xs text-muted">
+                              <MapPin size={11} /> {ev.venue}
+                            </span>
+                          </div>
+                        </div>
+                        <span className={`text-xs px-3 py-1 rounded-full border font-space shrink-0 ${cfg.bg} ${cfg.color}`}>
+                          {cfg.label}
+                        </span>
                       </div>
-                      <span className={`text-xs px-3 py-1 rounded-full border font-space shrink-0 ${cfg.bg} ${cfg.color}`}>
-                        {cfg.label}
-                      </span>
+
+                      {/* Lock Overlay */}
+                      {isLocked && (
+                        <div className="absolute inset-0 z-10 flex items-center justify-center p-3 bg-bg-primary/50 backdrop-blur-[2px]">
+                          <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-xl bg-bg-primary/90 border border-blue-primary/40 text-blue-accent shadow-[0_0_20px_rgba(14,165,233,0.3)] text-xs font-space font-semibold tracking-wide">
+                            <Lock size={14} className="text-blue-accent shrink-0 animate-pulse" />
+                            <span className="text-white/95">Updates of the upcoming session will be given soon</span>
+                          </div>
+                        </div>
+                      )}
                     </motion.div>
                   )
                 })}

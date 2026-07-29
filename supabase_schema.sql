@@ -16,15 +16,15 @@ CREATE TABLE IF NOT EXISTS public.registrations (
     phone TEXT NOT NULL,
     department TEXT NOT NULL,
     year TEXT NOT NULL,
-    team_name TEXT DEFAULT '',
-    team_size INT DEFAULT 1,
     status TEXT NOT NULL DEFAULT 'PARTIAL',
     payment_status TEXT NOT NULL DEFAULT 'PENDING',
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- If your table was previously created with the 'college' column, run this command:
+-- Migrations for existing tables:
 ALTER TABLE public.registrations DROP COLUMN IF EXISTS college;
+ALTER TABLE public.registrations DROP COLUMN IF EXISTS team_name;
+ALTER TABLE public.registrations DROP COLUMN IF EXISTS team_size;
 
 -- 3. Create Trigger Function for Automatic Registration ID Format (SP2026-XXXXXX)
 CREATE OR REPLACE FUNCTION generate_registration_id()

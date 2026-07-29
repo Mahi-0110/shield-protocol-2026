@@ -22,7 +22,7 @@ const Contact: React.FC = () => {
               <div className="space-y-6">
                 {[
                   { icon: <MapPin size={22} />, label: 'Venue', value: 'BITS VIZAG (Autonomous)\nVisakhapatnam, Andhra Pradesh' },
-                  { icon: <Phone size={22} />, label: 'Phone', value: '+91 98765 43210\n+91 87654 32109' },
+                  { icon: <Phone size={22} />, label: 'Phone', value: '+91 82972 93834' },
                   { icon: <Mail size={22} />, label: 'Email', value: 'theshieldprotocol@bitsvizag.com' },
                 ].map((item, i) => (
                   <div key={i} className="flex items-start gap-4">

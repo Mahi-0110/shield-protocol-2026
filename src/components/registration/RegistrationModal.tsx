@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Shield, ArrowRight, User, Mail, Phone, BookOpen, Calendar, Users, Lock, Sparkles } from 'lucide-react';
+import { X, Shield, ArrowRight, User, Mail, Phone, BookOpen, Calendar, Lock, Sparkles } from 'lucide-react';
 import { createRegistration } from '../../services/registrationService';
 import { RegistrationRecord } from '../../types/database';
 import { PAYMENT_CONFIG } from '../../config/paymentConfig';
@@ -18,8 +18,6 @@ const RegistrationModal: React.FC<RegistrationModalProps> = ({ isOpen, onClose, 
     phone: '',
     department: '',
     year: '3rd Year',
-    teamName: '',
-    teamSize: 1,
   });
 
   const [loading, setLoading] = useState(false);
@@ -48,8 +46,6 @@ const RegistrationModal: React.FC<RegistrationModalProps> = ({ isOpen, onClose, 
         phone: formData.phone,
         department: formData.department,
         year: formData.year,
-        team_name: formData.teamName,
-        team_size: formData.teamSize,
       });
 
       setLoading(false);
@@ -160,7 +156,7 @@ const RegistrationModal: React.FC<RegistrationModalProps> = ({ isOpen, onClose, 
                     required
                     value={formData.phone}
                     onChange={handleChange}
-                    placeholder="+91 98765 43210"
+                    placeholder="+91 82972 93834"
                     className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-muted/50 focus:outline-none focus:border-blue-primary transition-all font-outfit"
                   />
                 </div>
@@ -208,24 +204,6 @@ const RegistrationModal: React.FC<RegistrationModalProps> = ({ isOpen, onClose, 
                     <option value="Professional / Other">Professional / Other</option>
                   </select>
                 </div>
-              </div>
-            </div>
-
-            {/* Team Name */}
-            <div>
-              <label className="block text-xs font-space font-medium text-muted mb-1.5">
-                Team Name (Optional for Hackathon/CTF)
-              </label>
-              <div className="relative">
-                <Users size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted" />
-                <input
-                  type="text"
-                  name="teamName"
-                  value={formData.teamName}
-                  onChange={handleChange}
-                  placeholder="e.g. CyberKnights"
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-muted/50 focus:outline-none focus:border-blue-primary transition-all font-outfit"
-                />
               </div>
             </div>
 

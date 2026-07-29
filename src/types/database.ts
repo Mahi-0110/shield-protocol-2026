@@ -18,8 +18,6 @@ export interface RegistrationRecord {
   phone: string;
   department: string;
   year: string;
-  team_name?: string;
-  team_size?: number;
   status: ParticipantStatus;
   payment_status: PaymentStatus;
   created_at: string;
@@ -31,8 +29,6 @@ export interface RegistrationInsert {
   phone: string;
   department: string;
   year: string;
-  team_name?: string;
-  team_size?: number;
   registration_id?: string;
   status?: ParticipantStatus;
   payment_status?: PaymentStatus;
