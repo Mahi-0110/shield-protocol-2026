@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   Calendar, Clock, MapPin, Users, Trophy, Flag,
   BookOpen, Mic, Network, Award, ChevronRight,
-  DollarSign, FileText, HelpCircle, Shield, Lock
+  DollarSign, FileText, HelpCircle, Shield, Lock, X, CheckCircle2
 } from 'lucide-react'
 import SectionHeader from '../ui/SectionHeader'
 import GlowButton from '../ui/GlowButton'
@@ -13,7 +13,7 @@ const scheduleData = [
     day: 'Day 1',
     date: 'Aug 11, 2026',
     events: [
-      { time: '9:00 AM', title: 'Podcast with Santosh Chaluvadi', type: 'talk', duration: '2h', venue: 'Seminar hall' },
+      { time: '9:00 AM', title: 'Podcast with Santosh Chaluvadi', type: 'Podcast', duration: '2h', venue: 'Seminar hall' },
       { time: '11:30 AM', title: 'Workshop: Penetration Testing Fundamentals', type: 'workshop', duration: '2h', venue: 'Lab 1' },
       { time: '2:00 PM', title: 'Talk: AI in Cybersecurity', type: 'talk', duration: '1.5h', venue: 'Seminar Hall' },
       { time: '4:00 PM', title: 'Workshop: Cloud Security Best Practices', type: 'workshop', duration: '2h', venue: 'Lab 2' },
@@ -56,6 +56,8 @@ const scheduleData = [
 ]
 
 const typeConfig: Record<string, { color: string; bg: string; label: string }> = {
+  podcast: { color: 'text-cyan-400', bg: 'bg-cyan-400/10 border-cyan-400/20', label: 'Podcast' },
+  Podcast: { color: 'text-cyan-400', bg: 'bg-cyan-400/10 border-cyan-400/20', label: 'Podcast' },
   workshop: { color: 'text-blue-accent', bg: 'bg-blue-accent/10 border-blue-accent/20', label: 'Workshop' },
   talk: { color: 'text-blue-highlight', bg: 'bg-blue-highlight/10 border-blue-highlight/20', label: 'Talk' },
   hackathon: { color: 'text-warning', bg: 'bg-warning/10 border-warning/20', label: 'Hackathon' },
@@ -79,6 +81,12 @@ const speakers = [
 const CurrentEvent: React.FC = () => {
   const [activeDay, setActiveDay] = useState(0)
   const [activeTab, setActiveTab] = useState<'schedule' | 'speakers' | 'info'>('schedule')
+  const [selectedEvent, setSelectedEvent] = useState<{
+    event: typeof scheduleData[0]['events'][0];
+    day: string;
+    date: string;
+    isLocked: boolean;
+  } | null>(null)
 
   return (
     <section id="current-event" className="relative py-24 bg-bg-secondary overflow-hidden" aria-label="Current event details">
@@ -90,7 +98,7 @@ const CurrentEvent: React.FC = () => {
           badge="Current Event"
           title="The Shield Protocol"
           highlight="2026"
-          subtitle="Three days. Unlimited possibilities. Join the most anticipated cybersecurity event of the year."
+          subtitle="Four days. Unlimited possibilities. Join the most anticipated cybersecurity event of the year."
         />
 
         {/* Tab Navigation */}
@@ -137,7 +145,11 @@ const CurrentEvent: React.FC = () => {
               {/* Events */}
               <div className="space-y-3">
                 {scheduleData[activeDay].events.map((ev, i) => {
-                  const cfg = typeConfig[ev.type]
+                  const cfg = typeConfig[ev.type] || typeConfig[ev.type?.toLowerCase()] || {
+                    color: 'text-blue-accent',
+                    bg: 'bg-blue-accent/10 border-blue-accent/20',
+                    label: ev.type || 'Event',
+                  }
                   // Day 1, 9:00 AM (activeDay === 0 && i === 0) is UNLOCKED. All others are LOCKED.
                   const isLocked = !(activeDay === 0 && i === 0)
 
@@ -147,7 +159,13 @@ const CurrentEvent: React.FC = () => {
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: i * 0.06 }}
-                      className="glass-card p-4 flex items-center gap-4 group relative overflow-hidden border border-white/5 hover:border-blue-primary/30 transition-all"
+                      onClick={() => {
+                        if (!isLocked) {
+                          setSelectedEvent({ event: ev, day: scheduleData[activeDay].day, date: scheduleData[activeDay].date, isLocked: false })
+                        }
+                      }}
+                      className={`glass-card p-4 flex items-center gap-4 group relative overflow-hidden border border-white/5 transition-all ${isLocked ? 'cursor-not-allowed' : 'hover:border-blue-primary/40 hover:scale-[1.005] active:scale-[0.995] cursor-pointer'
+                        }`}
                     >
                       {/* Inner event content (blurred if locked) */}
                       <div className={`flex items-center gap-4 w-full ${isLocked ? 'filter blur-[5px] opacity-30 select-none pointer-events-none' : ''}`}>
@@ -169,10 +187,10 @@ const CurrentEvent: React.FC = () => {
                         </span>
                       </div>
 
-                      {/* Lock Overlay */}
+                      {/* Lock Overlay (Fully Locked - Cannot be opened or accessed) */}
                       {isLocked && (
-                        <div className="absolute inset-0 z-10 flex items-center justify-center p-3 bg-bg-primary/50 backdrop-blur-[2px]">
-                          <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-xl bg-bg-primary/90 border border-blue-primary/40 text-blue-accent shadow-[0_0_20px_rgba(14,165,233,0.3)] text-xs font-space font-semibold tracking-wide">
+                        <div className="absolute inset-0 z-10 flex items-center justify-center p-3 bg-bg-primary/70 backdrop-blur-[4px] select-none cursor-not-allowed">
+                          <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-xl bg-bg-primary/95 border border-blue-primary/30 text-blue-accent shadow-[0_0_20px_rgba(14,165,233,0.25)] text-xs font-space font-semibold tracking-wide">
                             <Lock size={14} className="text-blue-accent shrink-0 animate-pulse" />
                             <span className="text-white/95">Updates of the upcoming session will be given soon</span>
                           </div>
@@ -320,6 +338,104 @@ const CurrentEvent: React.FC = () => {
                 ))}
               </div>
             </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Session Details Modal */}
+        <AnimatePresence>
+          {selectedEvent && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto backdrop-blur-xl bg-bg-primary/80">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                className="relative w-full max-w-lg glass-card p-6 sm:p-8 border border-blue-primary/40 rounded-2xl shadow-[0_0_50px_rgba(14,165,233,0.3)] my-8 text-left"
+              >
+                {/* Close Button */}
+                <button
+                  onClick={() => setSelectedEvent(null)}
+                  className="absolute top-4 right-4 p-2 text-muted hover:text-white glass rounded-xl border border-white/10 hover:border-blue-primary/40 transition-all cursor-pointer"
+                  aria-label="Close session modal"
+                >
+                  <X size={18} />
+                </button>
+
+                {/* Modal Category Badge */}
+                {(() => {
+                  const cfg = typeConfig[selectedEvent.event.type] || typeConfig[selectedEvent.event.type?.toLowerCase()] || {
+                    color: 'text-blue-accent',
+                    bg: 'bg-blue-accent/10 border-blue-accent/20',
+                    label: selectedEvent.event.type || 'Session',
+                  }
+                  return (
+                    <div className="flex items-center gap-2 mb-4">
+                      <span className={`px-3.5 py-1 rounded-full text-xs font-space font-bold border ${cfg.bg} ${cfg.color}`}>
+                        Session Type: {cfg.label}
+                      </span>
+                      {selectedEvent.isLocked && (
+                        <span className="px-3 py-1 rounded-full text-xs font-space font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/30 flex items-center gap-1">
+                          <Lock size={12} /> Locked Session
+                        </span>
+                      )}
+                    </div>
+                  )
+                })()}
+
+                {/* Session Title */}
+                <h3 className="font-sora font-extrabold text-xl sm:text-2xl text-white mb-4 leading-snug">
+                  {selectedEvent.event.title}
+                </h3>
+
+                {/* Info Grid */}
+                <div className="space-y-3 glass p-4 rounded-xl border border-white/5 mb-6 text-xs sm:text-sm font-outfit">
+                  <div className="flex items-center justify-between text-muted border-b border-white/5 pb-2">
+                    <span className="font-space font-medium">Session Type:</span>
+                    <span className="text-blue-accent font-bold uppercase tracking-wider">{selectedEvent.event.type}</span>
+                  </div>
+
+                  <div className="flex items-center justify-between text-muted border-b border-white/5 pb-2">
+                    <span className="font-space font-medium">Schedule Day:</span>
+                    <span className="text-white font-medium">{selectedEvent.day} ({selectedEvent.date})</span>
+                  </div>
+
+                  <div className="flex items-center justify-between text-muted border-b border-white/5 pb-2">
+                    <span className="font-space font-medium">Time & Duration:</span>
+                    <span className="text-white font-medium">{selectedEvent.event.time} ({selectedEvent.event.duration})</span>
+                  </div>
+
+                  <div className="flex items-center justify-between text-muted">
+                    <span className="font-space font-medium">Venue:</span>
+                    <span className="text-emerald-400 font-semibold">{selectedEvent.event.venue}</span>
+                  </div>
+                </div>
+
+                {/* Status Note */}
+                {selectedEvent.isLocked ? (
+                  <div className="p-4 rounded-xl bg-blue-primary/10 border border-blue-primary/30 text-blue-accent text-xs font-space flex items-center gap-3">
+                    <Lock size={18} className="shrink-0 animate-pulse" />
+                    <p className="leading-relaxed">
+                      <strong>Upcoming Session Notice:</strong> Updates of the upcoming session will be given soon. Stay tuned!
+                    </p>
+                  </div>
+                ) : (
+                  <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-space flex items-center gap-3">
+                    <CheckCircle2 size={18} className="shrink-0" />
+                    <p className="leading-relaxed">
+                      <strong>Session Unlocked:</strong> Keynote podcast featuring Santosh Chaluvadi (Founder & CEO, Supraja Technologies).
+                    </p>
+                  </div>
+                )}
+
+                <div className="mt-6 text-right">
+                  <button
+                    onClick={() => setSelectedEvent(null)}
+                    className="px-6 py-2.5 rounded-xl bg-blue-primary text-white font-space font-semibold text-xs hover:shadow-[0_0_20px_rgba(14,165,233,0.4)] transition-all cursor-pointer"
+                  >
+                    Close
+                  </button>
+                </div>
+              </motion.div>
+            </div>
           )}
         </AnimatePresence>
 

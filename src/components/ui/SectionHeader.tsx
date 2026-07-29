@@ -39,11 +39,11 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.6, delay: 0.1 }}
-        className="section-title text-3xl md:text-4xl lg:text-5xl text-white mb-4"
+        className="section-title text-2xl xs:text-3xl sm:text-4xl lg:text-5xl text-white mb-3 sm:mb-4 leading-tight tracking-tight max-w-full px-2 sm:px-0 font-extrabold"
       >
         {title}{' '}
         {highlight && (
-          <span className="gradient-text">{highlight}</span>
+          <span className="gradient-text inline-block">{highlight}</span>
         )}
       </motion.h2>
 
@@ -53,7 +53,7 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="text-muted text-base md:text-lg max-w-2xl mx-auto leading-relaxed"
+          className="text-muted text-sm sm:text-base md:text-lg max-w-2xl mx-auto leading-relaxed px-2 sm:px-0"
         >
           {subtitle}
         </motion.p>
