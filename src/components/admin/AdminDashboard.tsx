@@ -291,8 +291,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToSite }) => {
                           <div className="text-muted text-[11px]">{p.email} • {p.phone}</div>
                         </td>
                         <td className="p-4">
-                          <div className="text-white">{p.college}</div>
-                          <div className="text-muted text-[11px]">{p.department} ({p.year})</div>
+                          <div className="text-white font-medium">{p.department}</div>
+                          <div className="text-muted text-[11px]">{p.year}</div>
                         </td>
                         <td className="p-4">
                           <span
@@ -389,9 +389,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToSite }) => {
                     <span className="text-white block">{selectedParticipant.phone}</span>
                   </div>
                   <div>
-                    <span className="text-xs text-muted block">College & Major</span>
-                    <span className="text-white block">{selectedParticipant.college}</span>
-                    <span className="text-muted text-xs block">{selectedParticipant.department} ({selectedParticipant.year})</span>
+                    <span className="text-xs text-muted block">Department & Year</span>
+                    <span className="text-white block">{selectedParticipant.department} ({selectedParticipant.year})</span>
                   </div>
                 </div>
 

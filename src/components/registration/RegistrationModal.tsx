@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Shield, ArrowRight, CheckCircle2, User, Mail, Phone, Building, BookOpen, Calendar, Users, Lock, Sparkles } from 'lucide-react';
+import { X, Shield, ArrowRight, User, Mail, Phone, BookOpen, Calendar, Users, Lock, Sparkles } from 'lucide-react';
 import { createRegistration } from '../../services/registrationService';
 import { RegistrationRecord } from '../../types/database';
 import { PAYMENT_CONFIG } from '../../config/paymentConfig';
@@ -16,7 +16,6 @@ const RegistrationModal: React.FC<RegistrationModalProps> = ({ isOpen, onClose, 
     fullName: '',
     email: '',
     phone: '',
-    college: '',
     department: '',
     year: '3rd Year',
     teamName: '',
@@ -35,7 +34,7 @@ const RegistrationModal: React.FC<RegistrationModalProps> = ({ isOpen, onClose, 
     e.preventDefault();
     setErrorMsg('');
 
-    if (!formData.fullName || !formData.email || !formData.phone || !formData.college || !formData.department) {
+    if (!formData.fullName || !formData.email || !formData.phone || !formData.department) {
       setErrorMsg('Please fill in all required fields.');
       return;
     }
@@ -47,7 +46,6 @@ const RegistrationModal: React.FC<RegistrationModalProps> = ({ isOpen, onClose, 
         full_name: formData.fullName,
         email: formData.email,
         phone: formData.phone,
-        college: formData.college,
         department: formData.department,
         year: formData.year,
         team_name: formData.teamName,
@@ -163,25 +161,6 @@ const RegistrationModal: React.FC<RegistrationModalProps> = ({ isOpen, onClose, 
                     value={formData.phone}
                     onChange={handleChange}
                     placeholder="+91 98765 43210"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-muted/50 focus:outline-none focus:border-blue-primary transition-all font-outfit"
-                  />
-                </div>
-              </div>
-
-              {/* College */}
-              <div>
-                <label className="block text-xs font-space font-medium text-muted mb-1.5">
-                  College / Institution <span className="text-blue-accent">*</span>
-                </label>
-                <div className="relative">
-                  <Building size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted" />
-                  <input
-                    type="text"
-                    name="college"
-                    required
-                    value={formData.college}
-                    onChange={handleChange}
-                    placeholder="Institute of Technology"
                     className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-muted/50 focus:outline-none focus:border-blue-primary transition-all font-outfit"
                   />
                 </div>

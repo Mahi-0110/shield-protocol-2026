@@ -126,8 +126,7 @@ export async function getParticipantsList(options?: Partial<AdminFilterOptions>)
           r.registration_id.toLowerCase().includes(q) ||
           r.full_name.toLowerCase().includes(q) ||
           r.email.toLowerCase().includes(q) ||
-          r.phone.includes(q) ||
-          r.college.toLowerCase().includes(q)
+          r.phone.includes(q)
       );
     }
 
@@ -351,7 +350,6 @@ export async function exportParticipantsCSV(): Promise<void> {
     'Full Name',
     'Email',
     'Phone',
-    'College',
     'Department',
     'Year',
     'Team Name',
@@ -370,7 +368,6 @@ export async function exportParticipantsCSV(): Promise<void> {
       `"${p.full_name}"`,
       p.email,
       p.phone,
-      `"${p.college}"`,
       `"${p.department}"`,
       p.year,
       `"${p.team_name || 'N/A'}"`,

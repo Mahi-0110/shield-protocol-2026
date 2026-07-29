@@ -16,7 +16,6 @@ export interface RegistrationRecord {
   full_name: string;
   email: string;
   phone: string;
-  college: string;
   department: string;
   year: string;
   team_name?: string;
@@ -30,7 +29,6 @@ export interface RegistrationInsert {
   full_name: string;
   email: string;
   phone: string;
-  college: string;
   department: string;
   year: string;
   team_name?: string;

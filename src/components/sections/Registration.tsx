@@ -1,12 +1,10 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
-import { ExternalLink, Shield, Award, Users, Zap, CheckCircle, ArrowRight, CreditCard, UserCheck } from 'lucide-react'
+import { Shield, Award, Users, Zap, CheckCircle, ArrowRight, UserCheck } from 'lucide-react'
 import SectionHeader from '../ui/SectionHeader'
 import { PAYMENT_CONFIG } from '../../config/paymentConfig'
 import RegistrationModal from '../registration/RegistrationModal'
 import { RegistrationRecord } from '../../types/database'
-
-const REGISTRATION_FORM_URL = 'https://forms.google.com'
 
 const perks = [
   { icon: <Shield size={20} />, text: 'Access to all Keynotes & Cyber Workshops' },
@@ -101,16 +99,6 @@ const Registration: React.FC<RegistrationProps> = ({ onOpenPaymentPortal }) => {
                   <span>Register & Pay Fee (₹{PAYMENT_CONFIG.registrationFee})</span>
                   <ArrowRight size={18} />
                 </button>
-
-                <a
-                  href={REGISTRATION_FORM_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-6 py-4 rounded-xl glass border border-white/10 text-muted hover:text-white hover:border-blue-primary/40 font-space font-semibold text-sm transition-all"
-                >
-                  <span>Google Form</span>
-                  <ExternalLink size={16} />
-                </a>
               </div>
 
               <p className="text-xs text-muted font-space mt-4">

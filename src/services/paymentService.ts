@@ -30,7 +30,6 @@ export async function submitPayment(input: PaymentSubmissionInput): Promise<{ pa
       full_name: 'Participant',
       email: input.email,
       phone: input.phone,
-      college: 'Registered via Payment Portal',
       department: 'N/A',
       year: '2026',
       status: 'PAYMENT_SUBMITTED',
