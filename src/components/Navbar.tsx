@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Menu, X, ChevronDown } from 'lucide-react'
+import { Menu, X, ChevronDown, Lock } from 'lucide-react'
 import ShieldLogo from './ui/ShieldLogo'
 import GlowButton from './ui/GlowButton'
 
@@ -21,6 +21,7 @@ const navLinks = [
   { label: 'FAQs', href: '#faqs' },
   { label: 'Register', href: '#register' },
   { label: 'Contact', href: '#contact' },
+  { label: 'Admin Login', href: '#admin' },
 ]
 
 const scrollTo = (href: string) => {
@@ -51,7 +52,11 @@ const Navbar: React.FC = () => {
   }, [])
 
   const handleNav = (href: string) => {
-    scrollTo(href)
+    if (href === '#admin' || href === '#admin-dashboard') {
+      window.location.hash = '#admin'
+    } else {
+      scrollTo(href)
+    }
     setMobileOpen(false)
     setActiveDropdown(null)
   }
@@ -148,8 +153,16 @@ const Navbar: React.FC = () => {
               ))}
             </div>
 
-            {/* Right — mobile toggle */}
+            {/* Right — mobile toggle & Admin button */}
             <div className="flex items-center gap-3">
+              <button
+                onClick={() => handleNav('#admin')}
+                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-space font-semibold text-blue-accent bg-blue-primary/10 border border-blue-primary/30 rounded-lg hover:bg-blue-primary/20 hover:border-blue-primary/50 transition-all shadow-[0_0_10px_rgba(14,165,233,0.15)]"
+                aria-label="Admin Portal Login"
+              >
+                <Lock size={13} className="text-blue-accent" />
+                <span>Admin Login</span>
+              </button>
 
               <motion.button
                 whileTap={{ scale: 0.9 }}
