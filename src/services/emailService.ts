@@ -17,6 +17,9 @@ export async function sendEmail({ to, subject, html }: EmailParams): Promise<boo
     return true;
   }
 
+  // Resend API allows sending from onboarding@resend.dev unless a custom domain is verified
+  const fromEmail = import.meta.env.VITE_RESEND_FROM_EMAIL || 'Shield Protocol <onboarding@resend.dev>';
+
   try {
     const response = await fetch('https://api.resend.com/emails', {
       method: 'POST',
@@ -25,7 +28,7 @@ export async function sendEmail({ to, subject, html }: EmailParams): Promise<boo
         Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: `${PAYMENT_CONFIG.eventName} <theshieldprotocol@bitsvizag.com>`,
+        from: fromEmail,
         to: [to],
         subject,
         html,
