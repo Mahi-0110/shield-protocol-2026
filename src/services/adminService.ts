@@ -148,7 +148,18 @@ export async function getParticipantsList(options?: Partial<AdminFilterOptions>)
     }
 
     if (statusFilter && statusFilter !== 'ALL') {
-      records = records.filter((r) => r.status === statusFilter);
+      if (statusFilter === 'PENDING' || statusFilter === 'PENDING_VERIFICATION') {
+        records = records.filter(
+          (r) =>
+            r.status === 'PAYMENT_SUBMITTED' ||
+            r.status === 'PARTIAL' ||
+            r.status === 'PAYMENT_PENDING' ||
+            r.payment_status === 'SUBMITTED' ||
+            r.payment_status === 'PENDING'
+        );
+      } else {
+        records = records.filter((r) => r.status === statusFilter || r.payment_status === statusFilter);
+      }
     }
 
     if (paymentStatusFilter && paymentStatusFilter !== 'ALL') {

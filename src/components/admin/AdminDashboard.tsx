@@ -81,10 +81,22 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToSite }) => {
     loadData();
   }, [searchQuery, statusFilter]);
 
+  const findMatchingPayment = (participant: RegistrationRecord, pays: PaymentRecord[]): PaymentRecord | null => {
+    if (!participant) return null;
+    return (
+      pays.find(
+        (pm) =>
+          (pm.registration_id && participant.registration_id && pm.registration_id.trim().toLowerCase() === participant.registration_id.trim().toLowerCase()) ||
+          (pm.participant_email && participant.email && pm.participant_email.trim().toLowerCase() === participant.email.trim().toLowerCase()) ||
+          (pm.participant_phone && participant.phone && pm.participant_phone.trim() === participant.phone.trim())
+      ) || null
+    );
+  };
+
   const handleViewParticipant = (participant: RegistrationRecord) => {
     setSelectedParticipant(participant);
-    const pay = payments.find((p) => p.registration_id === participant.registration_id);
-    setSelectedPayment(pay || null);
+    const pay = findMatchingPayment(participant, payments);
+    setSelectedPayment(pay);
     setShowDuplicatePrompt(false);
     setFeedbackAlert(null);
   };
@@ -211,7 +223,10 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToSite }) => {
       <div className="max-w-7xl mx-auto space-y-8">
         {/* KPI Cards Grid */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          <div className="glass-card p-5 border border-white/10 rounded-2xl">
+          <div
+            onClick={() => setStatusFilter('ALL')}
+            className="glass-card p-5 border border-white/10 rounded-2xl cursor-pointer hover:border-white/30 transition-all"
+          >
             <div className="flex items-center justify-between text-muted mb-2">
               <span className="text-xs font-space font-semibold uppercase">Total Registrations</span>
               <Users size={18} className="text-blue-accent" />
@@ -221,7 +236,10 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToSite }) => {
             </div>
           </div>
 
-          <div className="glass-card p-5 border border-amber-500/30 rounded-2xl bg-amber-500/5">
+          <div
+            onClick={() => setStatusFilter('PENDING')}
+            className="glass-card p-5 border border-amber-500/30 rounded-2xl bg-amber-500/5 cursor-pointer hover:border-amber-500/60 transition-all"
+          >
             <div className="flex items-center justify-between text-amber-400 mb-2">
               <span className="text-xs font-space font-semibold uppercase">Pending Verification</span>
               <Clock size={18} />
@@ -231,7 +249,10 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToSite }) => {
             </div>
           </div>
 
-          <div className="glass-card p-5 border border-emerald-500/30 rounded-2xl bg-emerald-500/5">
+          <div
+            onClick={() => setStatusFilter('CONFIRMED')}
+            className="glass-card p-5 border border-emerald-500/30 rounded-2xl bg-emerald-500/5 cursor-pointer hover:border-emerald-500/60 transition-all"
+          >
             <div className="flex items-center justify-between text-emerald-400 mb-2">
               <span className="text-xs font-space font-semibold uppercase">Confirmed Attendees</span>
               <CheckCircle2 size={18} />
@@ -268,7 +289,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToSite }) => {
           <div className="flex items-center gap-3 w-full md:w-auto overflow-x-auto">
             <Filter size={14} className="text-muted shrink-0" />
             <span className="text-xs font-space text-muted shrink-0">Filter Status:</span>
-            {['ALL', 'CONFIRMED', 'PAYMENT_SUBMITTED', 'PARTIAL', 'REJECTED'].map((st) => (
+            {['ALL', 'PENDING', 'CONFIRMED', 'PAYMENT_SUBMITTED', 'REJECTED'].map((st) => (
               <button
                 key={st}
                 onClick={() => setStatusFilter(st)}
@@ -316,7 +337,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToSite }) => {
                   </tr>
                 ) : (
                   participants.map((p) => {
-                    const pay = payments.find((pm) => pm.registration_id === p.registration_id);
+                    const pay = findMatchingPayment(p, payments);
                     return (
                       <tr key={p.id} className="hover:bg-white/5 transition-colors">
                         <td className="p-4 font-mono font-bold text-blue-accent">
