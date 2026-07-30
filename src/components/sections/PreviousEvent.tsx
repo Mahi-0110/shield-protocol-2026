@@ -59,7 +59,7 @@ const timeline = [
   },
   {
     icon: <Trophy size={20} />,
-    title: 'Prize Distribution',
+    title: 'Certificate Distribution',
     date: 'Day 4 • 4:00 PM',
     description: 'The Internship Offer Letters ceremony honored the best hackers and builders internship offers and Participation Certificates were awarded to  performers.',
     highlights: ['Internship Offers', 'Certificates'],

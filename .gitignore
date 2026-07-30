@@ -7,3 +7,9 @@ dist-ssr
 .env.development.local
 .env.test.local
 .env.production.local
+
+# Tests & Test Configs
+src/__tests__/
+vitest.config.ts
+coverage/
+

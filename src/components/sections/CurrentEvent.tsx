@@ -251,11 +251,10 @@ const CurrentEvent: React.FC = () => {
                     title: 'Eligibility',
                     icon: <Users size={20} />,
                     items: [
-                      'Open to all undergraduate and postgraduate students',
-                      'Students from any college/university can participate',
+
                       'No prior cybersecurity experience required for workshops',
                       'CTF and Hackathon: Teams of 1–4 members',
-                      'Valid college ID mandatory for on-site events',
+                      'Valid Registration ID mandatory for on-site events',
                     ],
                   },
                   {
@@ -264,9 +263,7 @@ const CurrentEvent: React.FC = () => {
                     items: [
                       'Main Auditorium — Opening, Closing, Hackathon Demo',
                       'Seminar Hall — Talks & Panel Discussions',
-                      'Lab 1, 2, 3 — Workshops & Competitions',
-                      'Cafeteria — Networking & Dining',
-                      'Online — CTF Platform accessible worldwide',
+
                     ],
                   },
                   {
@@ -274,7 +271,7 @@ const CurrentEvent: React.FC = () => {
                     icon: <Calendar size={20} />,
                     items: [
                       'Registration Opens:31st July 2026',
-                      'Early Bird Deadline: 31st July 2026',
+
                       'Registration Closes: 7th August 2026',
                       'Event Day 1: August 11 2026',
                       'Event Day 2: August 12 2026',
@@ -300,7 +297,7 @@ const CurrentEvent: React.FC = () => {
                     items: [
                       'Participation certificates for all registered attendees',
                       'Workshop completion certificates',
-                      'Winner certificates',
+                      'Certificate of Excellence',
 
 
                     ],

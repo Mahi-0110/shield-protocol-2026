@@ -1,6 +1,7 @@
 import { supabase } from './supabase';
 import { RegistrationRecord, PaymentRecord, AdminStats, AdminFilterOptions } from '../types/database';
 import { sendRegistrationConfirmedEmail, sendPaymentRejectedEmail } from './emailService';
+import { findRegistration } from './registrationService';
 
 const ADMIN_SESSION_KEY = 'shield_admin_authenticated';
 const DEFAULT_ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || 'shieldadmin2026';
@@ -217,12 +218,7 @@ export async function approvePayment(
 
   // Fetch participant to send Email #3 with custom message
   try {
-    const { data: participant } = await supabase
-      .from('registrations')
-      .select('*')
-      .eq('registration_id', registrationId)
-      .maybeSingle();
-
+    const participant = await findRegistration(registrationId);
     if (participant) {
       sendRegistrationConfirmedEmail(participant.email, participant.full_name, registrationId, customMessage).catch(console.error);
     }
@@ -297,12 +293,7 @@ export async function rejectPayment(
   updateLocalReject(registrationId, paymentId, verifiedBy, nowStr);
 
   try {
-    const { data: participant } = await supabase
-      .from('registrations')
-      .select('*')
-      .eq('registration_id', registrationId)
-      .maybeSingle();
-
+    const participant = await findRegistration(registrationId);
     if (participant) {
       sendPaymentRejectedEmail(participant.email, participant.full_name, registrationId, reason).catch(console.error);
     }
