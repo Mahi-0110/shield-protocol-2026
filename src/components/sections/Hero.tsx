@@ -333,7 +333,7 @@ const Hero: React.FC = () => {
           transition={{ delay: 0.6 }}
           className="flex items-center gap-4 text-xs font-space text-muted mb-10 flex-wrap justify-center"
         >
-          {['August 11-14, 2026', 'Engineering Campus'].map((item, i) => (
+          {['August 11-13 & 14 2026', 'Bits Vizag Campus'].map((item, i) => (
             <span key={i} className="flex items-center gap-2">
               {i > 0 && <span className="text-blue-primary/40">•</span>}
               {item}
@@ -370,10 +370,10 @@ const Hero: React.FC = () => {
           className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-3xl"
         >
           {[
-            { value: 200, suffix: '+', label: 'Participants' },
+            { value: 200, label: 'Student Delegates' },
             { value: 50, label: 'Teams' },
-            { value: 3, label: 'Workshops' },
-            { value: 9, suffix: 'hrs', label: 'Hackathon' },
+            { value: 10, suffix: '+', label: 'Sessions' },
+            { value: 9, suffix: 'Hrs', label: 'Hackathon' },
           ].map((stat, i) => (
             <StatCard key={i} {...stat} delay={1.1 + i * 0.1} />
           ))}

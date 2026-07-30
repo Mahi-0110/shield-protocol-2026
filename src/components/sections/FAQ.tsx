@@ -4,7 +4,7 @@ import { ChevronDown, Search } from 'lucide-react'
 import SectionHeader from '../ui/SectionHeader'
 
 const faqs = [
-  { q: 'Who can register for The Shield Protocol 2026?', a: 'The event is open to all undergraduate and postgraduate students from any college or university. No prior cybersecurity experience is required for workshops and talks, but CTF and Hackathon participants should have basic programming knowledge.' },
+  { q: 'Who can register for The Shield Protocol 2026?', a: 'The Shield Protocol 2026 is open for all Years. No prior cybersecurity experience is required for workshops and talks, but CTF and Hackathon participants should have basic programming knowledge.' },
   { q: 'Is there any registration fee?', a: 'Yes, registration is open with a registration fee for each individual participant.' },
   { q: 'Can I participate individually or as a group?', a: 'Yes! Both individuals and groups can participate based on their interest. Interested persons can also sign up to volunteer for The Shield Protocol 2026.' },
   { q: 'What is the difference between CTF and Hackathon?', a: 'CTF (Capture The Flag) is a cybersecurity competition where you solve challenges in categories like Web Exploitation, Cryptography, Forensics, and Reverse Engineering. The Hackathon is an intense innovation sprint where you build a security tool or solution from scratch.' },

@@ -10,10 +10,19 @@ interface PosterModalProps {
 const PosterModal: React.FC<PosterModalProps> = ({ isOpen, onClose }) => {
   if (!isOpen) return null
 
+  const handleExplore = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    onClose()
+    const target = document.querySelector('#currentevent') || document.querySelector('#about')
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth' })
+    }
+  }
+
   return (
     <AnimatePresence>
       <div
-        className="fixed inset-0 z-[100] flex items-center justify-center p-2 sm:p-4 bg-black/30 backdrop-blur-[3px] cursor-pointer select-none"
+        className="fixed inset-0 z-[100] flex items-center justify-center p-2 sm:p-4 bg-black/40 backdrop-blur-[4px] cursor-pointer select-none"
         onClick={onClose}
         role="dialog"
         aria-modal="true"
@@ -33,21 +42,18 @@ const PosterModal: React.FC<PosterModalProps> = ({ isOpen, onClose }) => {
             className="w-full h-auto max-h-[85vh] object-contain rounded-xl block shadow-2xl"
           />
 
-          {/* Minimal Explore Event Button Positioned in Poster Gap Slot */}
+          {/* Minimal Explore Event Button Positioned in Poster Gap Slot Below 3-Day Workshop & 1-Day Hackathon */}
           <div
             className="absolute z-20"
             style={{
-              left: '41.2%',
-              bottom: '24.5%',
+              left: '43.2%',
+              bottom: '25.8%',
               transform: 'translate(-50%, 50%)',
             }}
           >
             <button
-              onClick={(e) => {
-                e.stopPropagation()
-                onClose()
-              }}
-              className="inline-flex items-center justify-center gap-1.5 sm:gap-2 px-4 py-1.5 sm:px-6 sm:py-2.5 rounded-full bg-[#051329]/90 hover:bg-blue-primary text-[#38bdf8] hover:text-white border border-[#0ea5e9]/60 hover:border-blue-primary font-space font-semibold text-[10px] sm:text-xs tracking-wider shadow-[0_0_20px_rgba(14,165,233,0.7)] backdrop-blur-md transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer whitespace-nowrap"
+              onClick={handleExplore}
+              className="inline-flex items-center justify-center gap-1.5 sm:gap-2 px-4 py-1.5 sm:px-6 sm:py-2 rounded-full bg-[#051329]/95 hover:bg-[#0ea5e9] text-[#38bdf8] hover:text-white border border-[#0ea5e9]/70 hover:border-cyan-400 font-space font-semibold text-[10px] sm:text-xs tracking-wider shadow-[0_0_25px_rgba(14,165,233,0.8)] backdrop-blur-md transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer whitespace-nowrap"
             >
               <span>Explore Event</span>
               <ArrowRight size={14} className="sm:w-4 sm:h-4" />
