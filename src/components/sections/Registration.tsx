@@ -9,7 +9,7 @@ import { RegistrationRecord } from '../../types/database'
 const perks = [
   { icon: <Shield size={20} />, text: 'Access to all Keynotes & Cyber Workshops' },
   { icon: <Award size={20} />, text: 'Participation Certificate for all attendees' },
-  { icon: <Users size={20} />, text: 'Network with 200+ Cyber Professionals & Mentors' },
+  { icon: <Users size={20} />, text: 'Network with  Cyber Professionals & Mentors' },
   { icon: <Zap size={20} />, text: 'Compete in Shield X Hackathon & CTF' },
 ]
 
@@ -102,7 +102,7 @@ const Registration: React.FC<RegistrationProps> = ({ onOpenPaymentPortal }) => {
               </div>
 
               <p className="text-xs text-muted font-space mt-4">
-                🔒 Instant UPI Payment • Safe • Trusted • 256-Bit SSL Encrypted
+                🔒 • Safe • Trusted • 256-Bit SSL Encrypted
               </p>
             </motion.div>
           </div>

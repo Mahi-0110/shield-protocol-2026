@@ -26,16 +26,16 @@ const Hackathon: React.FC = () => {
           badge="Case Study"
           title="Shield X"
           highlight="Hackathon"
-          subtitle="A 9-hour non-stop innovation marathon where the brightest minds tackled real-world cybersecurity challenges. 50+ teams. 10+ mentors. Limitless ideas."
+          subtitle="A 9-hour non-stop innovation marathon where the brightest minds tackled real-world cybersecurity challenges. 50+ teams. 3 mentors. Limitless ideas."
         />
 
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12 mb-16">
           {[
-            { value: 200, suffix: '+', label: 'Participants', icon: <Users size={20} /> },
+            { value: 200, suffix: '', label: 'Delegates', icon: <Users size={20} /> },
             { value: 50, suffix: '+', label: 'Teams', icon: <Code2 size={20} /> },
-            { value: 9, suffix: 'h', label: 'Duration', icon: <Clock size={20} /> },
-            { value: 10, suffix: '+', label: 'Mentors', icon: <Star size={20} /> },
+            { value: 9, suffix: 'Hrs', label: 'Duration', icon: <Clock size={20} /> },
+            { value: 3, suffix: '+', label: 'Mentors', icon: <Star size={20} /> },
           ].map((s, i) => (
             <StatCard key={i} {...s} delay={i * 0.1} />
           ))}

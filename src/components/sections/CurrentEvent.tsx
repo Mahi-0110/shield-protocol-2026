@@ -76,6 +76,22 @@ const speakers = [
     tag: 'Keynote Speaker',
     image: '/santosh-chaluvadi.png',
   },
+  {
+    name: 'Kumar',
+    title: 'Security Analyst',
+    company: 'Supraja Technologies',
+    topic: 'Cyber Security Operations & Threat Analysis',
+    tag: 'Guest Speaker',
+    image: '/kumar.jpg',
+  },
+  {
+    name: 'Krishna',
+    title: 'Security Analyst',
+    company: 'Supraja Technologies',
+    topic: 'Vulnerability Assessment & Network Defense',
+    tag: 'Guest Speaker',
+    image: '/krishna.jpg',
+  },
 ]
 
 const CurrentEvent: React.FC = () => {
@@ -248,10 +264,30 @@ const CurrentEvent: React.FC = () => {
               <div className="grid md:grid-cols-2 gap-6">
                 {[
                   {
+                    title: 'Registration Steps',
+                    icon: <FileText size={20} />,
+                    items: [
+                      'Step 1: Complete registration form with accurate personal & college details',
+                      'Step 2: Submit fee payment via UPI/QR and enter valid UTR / Transaction ID',
+                      'Step 3: Upload clear payment proof screenshot for admin verification',
+                      'Step 4: Receive official confirmation email with your unique Registration ID',
+                    ],
+                  },
+                  {
+                    title: 'Registration Rules',
+                    icon: <Shield size={20} />,
+                    items: [
+                      'Registration ID & Pass email are mandatory for physical entry at venue',
+                      'Fees are strictly non-refundable and non-transferable once submitted',
+                      'Provide valid email & phone number to ensure pass delivery',
+                      'Individual registration for sessions',
+                      'Registrations strictly close on 7th August 2026 at 11:59 PM',
+                    ],
+                  },
+                  {
                     title: 'Eligibility',
                     icon: <Users size={20} />,
                     items: [
-
                       'No prior cybersecurity experience required for workshops',
                       'CTF and Hackathon: Teams of 1–4 members',
                       'Valid Registration ID mandatory for on-site events',
@@ -261,23 +297,20 @@ const CurrentEvent: React.FC = () => {
                     title: 'Venue & Location',
                     icon: <MapPin size={20} />,
                     items: [
-                      'Main Auditorium — Opening, Closing, Hackathon Demo',
-                      'Seminar Hall — Talks & Panel Discussions',
-
+                      'Bits Vizag',
+                      'Central Seminar Hall',
                     ],
                   },
                   {
                     title: 'Important Dates',
                     icon: <Calendar size={20} />,
                     items: [
-                      'Registration Opens:31st July 2026',
-
+                      'Registration Opens: 31st July 2026',
                       'Registration Closes: 7th August 2026',
                       'Event Day 1: August 11 2026',
                       'Event Day 2: August 12 2026',
                       'Event Day 3: August 13 2026',
                       'Hackathon starts: August 14 2026',
-
                     ],
                   },
                   {
@@ -298,8 +331,6 @@ const CurrentEvent: React.FC = () => {
                       'Participation certificates for all registered attendees',
                       'Workshop completion certificates',
                       'Certificate of Excellence',
-
-
                     ],
                   },
                   {
@@ -308,7 +339,6 @@ const CurrentEvent: React.FC = () => {
                     items: [
                       'No accommodation available',
                       'No Meals provided',
-
                     ],
                   },
                 ].map((sec, i) => (

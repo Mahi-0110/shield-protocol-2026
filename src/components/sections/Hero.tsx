@@ -370,7 +370,7 @@ const Hero: React.FC = () => {
           className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-3xl"
         >
           {[
-            { value: 200, label: 'Student Delegates' },
+            { value: 200, suffix: '', label: 'Student Delegates' },
             { value: 50, label: 'Teams' },
             { value: 10, suffix: '+', label: 'Sessions' },
             { value: 9, suffix: 'Hrs', label: 'Hackathon' },

@@ -28,7 +28,7 @@ const timeline = [
     title: 'Hands-on Workshops',
     date: 'Day 2 • All Day',
     description: 'Technical workshops covering Penetration Testing, Cloud Security, Digital Forensics, AI Security Tools, and Secure Software Development. Participants got hands-on lab access.',
-    highlights: ['3 Workshops', '200+ Participants', 'Live Labs'],
+    highlights: ['Wire-Shark', 'Steganography', 'Kali-Linux'],
     color: 'blue-highlight',
   },
 
@@ -45,8 +45,8 @@ const timeline = [
     icon: <Code2 size={20} />,
     title: 'Shield X Hackathon',
     date: 'Day 4 • 9 Hours',
-    description: 'An intense 9-hour hackathon where 120+ teams built innovative cybersecurity solutions across AI, Blockchain, IoT, and Cloud domains. Mentored by 25+ industry experts.',
-    highlights: ['50+ Teams', '9 Hours', 'Internship Offers.'],
+    description: 'An intense 9-hour hackathon where 50+ teams built innovative cybersecurity solutions across AI, Blockchain, IoT, and Cloud domains. Mentored by industry experts.',
+    highlights: ['50+ Teams', '9 Hours'],
     color: 'blue-primary',
   },
   {
@@ -70,7 +70,7 @@ const timeline = [
     title: 'Closing Ceremony',
     date: 'Day 4 • 6:00 PM',
     description: 'A memorable closing ceremony with performances, reflections, and announcements for The Shield Protocol 2026. The community came together to celebrate achievement and growth.',
-    highlights: ['Announcements'],
+    highlights: ['Felicitations'],
     color: 'blue-accent',
   },
 ]
@@ -197,8 +197,8 @@ const PreviousEvent: React.FC = () => {
           </h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {[
-              { value: '200+', label: 'Total Participants' },
-              { value: '6', label: 'Events & Competitions' },
+              { value: '200', label: 'Student Delegates ' },
+              { value: '9', label: 'Sessions' },
               { value: '3', label: 'Days of Action' },
               { value: '1', label: 'Day of Hackathon' },
             ].map((s, i) => (

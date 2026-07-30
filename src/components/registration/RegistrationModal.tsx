@@ -16,9 +16,12 @@ const RegistrationModal: React.FC<RegistrationModalProps> = ({ isOpen, onClose, 
     fullName: '',
     email: '',
     phone: '',
-    department: '',
     year: '3rd Year',
   });
+
+  const [deptChoice, setDeptChoice] = useState('');
+  const [cseSection, setCseSection] = useState('A');
+  const [otherDeptText, setOtherDeptText] = useState('');
 
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
@@ -32,8 +35,19 @@ const RegistrationModal: React.FC<RegistrationModalProps> = ({ isOpen, onClose, 
     e.preventDefault();
     setErrorMsg('');
 
-    if (!formData.fullName || !formData.email || !formData.phone || !formData.department) {
-      setErrorMsg('Please fill in all required fields.');
+    let finalDepartment = '';
+    if (deptChoice === 'CSE') {
+      finalDepartment = `CSE - Section ${cseSection}`;
+    } else if (deptChoice === 'AIML') {
+      finalDepartment = 'AIML (Artificial Intelligence & Machine Learning)';
+    } else if (deptChoice === 'CS') {
+      finalDepartment = 'CS (Cyber Security)';
+    } else if (deptChoice === 'Others') {
+      finalDepartment = otherDeptText.trim();
+    }
+
+    if (!formData.fullName || !formData.email || !formData.phone || !finalDepartment) {
+      setErrorMsg('Please fill in all required fields including Department.');
       return;
     }
 
@@ -44,7 +58,7 @@ const RegistrationModal: React.FC<RegistrationModalProps> = ({ isOpen, onClose, 
         full_name: formData.fullName,
         email: formData.email,
         phone: formData.phone,
-        department: formData.department,
+        department: finalDepartment,
         year: formData.year,
       });
 
@@ -161,27 +175,6 @@ const RegistrationModal: React.FC<RegistrationModalProps> = ({ isOpen, onClose, 
                   />
                 </div>
               </div>
-            </div>
-
-            <div className="grid sm:grid-cols-2 gap-4">
-              {/* Department */}
-              <div>
-                <label className="block text-xs font-space font-medium text-muted mb-1.5">
-                  Department / Major <span className="text-blue-accent">*</span>
-                </label>
-                <div className="relative">
-                  <BookOpen size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted" />
-                  <input
-                    type="text"
-                    name="department"
-                    required
-                    value={formData.department}
-                    onChange={handleChange}
-                    placeholder="Computer Science / Cyber Security"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-muted/50 focus:outline-none focus:border-blue-primary transition-all font-outfit"
-                  />
-                </div>
-              </div>
 
               {/* Year */}
               <div>
@@ -207,11 +200,70 @@ const RegistrationModal: React.FC<RegistrationModalProps> = ({ isOpen, onClose, 
               </div>
             </div>
 
+            {/* Department Selection */}
+            <div className="grid sm:grid-cols-2 gap-4 pt-1">
+              <div>
+                <label className="block text-xs font-space font-medium text-muted mb-1.5">
+                  Department / Branch <span className="text-blue-accent">*</span>
+                </label>
+                <div className="relative">
+                  <BookOpen size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted" />
+                  <select
+                    value={deptChoice}
+                    onChange={(e) => setDeptChoice(e.target.value)}
+                    required
+                    className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-bg-secondary border border-white/10 text-white focus:outline-none focus:border-blue-primary transition-all font-outfit appearance-none"
+                  >
+                    <option value="">Select Department</option>
+                    <option value="CSE">CSE (Computer Science & Engineering)</option>
+                    <option value="AIML">AIML (Artificial Intelligence and Machine Learning)</option>
+                    <option value="CS">CS (Cyber Security)</option>
+                    <option value="Others">Others (Enter Manually)</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* CSE Subsection (A, B, C) */}
+              {deptChoice === 'CSE' && (
+                <div>
+                  <label className="block text-xs font-space font-medium text-muted mb-1.5">
+                    CSE Section <span className="text-blue-accent">*</span>
+                  </label>
+                  <select
+                    value={cseSection}
+                    onChange={(e) => setCseSection(e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-xl bg-bg-secondary border border-white/10 text-white focus:outline-none focus:border-blue-primary transition-all font-outfit appearance-none"
+                  >
+                    <option value="A">Section A</option>
+                    <option value="B">Section B</option>
+                    <option value="C">Section C</option>
+                  </select>
+                </div>
+              )}
+
+              {/* Manual Input for Others */}
+              {deptChoice === 'Others' && (
+                <div>
+                  <label className="block text-xs font-space font-medium text-muted mb-1.5">
+                    Enter Department <span className="text-blue-accent">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={otherDeptText}
+                    onChange={(e) => setOtherDeptText(e.target.value)}
+                    placeholder="Enter your department name"
+                    className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-muted/50 focus:outline-none focus:border-blue-primary transition-all font-outfit"
+                  />
+                </div>
+              )}
+            </div>
+
             {/* Submit Button */}
             <div className="pt-4 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-white/10">
               <div className="flex items-center gap-2 text-xs text-muted font-space">
                 <Lock size={12} className="text-emerald-400" />
-                Data stored securely on Supabase
+                Data stored securely
               </div>
 
               <button

@@ -21,7 +21,6 @@ const navLinks = [
   { label: 'FAQs', href: '#faqs' },
   { label: 'Register', href: '#register' },
   { label: 'Contact', href: '#contact' },
-  { label: 'Admin Login', href: '#admin' },
 ]
 
 const scrollTo = (href: string) => {

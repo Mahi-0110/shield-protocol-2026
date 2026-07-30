@@ -11,7 +11,7 @@ interface GalleryItem {
   category: string
   title: string
   span: number
-  color: string
+  color?: string
 }
 
 const galleryItems: GalleryItem[] = [
@@ -26,7 +26,7 @@ const galleryItems: GalleryItem[] = [
   {
     id: 1,
     src: '/gallery/gallery-10.jpg',
-    category: 'Speakers',
+    category: 'Event Organiser',
     title: 'Keynote Address by Mr.P.Joshua Raju',
     span: 1,
     color: 'from-slate-800/40',
@@ -34,8 +34,8 @@ const galleryItems: GalleryItem[] = [
   {
     id: 2,
     src: '/gallery/gallery-6.jpg',
-    category: 'Speakers',
-    title: 'Student Session Speaker Presentation',
+    category: 'Student Delegate',
+    title: 'Student Delegate Speaker Presentation',
     span: 1,
     color: 'from-blue-800/40',
   },
@@ -154,10 +154,10 @@ const galleryItems: GalleryItem[] = [
   {
     id: 17,
     src: '/gallery/gallery-18.jpg',
-    category: 'Speakers',
-    title: 'Honoring Guests — Event Wall Signing Ceremony',
+    category: 'Principal',
+    title: 'Event Wall Signing Ceremony',
     span: 1,
-    color: 'from-slate-900/40',
+    color: 'from-blue-900/40',
   },
   {
     id: 18,

@@ -5,6 +5,7 @@ import LoadingScreen from './components/LoadingScreen'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import ScrollProgress from './components/ScrollProgress'
+import ScrollToRegister from './components/ui/ScrollToRegister'
 import CustomCursor from './components/CustomCursor'
 import PosterModal from './components/ui/PosterModal'
 import { isAdminAuthenticated } from './services/adminService'
@@ -97,6 +98,7 @@ const App: React.FC = () => {
           ) : (
             <>
               <ScrollProgress />
+              <ScrollToRegister />
               <Navbar />
 
               <main>

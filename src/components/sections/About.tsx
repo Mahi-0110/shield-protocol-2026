@@ -115,6 +115,37 @@ const About: React.FC = () => {
           ))}
         </div>
 
+        {/* About Supraja Technologies */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7 }}
+          className="glass-card p-8 md:p-10 mb-16 border border-blue-primary/30 relative overflow-hidden bg-gradient-to-r from-blue-primary/10 via-bg-secondary/40 to-blue-accent/10 shadow-[0_0_40px_rgba(14,165,233,0.15)]"
+        >
+          <div className="flex flex-col md:flex-row items-center gap-8">
+            <div className="shrink-0 flex flex-col items-center justify-center p-5 rounded-2xl bg-white/95 border border-white/20 shadow-[0_0_30px_rgba(255,255,255,0.25)]">
+              <img
+                src="/supraja-logo.png"
+                alt="Supraja Technologies Official Logo"
+                className="w-48 sm:w-60 h-auto object-contain max-h-24"
+              />
+              <span className="font-space text-[11px] font-bold text-slate-800 tracking-widest uppercase mt-3 pt-2 border-t border-slate-200 w-full text-center">
+                Industry & Training Partner
+              </span>
+            </div>
+            <div className="space-y-4 text-left">
+              <div className="section-badge">About Industry Partner</div>
+              <h3 className="font-sora font-bold text-2xl md:text-3xl text-white">
+                About <span className="gradient-text">Supraja Technologies</span>
+              </h3>
+              <p className="text-muted leading-relaxed text-sm md:text-base font-outfit">
+                Supraja Technologies is a premier IT services, consulting, and training organization dedicated to driving digital excellence and innovation. Supraja Technologies specializes in cutting-edge cybersecurity, cyber forensics, robust application development, and data-driven digital marketing solutions. Beyond delivering impactful enterprise solutions, the organization is deeply committed to empowering the next generation of tech talent through immersive training. Hands-on programs provide students and professionals with practical mentorship and mastery in emerging technologies. Ultimately, Supraja Technologies bridges the gap between academic learning and industry demands to build a secure, digitally advanced future.
+              </p>
+            </div>
+          </div>
+        </motion.div>
+
         {/* Pillars */}
         <div className="mb-16">
           <motion.h3
