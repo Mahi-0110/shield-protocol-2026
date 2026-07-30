@@ -1,5 +1,5 @@
 import { supabase } from './supabase';
-import { ParticipantStatus, PaymentStatus, RegistrationRecord } from '../types';
+import { ParticipantStatus, PaymentStatus, RegistrationRecord } from '../types/database';
 import { sendRegistrationReceivedEmail } from './emailService';
 
 export interface RegistrationInsert {
@@ -121,7 +121,7 @@ async function saveLocalRegistration(data: RegistrationInsert): Promise<Registra
     email: data.email,
     phone: data.phone,
     department: data.department,
-    year: data.year,
+    year: data.year || '4th Year',
     status: data.status || 'PARTIAL',
     payment_status: data.payment_status || 'PENDING',
     created_at: new Date().toISOString(),
