@@ -259,10 +259,37 @@ async function sendEmailFallbackApproved(email: string, fullName: string, regist
   const html = `
     <div style="font-family: 'Segoe UI', Arial, sans-serif; background-color: #050b14; color: #e2e8f0; padding: 24px;">
       <div style="background-color: #0c1729; border: 1px solid #10b981; border-radius: 16px; max-width: 580px; margin: 0 auto; padding: 32px;">
-        <h1 style="color: #10b981; font-size: 24px;">REGISTRATION CONFIRMED</h1>
-        <p>Congratulations <strong>${fullName}</strong>!</p>
-        <p>Your participation in <strong>The Shield Protocol 2026</strong> has been officially confirmed (Pass ID: <strong>${registrationId}</strong>).</p>
-        ${customMessage ? `<p><strong>Note:</strong> ${customMessage}</p>` : ''}
+        <div style="text-align: center; margin-bottom: 24px; border-bottom: 1px solid rgba(16, 185, 129, 0.2); padding-bottom: 16px;">
+          <h1 style="color: #10b981; font-size: 24px; margin: 0; text-transform: uppercase; letter-spacing: 1.5px;">✓ REGISTRATION CONFIRMED</h1>
+          <p style="color: #38bdf8; font-size: 11px; text-transform: uppercase; letter-spacing: 2px; margin-top: 4px;">The Shield Protocol 2026</p>
+        </div>
+
+        <h2 style="color: #f8fafc; font-size: 20px;">Congratulations, <strong>${fullName}</strong>! 🎉</h2>
+        <p style="color: #cbd5e1; line-height: 1.6;">Your registration & payment have been verified successfully by our organizing team. Your participation in <strong>The Shield Protocol 2026</strong> is officially confirmed!</p>
+
+        <div style="background: rgba(14, 165, 233, 0.12); border: 1px solid #0ea5e9; padding: 22px; border-radius: 12px; margin: 24px 0; text-align: center;">
+          <p style="color: #94a3b8; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 6px 0;">Official Participant Pass ID</p>
+          <p style="color: #38bdf8; font-size: 28px; font-weight: 800; font-family: monospace; letter-spacing: 2px; margin: 0 0 8px 0;">${registrationId}</p>
+          <p style="color: #34d399; font-size: 13px; font-weight: 600; margin: 0;">Verified & Gate Pass Ready</p>
+        </div>
+
+        ${customMessage ? `
+        <div style="background: rgba(16, 185, 129, 0.08); border-left: 4px solid #10b981; padding: 16px; border-radius: 8px; margin-bottom: 24px;">
+          <p style="color: #a7f3d0; font-size: 12px; text-transform: uppercase; font-weight: 700; margin: 0 0 6px 0;">Organizer Note:</p>
+          <p style="color: #ffffff; font-size: 14px; line-height: 1.6; margin: 0;">${customMessage}</p>
+        </div>
+        ` : ''}
+
+        <div style="background: #111e36; padding: 20px; border-radius: 10px; margin-bottom: 24px;">
+          <h3 style="color: #38bdf8; font-size: 14px; margin: 0 0 10px 0; text-transform: uppercase; letter-spacing: 1px;">📍 Event Venue & Reporting</h3>
+          <p style="margin: 0; color: #cbd5e1; font-size: 14px; line-height: 1.8;">
+            <strong>Event Dates:</strong> August 11-14, 2026<br/>
+            <strong>Reporting Time:</strong> 8:30 AM IST<br/>
+            <strong>Venue Location:</strong> Bits College Campus, Seminar Hall
+          </p>
+        </div>
+
+        <p style="color: #64748b; font-size: 12px; text-align: center;">The Shield Protocol 2026 Organizing Team</p>
       </div>
     </div>
   `;

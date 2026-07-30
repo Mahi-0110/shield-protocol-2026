@@ -182,7 +182,8 @@ export async function approvePayment(
   paymentId: string,
   registrationId: string,
   verifiedBy: string = 'Admin',
-  customMessage?: string
+  customMessage?: string,
+  targetParticipant?: RegistrationRecord
 ): Promise<boolean> {
   const nowStr = new Date().toISOString();
 
@@ -218,9 +219,11 @@ export async function approvePayment(
 
   // Fetch participant to send Email #3 with custom message
   try {
-    const participant = await findRegistration(registrationId);
-    if (participant) {
+    const participant = targetParticipant || (await findRegistration(registrationId));
+    if (participant && participant.email) {
       await sendRegistrationConfirmedEmail(participant.email, participant.full_name, registrationId, customMessage);
+    } else {
+      console.warn('[Approval Email Warning]: Participant record not resolved for:', registrationId);
     }
   } catch (e) {
     console.error('Email trigger error on approval:', e);
@@ -261,7 +264,8 @@ export async function rejectPayment(
   paymentId: string,
   registrationId: string,
   verifiedBy: string = 'Admin',
-  reason?: string
+  reason?: string,
+  targetParticipant?: RegistrationRecord
 ): Promise<boolean> {
   const nowStr = new Date().toISOString();
 
@@ -293,9 +297,11 @@ export async function rejectPayment(
   updateLocalReject(registrationId, paymentId, verifiedBy, nowStr);
 
   try {
-    const participant = await findRegistration(registrationId);
-    if (participant) {
+    const participant = targetParticipant || (await findRegistration(registrationId));
+    if (participant && participant.email) {
       await sendPaymentRejectedEmail(participant.email, participant.full_name, registrationId, reason);
+    } else {
+      console.warn('[Rejection Email Warning]: Participant record not resolved for:', registrationId);
     }
   } catch (e) {
     console.error('Email trigger error on rejection:', e);

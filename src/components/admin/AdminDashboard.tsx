@@ -95,7 +95,13 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToSite }) => {
     if (!selectedParticipant) return;
     setActionLoading(true);
     try {
-      await approvePayment(selectedPayment?.id || '', selectedParticipant.registration_id, 'Admin Organizer', customEmailNote);
+      await approvePayment(
+        selectedPayment?.id || '',
+        selectedParticipant.registration_id,
+        'Admin Organizer',
+        customEmailNote,
+        selectedParticipant
+      );
       await loadData();
       setSelectedParticipant(null);
       setSelectedPayment(null);
@@ -111,7 +117,13 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToSite }) => {
     if (!selectedParticipant) return;
     setActionLoading(true);
     try {
-      await rejectPayment(selectedPayment?.id || '', selectedParticipant.registration_id, 'Admin Organizer', rejectReason);
+      await rejectPayment(
+        selectedPayment?.id || '',
+        selectedParticipant.registration_id,
+        'Admin Organizer',
+        rejectReason,
+        selectedParticipant
+      );
       await loadData();
       setSelectedParticipant(null);
       setSelectedPayment(null);

@@ -96,35 +96,61 @@ export async function findRegistration(query: string): Promise<RegistrationRecor
   const cleanQuery = query.trim();
   if (!cleanQuery) return null;
 
+  // 1. Direct registration_id match
   try {
-    const { data, error } = await supabase
+    const { data: regIdData } = await supabase
       .from('registrations')
       .select('*')
-      .or(`registration_id.eq.${cleanQuery},email.eq.${cleanQuery},phone.eq.${cleanQuery}`)
-      .order('created_at', { ascending: false })
-      .limit(1)
+      .eq('registration_id', cleanQuery)
       .maybeSingle();
 
-    if (!error && data) {
-      return data;
-    }
+    if (regIdData) return regIdData;
   } catch (err) {
-    console.warn('Error querying Supabase registration:', err);
+    console.warn('Supabase reg_id query warning:', err);
   }
 
-  // Fallback to localStorage
+  // 2. Direct email match
+  try {
+    const { data: emailData } = await supabase
+      .from('registrations')
+      .select('*')
+      .eq('email', cleanQuery)
+      .maybeSingle();
+
+    if (emailData) return emailData;
+  } catch (err) {
+    console.warn('Supabase email query warning:', err);
+  }
+
+  // 3. Direct phone match
+  try {
+    const { data: phoneData } = await supabase
+      .from('registrations')
+      .select('*')
+      .eq('phone', cleanQuery)
+      .maybeSingle();
+
+    if (phoneData) return phoneData;
+  } catch (err) {
+    console.warn('Supabase phone query warning:', err);
+  }
+
+  // 4. Fallback to localStorage
   const localData = localStorage.getItem(LOCAL_REGISTRATIONS_KEY);
   if (!localData) return null;
 
-  const records: RegistrationRecord[] = JSON.parse(localData);
-  const found = records.find(
-    (r) =>
-      r.registration_id.toLowerCase() === cleanQuery.toLowerCase() ||
-      r.email.toLowerCase() === cleanQuery.toLowerCase() ||
-      r.phone === cleanQuery
-  );
-
-  return found || null;
+  try {
+    const records: RegistrationRecord[] = JSON.parse(localData);
+    const found = records.find(
+      (r) =>
+        r.registration_id?.toLowerCase() === cleanQuery.toLowerCase() ||
+        r.email?.toLowerCase() === cleanQuery.toLowerCase() ||
+        r.phone === cleanQuery
+    );
+    return found || null;
+  } catch (e) {
+    return null;
+  }
 }
 
 /**
