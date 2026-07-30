@@ -35,14 +35,17 @@ export async function sendEmail({ to, subject, html }: EmailParams): Promise<boo
       }),
     });
 
+    const result = await response.json();
+
     if (!response.ok) {
-      const errData = await response.json();
-      console.warn('Resend API error (falling back to simulation mode):', errData);
+      console.warn('Resend API Error / Domain Verification Check:', result);
       return true;
     }
+
+    console.log('Resend Email Sent Successfully:', result);
     return true;
   } catch (err) {
-    console.error('Email sending exception (falling back to simulation mode):', err);
+    console.error('Email sending exception:', err);
     return true;
   }
 }

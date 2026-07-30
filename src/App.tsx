@@ -6,6 +6,7 @@ import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import ScrollProgress from './components/ScrollProgress'
 import CustomCursor from './components/CustomCursor'
+import PosterModal from './components/ui/PosterModal'
 import { isAdminAuthenticated } from './services/adminService'
 
 // Lazy-loaded sections for fast initial load
@@ -32,6 +33,7 @@ const SectionLoader = () => (
 
 const App: React.FC = () => {
   const [loading, setLoading] = useState(true)
+  const [showPoster, setShowPoster] = useState(true)
   const [showPaymentPortal, setShowPaymentPortal] = useState(false)
   const [showAdminView, setShowAdminView] = useState(false)
   const [adminAuth, setAdminAuth] = useState(false)
@@ -66,6 +68,7 @@ const App: React.FC = () => {
       {!loading && (
         <>
           <CustomCursor />
+          <PosterModal isOpen={showPoster} onClose={() => setShowPoster(false)} />
 
           {showAdminView ? (
             <Suspense fallback={<SectionLoader />}>
