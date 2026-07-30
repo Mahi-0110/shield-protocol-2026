@@ -37,16 +37,15 @@ serve(async (req: Request) => {
 
     // 4. Read secrets & env vars
     const denoEnv = (typeof Deno !== 'undefined' ? Deno.env : null)
-    const brevoApiKey = denoEnv?.get('BREVO_API_KEY')
-    const senderEmail = denoEnv?.get('BREVO_SENDER_EMAIL') || 'noreply@theshieldprotocol.site'
-    const senderName = denoEnv?.get('BREVO_SENDER_NAME') || 'The Shield Protocol'
+    const resendApiKey = denoEnv?.get('RESEND_API_KEY')
+    const fromEmail = denoEnv?.get('RESEND_SENDER_EMAIL') || 'The Shield Protocol <onboarding@resend.dev>'
     const supabaseUrl = denoEnv?.get('SUPABASE_URL') || 'https://dayhrigdfggmspksyuya.supabase.co'
     const supabaseKey = denoEnv?.get('SUPABASE_SERVICE_ROLE_KEY') || denoEnv?.get('SUPABASE_ANON_KEY') || ''
 
-    if (!brevoApiKey) {
-      console.error('[send-confirmation-email] BREVO_API_KEY secret is not set!')
+    if (!resendApiKey) {
+      console.error('[send-confirmation-email] RESEND_API_KEY secret is not set!')
       return new Response(
-        JSON.stringify({ success: false, message: 'BREVO_API_KEY secret missing in Supabase Edge Function Secrets.' }),
+        JSON.stringify({ success: false, message: 'RESEND_API_KEY secret missing in Supabase Edge Function Secrets.' }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }
@@ -87,36 +86,31 @@ serve(async (req: Request) => {
       department,
     })
 
-    // 7. Call Brevo Transactional Email API
-    console.log(`[send-confirmation-email] Dispatching Brevo email for Reg ID: ${registrationId} to ${email}...`)
+    // 7. Call Resend Transactional Email API
+    console.log(`[send-confirmation-email] Dispatching Resend email for Reg ID: ${registrationId} to ${email}...`)
 
-    const brevoPayload = {
-      sender: { name: senderName, email: senderEmail },
-      to: [{ email, name: fullName }],
+    const resendPayload = {
+      from: fromEmail,
+      to: [email],
       subject: `Registration Confirmed – The Shield Protocol 2026 (${registrationId})`,
-      htmlContent,
+      html: htmlContent,
     }
 
-    const brevoRes = await fetch('https://api.brevo.com/v3/smtp/email', {
+    const resendRes = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
-        'api-key': brevoApiKey,
+        'Authorization': `Bearer ${resendApiKey}`,
         'Content-Type': 'application/json',
-        'Accept': 'application/json',
       },
-      body: JSON.stringify(brevoPayload),
+      body: JSON.stringify(resendPayload),
     })
 
-    const brevoResult = await brevoRes.json()
+    const resendResult = await resendRes.json()
 
-    // 8. Handle Brevo API Failure
-    if (!brevoRes.ok) {
-      let failureReason = brevoResult.message || brevoResult.code || JSON.stringify(brevoResult)
-      console.error(`[send-confirmation-email] Brevo API Error (${brevoRes.status}):`, failureReason)
-
-      if (failureReason.includes('unrecognised IP address') || failureReason.includes('authorised_ips')) {
-        failureReason = 'Brevo IP restriction detected. Please disable Authorized IPs setting at https://app.brevo.com/security/authorised_ips so Supabase cloud servers can send emails.'
-      }
+    // 8. Handle Resend API Failure
+    if (!resendRes.ok) {
+      let failureReason = resendResult.message || resendResult.name || JSON.stringify(resendResult)
+      console.error(`[send-confirmation-email] Resend API Error (${resendRes.status}):`, failureReason)
 
       // Try logging failure in email_logs
       try {
@@ -136,15 +130,15 @@ serve(async (req: Request) => {
       return new Response(
         JSON.stringify({
           success: false,
-          message: `Brevo email dispatch failed: ${failureReason}`,
-          error: brevoResult,
+          message: `Resend email dispatch failed: ${failureReason}`,
+          error: resendResult,
         }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }
 
-    // 9. Handle Brevo API Success
-    const messageId = brevoResult.messageId || brevoResult.messageID || `brevo-${Date.now()}`
+    // 9. Handle Resend API Success
+    const messageId = resendResult.id || `resend-${Date.now()}`
     console.log(`[send-confirmation-email] Success! Message ID: ${messageId}`)
 
     // Update registrations table setting email_sent = true
@@ -175,7 +169,7 @@ serve(async (req: Request) => {
     return new Response(
       JSON.stringify({
         success: true,
-        message: 'Confirmation email successfully dispatched via Brevo.',
+        message: 'Confirmation email successfully dispatched via Resend.',
         messageId,
       }),
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
