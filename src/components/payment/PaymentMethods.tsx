@@ -16,9 +16,24 @@ import {
   ArrowRight,
   Info,
 } from 'lucide-react';
-import { PAYMENT_CONFIG, getStandardUpiUrl } from '../../config/paymentConfig';
+import {
+  PAYMENT_CONFIG,
+  getStandardUpiUrl,
+  getPhonePeUpiUrl,
+  getGPayUpiUrl,
+  getPaytmUpiUrl,
+} from '../../config/paymentConfig';
 
 const UPI_APPS = [
+  {
+    name: 'PhonePe',
+    brandColor: '#5F259F',
+    bgGradient: 'from-purple-600/20 to-indigo-500/10',
+    borderColor: 'rgba(95, 37, 159, 0.4)',
+    badge: 'Direct PhonePe',
+    iconLetter: 'PhonePe',
+    getUrl: getPhonePeUpiUrl,
+  },
   {
     name: 'Google Pay',
     brandColor: '#4285F4',
@@ -26,14 +41,7 @@ const UPI_APPS = [
     borderColor: 'rgba(66, 133, 244, 0.4)',
     badge: 'Popular',
     iconLetter: 'GPay',
-  },
-  {
-    name: 'PhonePe',
-    brandColor: '#5F259F',
-    bgGradient: 'from-purple-600/20 to-indigo-500/10',
-    borderColor: 'rgba(95, 37, 159, 0.4)',
-    badge: 'Fast',
-    iconLetter: 'PhonePe',
+    getUrl: getGPayUpiUrl,
   },
   {
     name: 'Paytm',
@@ -42,6 +50,7 @@ const UPI_APPS = [
     borderColor: 'rgba(0, 186, 242, 0.4)',
     badge: 'Instant',
     iconLetter: 'Paytm',
+    getUrl: getPaytmUpiUrl,
   },
   {
     name: 'BHIM UPI',
@@ -50,6 +59,7 @@ const UPI_APPS = [
     borderColor: 'rgba(0, 82, 156, 0.4)',
     badge: 'Govt NPCI',
     iconLetter: 'BHIM',
+    getUrl: getStandardUpiUrl,
   },
   {
     name: 'Amazon Pay',
@@ -58,6 +68,7 @@ const UPI_APPS = [
     borderColor: 'rgba(255, 153, 0, 0.4)',
     badge: 'Rewards',
     iconLetter: 'Amazon',
+    getUrl: getStandardUpiUrl,
   },
 ];
 
@@ -66,7 +77,7 @@ const PaymentMethods: React.FC = () => {
   const [selectedTab, setSelectedTab] = useState<'qr' | 'upiId'>('qr');
   const [qrDataUrl, setQrDataUrl] = useState<string>('');
   const [toastMessage, setToastMessage] = useState<string | null>(null);
-  const [activeModalApp, setActiveModalApp] = useState<string | null>(null);
+  const [activeModalApp, setActiveModalApp] = useState<{ name: string; getUrl: () => string } | null>(null);
 
   useEffect(() => {
     const generateQrCode = async () => {
@@ -108,18 +119,27 @@ const PaymentMethods: React.FC = () => {
     document.body.removeChild(downloadLink);
   };
 
-  const handleSelectApp = (appName: string) => {
+  const handleSelectApp = (appName: string, getUrl: () => string) => {
     // 1. Copy UPI ID immediately for smooth user fallback
     navigator.clipboard.writeText(PAYMENT_CONFIG.upiId);
     setCopied(true);
     setTimeout(() => setCopied(false), 2500);
 
-    // 2. Open interactive payment guide modal with deep link option
-    setActiveModalApp(appName);
+    // 2. Open app specific URL immediately on mobile
+    const appUrl = getUrl();
+    try {
+      window.location.href = appUrl;
+    } catch (e) {
+      console.warn('App launch error:', e);
+    }
+
+    // 3. Open guidance modal as backup
+    setActiveModalApp({ name: appName, getUrl });
   };
 
   const handleDirectLaunch = () => {
-    window.location.href = getStandardUpiUrl();
+    if (!activeModalApp) return;
+    window.location.href = activeModalApp.getUrl();
   };
 
   return (
@@ -162,11 +182,11 @@ const PaymentMethods: React.FC = () => {
               </button>
 
               <div className="flex items-center gap-3 mb-4">
-                <div className="p-3 rounded-2xl bg-blue-primary/20 border border-blue-primary/40 text-blue-accent">
+                <div className="p-3 rounded-2xl bg-purple-600/20 border border-purple-500/40 text-purple-300">
                   <Smartphone size={24} />
                 </div>
                 <div>
-                  <div className="section-badge text-[10px]">PAYMENT VIA {activeModalApp.toUpperCase()}</div>
+                  <div className="section-badge text-[10px]">PAYMENT VIA {activeModalApp.name.toUpperCase()}</div>
                   <h3 className="font-sora font-bold text-lg text-white">
                     Pay ₹{PAYMENT_CONFIG.registrationFee}
                   </h3>
@@ -183,31 +203,25 @@ const PaymentMethods: React.FC = () => {
               <div className="space-y-3 mb-6">
                 <div className="flex items-start gap-3 text-xs font-outfit text-slate-300">
                   <span className="w-5 h-5 rounded-full bg-blue-primary/30 text-blue-accent font-space font-bold text-[11px] flex items-center justify-center shrink-0 mt-0.5">1</span>
-                  <span>Open <strong>{activeModalApp}</strong> on your phone.</span>
+                  <span>Opening <strong>{activeModalApp.name}</strong> app...</span>
                 </div>
                 <div className="flex items-start gap-3 text-xs font-outfit text-slate-300">
                   <span className="w-5 h-5 rounded-full bg-blue-primary/30 text-blue-accent font-space font-bold text-[11px] flex items-center justify-center shrink-0 mt-0.5">2</span>
-                  <span>Select <strong>"Pay to UPI ID"</strong> or <strong>"To VPA"</strong> and paste copied ID: <span className="font-mono text-cyan-300">{PAYMENT_CONFIG.upiId}</span></span>
+                  <span>If prompted, paste copied UPI ID: <span className="font-mono text-cyan-300">{PAYMENT_CONFIG.upiId}</span></span>
                 </div>
                 <div className="flex items-start gap-3 text-xs font-outfit text-slate-300">
                   <span className="w-5 h-5 rounded-full bg-blue-primary/30 text-blue-accent font-space font-bold text-[11px] flex items-center justify-center shrink-0 mt-0.5">3</span>
-                  <span>Enter amount <strong>₹{PAYMENT_CONFIG.registrationFee}</strong> and complete payment. Or scan the QR Code on screen!</span>
+                  <span>Enter amount <strong>₹{PAYMENT_CONFIG.registrationFee}</strong> and confirm. Or scan QR Code!</span>
                 </div>
-              </div>
-
-              {/* Notice regarding bank security policies */}
-              <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-200 text-[11px] font-outfit flex items-start gap-2 mb-6">
-                <Info size={14} className="text-amber-400 shrink-0 mt-0.5" />
-                <span>If bank declines web deep links, simply paste <strong className="font-mono text-white">{PAYMENT_CONFIG.upiId}</strong> or scan the QR Code directly in {activeModalApp}!</span>
               </div>
 
               {/* Buttons */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <button
                   onClick={handleDirectLaunch}
-                  className="px-4 py-3 rounded-xl bg-gradient-to-r from-blue-primary to-blue-accent text-white font-space font-bold text-xs flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(14,165,233,0.4)] hover:scale-[1.02] transition-transform"
+                  className="px-4 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-space font-bold text-xs flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(147,51,234,0.4)] hover:scale-[1.02] transition-transform"
                 >
-                  <span>Launch {activeModalApp}</span>
+                  <span>Re-launch {activeModalApp.name}</span>
                   <ExternalLink size={14} />
                 </button>
                 <button
@@ -353,10 +367,10 @@ const PaymentMethods: React.FC = () => {
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                onClick={() => handleSelectApp('UPI App')}
-                className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-gradient-to-r from-blue-primary to-blue-accent text-white font-space font-semibold text-xs shadow-[0_0_20px_rgba(14,165,233,0.4)] hover:shadow-[0_0_30px_rgba(14,165,233,0.7)] transition-all"
+                onClick={() => handleSelectApp('PhonePe', getPhonePeUpiUrl)}
+                className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-space font-semibold text-xs shadow-[0_0_20px_rgba(147,51,234,0.4)] hover:shadow-[0_0_30px_rgba(147,51,234,0.7)] transition-all"
               >
-                <span>Pay via UPI App</span>
+                <span>Pay via PhonePe</span>
                 <ArrowRight size={15} />
               </motion.button>
             </div>
@@ -386,7 +400,7 @@ const PaymentMethods: React.FC = () => {
             {UPI_APPS.map((app) => (
               <motion.button
                 key={app.name}
-                onClick={() => handleSelectApp(app.name)}
+                onClick={() => handleSelectApp(app.name, app.getUrl)}
                 whileHover={{ y: -4, scale: 1.02 }}
                 whileTap={{ scale: 0.97 }}
                 className={`glass p-3.5 rounded-2xl border flex flex-col items-center text-center transition-all bg-gradient-to-b ${app.bgGradient} relative overflow-hidden group cursor-pointer w-full`}
@@ -409,7 +423,7 @@ const PaymentMethods: React.FC = () => {
                 </span>
 
                 <span className="text-[10px] font-space text-muted mt-0.5">
-                  1-Tap Pay
+                  1-Tap Launch
                 </span>
               </motion.button>
             ))}

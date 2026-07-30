@@ -36,3 +36,24 @@ export const getStandardUpiUrl = (amount: number = PAYMENT_CONFIG.registrationFe
   const tn = encodeURIComponent("Shield Protocol Registration");
   return `upi://pay?pa=${pa}&pn=${pn}&am=${amount}&cu=INR&tn=${tn}`;
 };
+
+export const getPhonePeUpiUrl = (amount: number = PAYMENT_CONFIG.registrationFee) => {
+  const pa = encodeURIComponent(PAYMENT_CONFIG.upiId);
+  const pn = encodeURIComponent(PAYMENT_CONFIG.payeeName);
+  const tn = encodeURIComponent("Shield Protocol Registration");
+  return `phonepe://pay?pa=${pa}&pn=${pn}&am=${amount}&cu=INR&tn=${tn}`;
+};
+
+export const getGPayUpiUrl = (amount: number = PAYMENT_CONFIG.registrationFee) => {
+  const pa = encodeURIComponent(PAYMENT_CONFIG.upiId);
+  const pn = encodeURIComponent(PAYMENT_CONFIG.payeeName);
+  const tn = encodeURIComponent("Shield Protocol Registration");
+  return `gpay://upi/pay?pa=${pa}&pn=${pn}&am=${amount}&cu=INR&tn=${tn}`;
+};
+
+export const getPaytmUpiUrl = (amount: number = PAYMENT_CONFIG.registrationFee) => {
+  const pa = encodeURIComponent(PAYMENT_CONFIG.upiId);
+  const pn = encodeURIComponent(PAYMENT_CONFIG.payeeName);
+  const tn = encodeURIComponent("Shield Protocol Registration");
+  return `paytmmp://pay?pa=${pa}&pn=${pn}&am=${amount}&cu=INR&tn=${tn}`;
+};
