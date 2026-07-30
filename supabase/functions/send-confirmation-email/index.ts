@@ -38,7 +38,10 @@ serve(async (req: Request) => {
     // 4. Read secrets & env vars
     const denoEnv = (typeof Deno !== 'undefined' ? Deno.env : null)
     const resendApiKey = denoEnv?.get('RESEND_API_KEY')
-    const fromEmail = denoEnv?.get('RESEND_SENDER_EMAIL') || 'The Shield Protocol <onboarding@resend.dev>'
+    const customSender = denoEnv?.get('RESEND_SENDER_EMAIL')
+    const primarySender = customSender || 'The Shield Protocol <noreply@theshieldprotocol.site>'
+    const fallbackSender = 'The Shield Protocol <onboarding@resend.dev>'
+
     const supabaseUrl = denoEnv?.get('SUPABASE_URL') || 'https://dayhrigdfggmspksyuya.supabase.co'
     const supabaseKey = denoEnv?.get('SUPABASE_SERVICE_ROLE_KEY') || denoEnv?.get('SUPABASE_ANON_KEY') || ''
 
@@ -86,31 +89,46 @@ serve(async (req: Request) => {
       department,
     })
 
-    // 7. Call Resend Transactional Email API
+    // 7. Call Resend Transactional Email API (Try primary domain sender first, fallback to onboarding if unverified)
     console.log(`[send-confirmation-email] Dispatching Resend email for Reg ID: ${registrationId} to ${email}...`)
 
-    const resendPayload = {
-      from: fromEmail,
-      to: [email],
-      subject: `Registration Confirmed – The Shield Protocol 2026 (${registrationId})`,
-      html: htmlContent,
+    const sendWithSender = async (senderAddress: string) => {
+      const payload = {
+        from: senderAddress,
+        to: [email],
+        subject: `Registration Confirmed – The Shield Protocol 2026 (${registrationId})`,
+        html: htmlContent,
+      }
+
+      const res = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${resendApiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      })
+
+      const data = await res.json()
+      return { ok: res.ok, status: res.status, data }
     }
 
-    const resendRes = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${resendApiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(resendPayload),
-    })
+    // Attempt 1: Primary domain sender (noreply@theshieldprotocol.site)
+    let resendResult = await sendWithSender(primarySender)
 
-    const resendResult = await resendRes.json()
+    // Attempt 2: If primary domain sender fails due to domain verification, fallback to onboarding@resend.dev
+    if (!resendResult.ok && primarySender !== fallbackSender) {
+      const errStr = JSON.stringify(resendResult.data).toLowerCase()
+      if (errStr.includes('domain') || errStr.includes('verify') || errStr.includes('validation_error')) {
+        console.log(`[send-confirmation-email] Primary sender unverified. Retrying with fallback sender ${fallbackSender}...`)
+        resendResult = await sendWithSender(fallbackSender)
+      }
+    }
 
     // 8. Handle Resend API Failure
-    if (!resendRes.ok) {
-      let failureReason = resendResult.message || resendResult.name || JSON.stringify(resendResult)
-      console.error(`[send-confirmation-email] Resend API Error (${resendRes.status}):`, failureReason)
+    if (!resendResult.ok) {
+      let failureReason = resendResult.data.message || resendResult.data.name || JSON.stringify(resendResult.data)
+      console.error(`[send-confirmation-email] Resend API Error (${resendResult.status}):`, failureReason)
 
       // Try logging failure in email_logs
       try {
@@ -131,14 +149,14 @@ serve(async (req: Request) => {
         JSON.stringify({
           success: false,
           message: `Resend email dispatch failed: ${failureReason}`,
-          error: resendResult,
+          error: resendResult.data,
         }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }
 
     // 9. Handle Resend API Success
-    const messageId = resendResult.id || `resend-${Date.now()}`
+    const messageId = resendResult.data.id || `resend-${Date.now()}`
     console.log(`[send-confirmation-email] Success! Message ID: ${messageId}`)
 
     // Update registrations table setting email_sent = true
