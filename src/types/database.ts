@@ -20,6 +20,18 @@ export interface RegistrationRecord {
   year: string;
   status: ParticipantStatus;
   payment_status: PaymentStatus;
+  email_sent?: boolean;
+  created_at: string;
+}
+
+export interface EmailLogRecord {
+  id: string;
+  registration_id: string;
+  participant_email: string;
+  timestamp: string;
+  delivery_status: 'SUCCESS' | 'FAILURE';
+  provider_response_id?: string;
+  failure_reason?: string;
   created_at: string;
 }
 

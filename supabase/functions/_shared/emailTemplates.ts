@@ -1,281 +1,189 @@
+// @ts-nocheck
 /**
- * Reusable HTML Email Templates for The Shield Protocol 2026
- * Theme: Dark, Cyber Security, Professional, Mobile & Outlook Responsive
+ * Reusable HTML Email Template for Brevo Email Automation
+ * The Shield Protocol 2026
+ * Theme: Dark Cybersecurity Mode, Glassmorphism, Cyber Blue Accent, Responsive & Outlook compatible
  */
 
-export const SENDER_EMAIL = 'The Shield Protocol <noreply@theshieldprotocol.site>';
+export const SENDER_EMAIL = 'noreply@theshieldprotocol.site';
+export const SENDER_NAME = 'The Shield Protocol';
 
-const BASE_STYLES = `
-  font-family: 'Segoe UI', Arial, sans-serif;
-  background-color: #050b14;
-  color: #e2e8f0;
-  margin: 0;
-  padding: 20px;
-  -webkit-text-size-adjust: 100%;
-`;
-
-const CARD_STYLES = `
-  background-color: #0c1729;
-  border: 1px solid #1e293b;
-  border-radius: 16px;
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 32px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-`;
-
-const HEADER = `
-  <div style="text-align: center; margin-bottom: 28px; border-bottom: 1px solid rgba(14, 165, 233, 0.2); padding-bottom: 20px;">
-    <h1 style="color: #0ea5e9; font-size: 26px; margin: 0 0 6px 0; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase;">
-      🛡️ THE SHIELD PROTOCOL 2026
-    </h1>
-    <p style="color: #64748b; font-size: 12px; margin: 0; text-transform: uppercase; letter-spacing: 2px; font-weight: 600;">
-      Flagship Cybersecurity & Innovation Summit
-    </p>
-  </div>
-`;
-
-const FOOTER = `
-  <div style="margin-top: 36px; border-top: 1px solid #1e293b; padding-top: 20px; text-align: center;">
-    <p style="color: #64748b; font-size: 12px; margin: 0 0 6px 0;">
-      The Shield Protocol 2026 • Official Notification System
-    </p>
-    <p style="color: #475569; font-size: 11px; margin: 0;">
-      If you have any questions, contact us at <a href="mailto:theshieldprotocol@bitsvizag.com" style="color: #0ea5e9; text-decoration: none;">theshieldprotocol@bitsvizag.com</a>
-    </p>
-  </div>
-`;
-
-/**
- * EMAIL 1: Registration Received (PARTIALLY REGISTERED)
- */
-export function getRegistrationReceivedTemplate(data: {
+export interface ConfirmationEmailTemplateInput {
   fullName: string;
   registrationId: string;
-  eventName?: string;
   college?: string;
-  registrationFee?: number;
-  paymentUrl?: string;
-}): string {
+  department?: string;
+}
+
+export function getBrevoConfirmationEmailTemplate(input: ConfirmationEmailTemplateInput): string {
   const {
     fullName,
     registrationId,
-    eventName = 'The Shield Protocol 2026',
     college = 'BITS Vizag',
-    registrationFee = 725,
-    paymentUrl = 'https://theshieldprotocol.site/#payment-portal',
-  } = data;
+  } = input;
 
-  return `
-<!DOCTYPE html>
+  return `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Registration Received – Complete Your Payment</title>
+  <title>Registration Confirmed – The Shield Protocol 2026</title>
 </head>
-<body style="${BASE_STYLES}">
-  <div style="${CARD_STYLES}">
-    ${HEADER}
+<body style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #050b14; color: #e2e8f0; margin: 0; padding: 24px 12px; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;">
+  <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; margin: 0 auto; background-color: #0c1729; border: 1px solid rgba(14, 165, 233, 0.3); border-radius: 16px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6); overflow: hidden;">
+    
+    <!-- HEADER SECTION -->
+    <tr>
+      <td style="padding: 32px 32px 24px 32px; text-align: center; border-bottom: 1px solid rgba(14, 165, 233, 0.2); background: linear-gradient(180deg, rgba(14, 165, 233, 0.1) 0%, rgba(12, 23, 41, 0) 100%);">
+        <!-- Logo / Icon -->
+        <div style="margin-bottom: 12px;">
+          <span style="font-size: 38px; line-height: 1;">🛡️</span>
+        </div>
+        <h1 style="color: #0ea5e9; font-size: 24px; font-weight: 800; margin: 0 0 6px 0; letter-spacing: 1.5px; text-transform: uppercase;">
+          THE SHIELD PROTOCOL 2026
+        </h1>
+        <p style="color: #38bdf8; font-size: 13px; font-weight: 700; margin: 0; letter-spacing: 2px; text-transform: uppercase;">
+          Registration Confirmed
+        </p>
+      </td>
+    </tr>
 
-    <div style="text-align: center; margin-bottom: 20px;">
-      <span style="background: rgba(234, 179, 8, 0.15); color: #eab308; border: 1px solid rgba(234, 179, 8, 0.4); padding: 6px 16px; border-radius: 9999px; font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; display: inline-block;">
-        PARTIALLY REGISTERED
-      </span>
-    </div>
+    <!-- STATUS BADGES SECTION -->
+    <tr>
+      <td style="padding: 24px 32px 12px 32px; text-align: center;">
+        <table role="presentation" border="0" cellpadding="0" cellspacing="0" align="center">
+          <tr>
+            <td style="padding: 4px 8px;">
+              <span style="background-color: rgba(16, 185, 129, 0.15); border: 1px solid #10b981; color: #34d399; padding: 6px 16px; border-radius: 9999px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; display: inline-block;">
+                Registration Status: Confirmed
+              </span>
+            </td>
+            <td style="padding: 4px 8px;">
+              <span style="background-color: rgba(14, 165, 233, 0.15); border: 1px solid #0ea5e9; color: #38bdf8; padding: 6px 16px; border-radius: 9999px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; display: inline-block;">
+                Payment Status: Verified
+              </span>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
 
-    <h2 style="color: #f8fafc; font-size: 18px; margin: 0 0 14px 0;">Dear <strong>${fullName}</strong>,</h2>
+    <!-- WELCOME MESSAGE -->
+    <tr>
+      <td style="padding: 16px 32px;">
+        <h2 style="color: #f8fafc; font-size: 18px; font-weight: 700; margin: 0 0 12px 0;">
+          Dear <strong>${fullName}</strong>,
+        </h2>
+        <p style="color: #cbd5e1; font-size: 14px; line-height: 1.7; margin: 0; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.06); padding: 16px; border-radius: 12px;">
+          Congratulations! Your registration has been successfully verified by our organizing team. Your participation in <strong>The Shield Protocol 2026</strong> is now officially confirmed. We look forward to welcoming you to an exciting experience in cybersecurity, AI, innovation, and hands-on learning.
+        </p>
+      </td>
+    </tr>
 
-    <p style="color: #cbd5e1; font-size: 15px; line-height: 1.6; margin: 0 0 16px 0;">
-      Thank you for registering for <strong>${eventName}</strong>. Your registration details have been successfully received.
-    </p>
+    <!-- PARTICIPANT & PASS INFORMATION -->
+    <tr>
+      <td style="padding: 12px 32px;">
+        <div style="background: rgba(14, 165, 233, 0.08); border: 1px solid rgba(14, 165, 233, 0.3); border-radius: 14px; padding: 20px; text-align: center;">
+          <p style="color: #94a3b8; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; margin: 0 0 6px 0;">
+            Official Participant Gate Pass ID
+          </p>
+          <p style="color: #38bdf8; font-size: 26px; font-weight: 800; font-family: 'Courier New', Courier, monospace; letter-spacing: 2px; margin: 0 0 12px 0;">
+            ${registrationId}
+          </p>
+          <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="border-top: 1px solid rgba(14, 165, 233, 0.2); padding-top: 12px; font-size: 13px;">
+            <tr>
+              <td style="color: #94a3b8; padding: 4px 0; text-align: left;">Participant Name:</td>
+              <td style="color: #f1f5f9; font-weight: 600; padding: 4px 0; text-align: right;">${fullName}</td>
+            </tr>
+            <tr>
+              <td style="color: #94a3b8; padding: 4px 0; text-align: left;">College / Institution:</td>
+              <td style="color: #f1f5f9; font-weight: 600; padding: 4px 0; text-align: right;">${college}</td>
+            </tr>
+          </table>
+        </div>
+      </td>
+    </tr>
 
-    <p style="color: #cbd5e1; font-size: 15px; line-height: 1.6; margin: 0 0 20px 0;">
-      Your seat has been temporarily reserved. Please complete your payment of <strong>₹${registrationFee}</strong> to confirm your participation.
-    </p>
+    <!-- EVENT DETAILS SECTION -->
+    <tr>
+      <td style="padding: 16px 32px;">
+        <div style="background-color: #111e36; border-radius: 12px; padding: 20px; border: 1px solid rgba(255, 255, 255, 0.08);">
+          <h3 style="color: #38bdf8; font-size: 14px; font-weight: 700; margin: 0 0 14px 0; text-transform: uppercase; letter-spacing: 1px;">
+            📍 Event Information
+          </h3>
+          <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="font-size: 13px; line-height: 1.8;">
+            <tr>
+              <td style="color: #94a3b8; width: 40%;">Event Name:</td>
+              <td style="color: #ffffff; font-weight: 600;">The Shield Protocol 2026</td>
+            </tr>
+            <tr>
+              <td style="color: #94a3b8;">Event Date:</td>
+              <td style="color: #ffffff; font-weight: 600;">August 11-14, 2026</td>
+            </tr>
+            <tr>
+              <td style="color: #94a3b8;">Reporting Time:</td>
+              <td style="color: #ffffff; font-weight: 600;">8:30 AM IST</td>
+            </tr>
+            <tr>
+              <td style="color: #94a3b8;">Venue:</td>
+              <td style="color: #ffffff; font-weight: 600;">Bits College Campus, Seminar Hall</td>
+            </tr>
+          </table>
+        </div>
+      </td>
+    </tr>
 
-    <div style="background: rgba(14, 165, 233, 0.08); border-left: 4px solid #0ea5e9; padding: 18px; border-radius: 8px; margin-bottom: 24px;">
-      <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
-        <tr>
-          <td style="color: #94a3b8; padding: 4px 0;">Registration ID:</td>
-          <td style="color: #38bdf8; font-weight: 700; font-family: monospace; font-size: 16px; text-align: right;">${registrationId}</td>
-        </tr>
-        <tr>
-          <td style="color: #94a3b8; padding: 4px 0;">Institution / College:</td>
-          <td style="color: #f1f5f9; text-align: right;">${college}</td>
-        </tr>
-        <tr>
-          <td style="color: #94a3b8; padding: 4px 0;">Registration Fee:</td>
-          <td style="color: #34d399; font-weight: 700; text-align: right;">₹${registrationFee}</td>
-        </tr>
-      </table>
-    </div>
+    <!-- EVENT INSTRUCTIONS -->
+    <tr>
+      <td style="padding: 12px 32px;">
+        <div style="background: rgba(234, 179, 8, 0.05); border-left: 4px solid #eab308; border-radius: 8px; padding: 16px;">
+          <h3 style="color: #eab308; font-size: 13px; font-weight: 700; margin: 0 0 10px 0; text-transform: uppercase; letter-spacing: 1px;">
+            ⚠️ Event Instructions & Reminders
+          </h3>
+          <ul style="color: #cbd5e1; font-size: 13px; line-height: 1.8; margin: 0; padding-left: 20px;">
+            <li>Carry your <strong>College ID Card</strong> for verification at the entrance.</li>
+            <li>Bring your <strong>Laptop</strong> (if required for cybersecurity hands-on tracks).</li>
+            <li>Carry your <strong>Laptop Charger</strong> and necessary extension cords.</li>
+            <li>Arrive at the venue <strong>before the reporting time (8:30 AM IST)</strong>.</li>
+            <li>Follow all event guidelines shared by the organizing committee.</li>
+          </ul>
+        </div>
+      </td>
+    </tr>
 
-    <div style="text-align: center; margin: 28px 0;">
-      <a href="${paymentUrl}" target="_blank" rel="noopener noreferrer" style="background-color: #0ea5e9; color: #ffffff; padding: 14px 32px; border-radius: 10px; font-weight: 700; font-size: 15px; text-decoration: none; display: inline-block; box-shadow: 0 4px 14px rgba(14, 165, 233, 0.4);">
-        Complete Payment (₹${registrationFee}) →
-      </a>
-    </div>
+    <!-- SUPPORT SECTION -->
+    <tr>
+      <td style="padding: 20px 32px; text-align: center;">
+        <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 16px;">
+          <p style="color: #94a3b8; font-size: 12px; font-weight: 600; margin: 0 0 8px 0; text-transform: uppercase; letter-spacing: 1px;">
+            Need Assistance?
+          </p>
+          <p style="color: #cbd5e1; font-size: 13px; margin: 0 0 6px 0;">
+            Support Email: <a href="mailto:support@theshieldprotocol.site" style="color: #0ea5e9; text-decoration: none; font-weight: 600;">support@theshieldprotocol.site</a>
+          </p>
+          <p style="color: #cbd5e1; font-size: 13px; margin: 0;">
+            Official Website: <a href="https://theshieldprotocol.site" target="_blank" rel="noopener noreferrer" style="color: #0ea5e9; text-decoration: none; font-weight: 600;">https://theshieldprotocol.site</a>
+          </p>
+        </div>
+      </td>
+    </tr>
 
-    ${FOOTER}
-  </div>
+    <!-- FOOTER SECTION -->
+    <tr>
+      <td style="padding: 24px 32px 32px 32px; text-align: center; border-top: 1px solid rgba(255, 255, 255, 0.08); background-color: #08101d;">
+        <p style="color: #0ea5e9; font-size: 13px; font-weight: 700; margin: 0 0 4px 0; letter-spacing: 1px;">
+          The Shield Protocol 2026
+        </p>
+        <p style="color: #64748b; font-size: 12px; margin: 0 0 12px 0;">
+          Building the Next Generation of Cybersecurity Innovators.
+        </p>
+        <p style="color: #475569; font-size: 10px; margin: 0;">
+          This is an automated verification message. Please do not reply directly to this email.
+        </p>
+      </td>
+    </tr>
+
+  </table>
 </body>
-</html>
-  `;
-}
-
-/**
- * EMAIL 2: Payment Submitted (UNDER VERIFICATION)
- */
-export function getPaymentSubmittedTemplate(data: {
-  fullName: string;
-  registrationId: string;
-  transactionId: string;
-  amount?: number;
-  paymentDate?: string;
-}): string {
-  const {
-    fullName,
-    registrationId,
-    transactionId,
-    amount = 725,
-    paymentDate = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }),
-  } = data;
-
-  return `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Payment Submitted Successfully</title>
-</head>
-<body style="${BASE_STYLES}">
-  <div style="${CARD_STYLES}">
-    ${HEADER}
-
-    <div style="text-align: center; margin-bottom: 20px;">
-      <span style="background: rgba(14, 165, 233, 0.15); color: #38bdf8; border: 1px solid rgba(14, 165, 233, 0.4); padding: 6px 16px; border-radius: 9999px; font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; display: inline-block;">
-        UNDER VERIFICATION
-      </span>
-    </div>
-
-    <h2 style="color: #f8fafc; font-size: 18px; margin: 0 0 14px 0;">Dear <strong>${fullName}</strong>,</h2>
-
-    <p style="color: #cbd5e1; font-size: 15px; line-height: 1.6; margin: 0 0 16px 0;">
-      We've received your payment details successfully for <strong>Registration ID: ${registrationId}</strong>.
-    </p>
-
-    <p style="color: #cbd5e1; font-size: 15px; line-height: 1.6; margin: 0 0 20px 0;">
-      Our organizing team is currently verifying your payment of <strong>₹${amount}</strong>. No further action is required from your side. You'll receive another email once verification is complete.
-    </p>
-
-    <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.3); padding: 18px; border-radius: 8px; margin-bottom: 24px;">
-      <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
-        <tr>
-          <td style="color: #94a3b8; padding: 4px 0;">Transaction / UTR ID:</td>
-          <td style="color: #34d399; font-weight: 700; font-family: monospace; font-size: 15px; text-align: right;">${transactionId}</td>
-        </tr>
-        <tr>
-          <td style="color: #94a3b8; padding: 4px 0;">Amount Submitted:</td>
-          <td style="color: #f1f5f9; text-align: right; font-weight: 600;">₹${amount}</td>
-        </tr>
-        <tr>
-          <td style="color: #94a3b8; padding: 4px 0;">Submission Date:</td>
-          <td style="color: #f1f5f9; text-align: right;">${paymentDate}</td>
-        </tr>
-      </table>
-    </div>
-
-    ${FOOTER}
-  </div>
-</body>
-</html>
-  `;
-}
-
-/**
- * EMAIL 3: Registration Approved (REGISTRATION CONFIRMED)
- */
-export function getRegistrationApprovedTemplate(data: {
-  fullName: string;
-  registrationId: string;
-  eventName?: string;
-  venue?: string;
-  reportingTime?: string;
-  customMessage?: string;
-}): string {
-  const {
-    fullName,
-    registrationId,
-    eventName = 'The Shield Protocol 2026',
-    venue = 'Bits College Campus, Seminar Hall',
-    reportingTime = '8:30 AM IST',
-    customMessage,
-  } = data;
-
-  return `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Welcome to The Shield Protocol 2026</title>
-</head>
-<body style="${BASE_STYLES}">
-  <div style="${CARD_STYLES}">
-    ${HEADER}
-
-    <div style="text-align: center; margin-bottom: 20px;">
-      <span style="background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.5); padding: 6px 18px; border-radius: 9999px; font-size: 12px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; display: inline-block;">
-        ✓ REGISTRATION CONFIRMED
-      </span>
-    </div>
-
-    <h2 style="color: #f8fafc; font-size: 20px; margin: 0 0 14px 0;">Congratulations, <strong>${fullName}</strong>! 🎉</h2>
-
-    <p style="color: #cbd5e1; font-size: 15px; line-height: 1.6; margin: 0 0 16px 0;">
-      Your registration has been verified successfully. Your participation in <strong>${eventName}</strong> has been officially confirmed.
-    </p>
-
-    <div style="background: rgba(14, 165, 233, 0.12); border: 1px solid #0ea5e9; padding: 22px; border-radius: 12px; margin-bottom: 24px; text-align: center;">
-      <p style="color: #94a3b8; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 6px 0;">Official Participant Pass ID</p>
-      <p style="color: #38bdf8; font-size: 28px; font-weight: 800; font-family: monospace; letter-spacing: 2px; margin: 0 0 8px 0;">${registrationId}</p>
-      <p style="color: #34d399; font-size: 13px; font-weight: 600; margin: 0;">Verified & Gate Pass Ready</p>
-    </div>
-
-    ${customMessage ? `
-      <div style="background: rgba(16, 185, 129, 0.08); border-left: 4px solid #10b981; padding: 16px; border-radius: 8px; margin-bottom: 24px;">
-        <p style="color: #a7f3d0; font-size: 12px; text-transform: uppercase; font-weight: 700; margin: 0 0 6px 0;">Organizer Instructions:</p>
-        <p style="color: #ffffff; font-size: 14px; line-height: 1.6; margin: 0;">${customMessage.replace(/\n/g, '<br/>')}</p>
-      </div>
-    ` : ''}
-
-    <div style="background: #111e36; padding: 20px; border-radius: 10px; margin-bottom: 24px;">
-      <h3 style="color: #38bdf8; font-size: 15px; margin: 0 0 12px 0; text-transform: uppercase; letter-spacing: 1px;">📍 Event Venue & Reporting</h3>
-      <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
-        <tr>
-          <td style="color: #94a3b8; padding: 4px 0;">Event Dates:</td>
-          <td style="color: #f1f5f9; text-align: right; font-weight: 600;">August 11-14, 2026</td>
-        </tr>
-        <tr>
-          <td style="color: #94a3b8; padding: 4px 0;">Reporting Time:</td>
-          <td style="color: #f1f5f9; text-align: right; font-weight: 600;">${reportingTime}</td>
-        </tr>
-        <tr>
-          <td style="color: #94a3b8; padding: 4px 0;">Venue Location:</td>
-          <td style="color: #f1f5f9; text-align: right; font-weight: 600;">${venue}</td>
-        </tr>
-      </table>
-    </div>
-
-    <p style="color: #cbd5e1; font-size: 15px; line-height: 1.6; margin: 0 0 20px 0; text-align: center;">
-      We look forward to welcoming you to The Shield Protocol 2026!
-    </p>
-
-    ${FOOTER}
-  </div>
-</body>
-</html>
-  `;
+</html>`;
 }

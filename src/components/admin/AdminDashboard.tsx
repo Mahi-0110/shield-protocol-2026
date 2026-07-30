@@ -56,9 +56,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToSite }) => {
   const [selectedParticipant, setSelectedParticipant] = useState<RegistrationRecord | null>(null);
   const [selectedPayment, setSelectedPayment] = useState<PaymentRecord | null>(null);
   const [actionLoading, setActionLoading] = useState(false);
-  const [rejectReason, setRejectReason] = useState('');
-  const [showRejectForm, setShowRejectForm] = useState(false);
-  const [customEmailNote, setCustomEmailNote] = useState('');
+  const [showDuplicatePrompt, setShowDuplicatePrompt] = useState(false);
+  const [feedbackAlert, setFeedbackAlert] = useState<{ type: 'success' | 'error' | 'warning'; message: string } | null>(null);
 
   const loadData = async () => {
     setLoading(true);
@@ -86,28 +85,53 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToSite }) => {
     setSelectedParticipant(participant);
     const pay = payments.find((p) => p.registration_id === participant.registration_id);
     setSelectedPayment(pay || null);
-    setShowRejectForm(false);
-    setRejectReason('');
-    setCustomEmailNote('');
+    setShowDuplicatePrompt(false);
+    setFeedbackAlert(null);
   };
 
-  const handleApprove = async () => {
+  const handleApprove = async (forceResend?: boolean) => {
     if (!selectedParticipant) return;
     setActionLoading(true);
+    setFeedbackAlert(null);
+
     try {
-      await approvePayment(
+      const result = await approvePayment(
         selectedPayment?.id || '',
         selectedParticipant.registration_id,
         'Admin Organizer',
-        customEmailNote,
-        selectedParticipant
+        selectedParticipant,
+        forceResend
       );
+
       await loadData();
-      setSelectedParticipant(null);
-      setSelectedPayment(null);
-      setCustomEmailNote('');
-    } catch (err) {
-      console.error('Approval failed:', err);
+
+      if (result.alreadySent && !forceResend) {
+        setShowDuplicatePrompt(true);
+      } else if (result.emailSent) {
+        setShowDuplicatePrompt(false);
+        setFeedbackAlert({
+          type: 'success',
+          message: 'Registration approved successfully & confirmation email sent via Brevo!',
+        });
+        setTimeout(() => {
+          setSelectedParticipant(null);
+          setSelectedPayment(null);
+          setFeedbackAlert(null);
+        }, 2000);
+      } else {
+        // Email sending failed
+        setShowDuplicatePrompt(false);
+        setFeedbackAlert({
+          type: 'warning',
+          message: 'Registration approved successfully. However, the confirmation email could not be sent. Please try sending it again.',
+        });
+      }
+    } catch (err: any) {
+      console.error('Approval exception:', err);
+      setFeedbackAlert({
+        type: 'error',
+        message: 'Approval action encountered an error.',
+      });
     } finally {
       setActionLoading(false);
     }
@@ -116,13 +140,13 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToSite }) => {
   const handleReject = async () => {
     if (!selectedParticipant) return;
     setActionLoading(true);
+    setFeedbackAlert(null);
+
     try {
       await rejectPayment(
         selectedPayment?.id || '',
         selectedParticipant.registration_id,
-        'Admin Organizer',
-        rejectReason,
-        selectedParticipant
+        'Admin Organizer'
       );
       await loadData();
       setSelectedParticipant(null);
@@ -464,77 +488,86 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToSite }) => {
                 </div>
               </div>
 
-              {/* Action Buttons */}
-              {showRejectForm ? (
-                <div className="space-y-4 p-4 rounded-2xl bg-red-500/10 border border-red-500/30">
-                  <label className="block text-xs font-space text-red-400 font-semibold uppercase">
-                    Reason for Rejection (Included in Email #4)
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="e.g. Invalid UTR number / Blurred screenshot"
-                    value={rejectReason}
-                    onChange={(e) => setRejectReason(e.target.value)}
-                    className="w-full p-3 rounded-xl bg-bg-secondary border border-red-500/40 text-white text-xs font-outfit focus:outline-none"
-                  />
-                  <div className="flex justify-end gap-3">
+              {/* Alert Feedback Notice */}
+              {feedbackAlert && (
+                <div
+                  className={`p-4 rounded-2xl border text-xs font-space font-medium mb-4 flex items-center justify-between gap-3 ${
+                    feedbackAlert.type === 'success'
+                      ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300'
+                      : feedbackAlert.type === 'warning'
+                      ? 'bg-amber-500/15 border-amber-500/40 text-amber-300'
+                      : 'bg-red-500/15 border-red-500/40 text-red-300'
+                  }`}
+                >
+                  <div className="flex items-center gap-2">
+                    {feedbackAlert.type === 'warning' ? <AlertTriangle size={16} /> : <CheckCircle2 size={16} />}
+                    <span>{feedbackAlert.message}</span>
+                  </div>
+                  {feedbackAlert.type === 'warning' && (
                     <button
-                      onClick={() => setShowRejectForm(false)}
-                      className="px-4 py-2 rounded-xl glass text-xs font-space text-muted"
+                      onClick={() => handleApprove(true)}
+                      disabled={actionLoading}
+                      className="px-3 py-1.5 rounded-lg bg-amber-500 text-black font-bold hover:bg-amber-400 transition cursor-pointer"
                     >
-                      Cancel
+                      {actionLoading ? 'Retrying...' : 'Retry Email Send'}
+                    </button>
+                  )}
+                </div>
+              )}
+
+              {/* Duplicate Email Warning Modal / Dialog */}
+              {showDuplicatePrompt ? (
+                <div className="p-5 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-200 space-y-4">
+                  <div className="flex items-center gap-2 font-space text-xs font-bold uppercase tracking-wider text-amber-400">
+                    <AlertTriangle size={16} /> Duplicate Email Warning
+                  </div>
+                  <p className="text-sm font-outfit">
+                    Confirmation email has already been sent. Would you like to resend it?
+                  </p>
+                  <div className="flex justify-end gap-3 pt-2">
+                    <button
+                      onClick={() => {
+                        setShowDuplicatePrompt(false);
+                        setSelectedParticipant(null);
+                        setSelectedPayment(null);
+                      }}
+                      className="px-4 py-2 rounded-xl glass text-xs font-space text-muted hover:text-white cursor-pointer"
+                    >
+                      No, Keep Approved
                     </button>
                     <button
-                      onClick={handleReject}
+                      onClick={() => handleApprove(true)}
                       disabled={actionLoading}
-                      className="px-5 py-2 rounded-xl bg-red-500 text-white text-xs font-space font-bold hover:bg-red-600 transition"
+                      className="px-5 py-2 rounded-xl bg-amber-500 text-black font-space font-bold text-xs hover:bg-amber-400 transition flex items-center gap-1.5 cursor-pointer"
                     >
-                      {actionLoading ? 'Rejecting...' : 'Confirm Rejection'}
+                      {actionLoading ? 'Resending...' : 'Yes, Resend Confirmation Email'}
                     </button>
                   </div>
                 </div>
               ) : (
-                <div className="space-y-4 pt-4 border-t border-white/10">
-                  <div>
-                    <label className="block text-xs font-space font-semibold text-emerald-400 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
-                      <Mail size={14} /> Custom Email Note / Special Instructions for Participant (Optional)
-                    </label>
-                    <textarea
-                      rows={2}
-                      placeholder="e.g. Welcome! Please report to Hall B at 8:30 AM with your college photo ID. Team seat reserved."
-                      value={customEmailNote}
-                      onChange={(e) => setCustomEmailNote(e.target.value)}
-                      className="w-full p-3 rounded-xl bg-white/5 border border-white/10 text-white text-xs font-outfit focus:outline-none focus:border-emerald-500/50 resize-none placeholder:text-muted/50"
-                    />
-                    <span className="text-[10px] text-muted font-space block mt-1">
-                      This custom note will be included directly in the participant's Confirmation Email (#3).
-                    </span>
-                  </div>
+                <div className="flex flex-col sm:flex-row items-center justify-end gap-4 pt-4 border-t border-white/10">
+                  <button
+                    onClick={handleReject}
+                    disabled={actionLoading}
+                    className="w-full sm:w-auto px-6 py-3 rounded-xl glass border border-red-500/40 text-red-400 hover:bg-red-500/10 font-space font-bold text-xs transition cursor-pointer"
+                  >
+                    Reject Payment
+                  </button>
 
-                  <div className="flex flex-col sm:flex-row items-center justify-end gap-4 pt-2">
-                    <button
-                      onClick={() => setShowRejectForm(true)}
-                      disabled={actionLoading}
-                      className="w-full sm:w-auto px-6 py-3 rounded-xl glass border border-red-500/40 text-red-400 hover:bg-red-500/10 font-space font-bold text-xs transition cursor-pointer"
-                    >
-                      Reject Payment
-                    </button>
-
-                    <button
-                      onClick={handleApprove}
-                      disabled={actionLoading}
-                      className="w-full sm:w-auto px-8 py-3 rounded-xl glow-btn text-white font-space font-bold text-xs shadow-[0_0_20px_rgba(16,185,129,0.5)] flex items-center justify-center gap-2 cursor-pointer"
-                    >
-                      {actionLoading ? (
-                        <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      ) : (
-                        <>
-                          <CheckCircle2 size={16} />
-                          <span>Approve Payment & Confirm Registration</span>
-                        </>
-                      )}
-                    </button>
-                  </div>
+                  <button
+                    onClick={() => handleApprove(false)}
+                    disabled={actionLoading}
+                    className="w-full sm:w-auto px-8 py-3 rounded-xl glow-btn text-white font-space font-bold text-xs shadow-[0_0_20px_rgba(16,185,129,0.5)] flex items-center justify-center gap-2 cursor-pointer"
+                  >
+                    {actionLoading ? (
+                      <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    ) : (
+                      <>
+                        <CheckCircle2 size={16} />
+                        <span>Approve & Send Confirmation</span>
+                      </>
+                    )}
+                  </button>
                 </div>
               )}
             </motion.div>

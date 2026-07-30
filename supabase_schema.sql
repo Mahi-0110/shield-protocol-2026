@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS public.registrations (
     year TEXT NOT NULL,
     status TEXT NOT NULL DEFAULT 'PARTIAL',
     payment_status TEXT NOT NULL DEFAULT 'PENDING',
+    email_sent BOOLEAN NOT NULL DEFAULT FALSE,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
@@ -143,3 +144,32 @@ CREATE POLICY "Public Update Payment Proofs"
 ON storage.objects FOR UPDATE
 TO public
 USING (bucket_id = 'payment-proofs');
+
+-- 10. Create 'email_logs' Table for Brevo Email Attempt Logging
+CREATE TABLE IF NOT EXISTS public.email_logs (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    registration_id TEXT NOT NULL,
+    participant_email TEXT NOT NULL,
+    timestamp TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    delivery_status TEXT NOT NULL,
+    provider_response_id TEXT,
+    failure_reason TEXT,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_email_logs_reg_id ON public.email_logs(registration_id);
+
+ALTER TABLE public.email_logs ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Allow public insert email_logs" ON public.email_logs;
+CREATE POLICY "Allow public insert email_logs" 
+ON public.email_logs FOR INSERT 
+TO public 
+WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Allow public read email_logs" ON public.email_logs;
+CREATE POLICY "Allow public read email_logs" 
+ON public.email_logs FOR SELECT 
+TO public 
+USING (true);
+

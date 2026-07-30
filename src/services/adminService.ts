@@ -1,6 +1,6 @@
 import { supabase } from './supabase';
 import { RegistrationRecord, PaymentRecord, AdminStats, AdminFilterOptions } from '../types/database';
-import { sendRegistrationConfirmedEmail, sendPaymentRejectedEmail } from './emailService';
+import { sendConfirmationEmail } from './emailService';
 import { findRegistration } from './registrationService';
 
 const ADMIN_SESSION_KEY = 'shield_admin_authenticated';
@@ -191,19 +191,27 @@ export async function getPaymentsList(): Promise<PaymentRecord[]> {
   return records;
 }
 
+export interface ApprovePaymentResult {
+  success: boolean;
+  emailSent: boolean;
+  alreadySent?: boolean;
+  message?: string;
+  error?: string;
+}
+
 /**
- * APPROVE PAYMENT
+ * APPROVE PAYMENT & TRIGGER CONFIRMATION EMAIL VIA BREVO
  */
 export async function approvePayment(
   paymentId: string,
   registrationId: string,
   verifiedBy: string = 'Admin',
-  customMessage?: string,
-  targetParticipant?: RegistrationRecord
-): Promise<boolean> {
+  targetParticipant?: RegistrationRecord,
+  forceResend?: boolean
+): Promise<ApprovePaymentResult> {
   const nowStr = new Date().toISOString();
 
-  // Update payments table
+  // 1. Update payments table
   try {
     await supabase
       .from('payments')
@@ -217,7 +225,7 @@ export async function approvePayment(
     console.warn('Supabase approve payment error:', err);
   }
 
-  // Update registrations table
+  // 2. Update registrations table
   try {
     await supabase
       .from('registrations')
@@ -230,22 +238,48 @@ export async function approvePayment(
     console.warn('Supabase approve registration error:', err);
   }
 
-  // Update localStorage fallbacks
+  // 3. Update localStorage fallbacks
   updateLocalApprove(registrationId, paymentId, verifiedBy, nowStr);
 
-  // Fetch participant to send Email #3 with custom message
+  // 4. Invoke Brevo Confirmation Email Edge Function
+  let emailSent = false;
+  let alreadySent = false;
+  let emailMsg = '';
+
   try {
     const participant = targetParticipant || (await findRegistration(registrationId));
     if (participant && participant.email) {
-      await sendRegistrationConfirmedEmail(participant.email, participant.full_name, registrationId, customMessage);
+      const emailRes = await sendConfirmationEmail({
+        registrationId,
+        email: participant.email,
+        fullName: participant.full_name,
+        department: participant.department,
+        forceResend,
+      });
+
+      if (emailRes.success) {
+        emailSent = true;
+        emailMsg = 'Confirmation email dispatched successfully via Brevo.';
+      } else if (emailRes.alreadySent) {
+        alreadySent = true;
+        emailMsg = 'Confirmation email has already been sent.';
+      } else {
+        emailMsg = emailRes.message || 'Registration approved successfully. However, the confirmation email could not be sent. Please try sending it again.';
+      }
     } else {
-      console.warn('[Approval Email Warning]: Participant record not resolved for:', registrationId);
+      emailMsg = 'Participant record or email not found.';
     }
-  } catch (e) {
+  } catch (e: any) {
     console.error('Email trigger error on approval:', e);
+    emailMsg = 'Registration approved successfully. However, the confirmation email could not be sent. Please try sending it again.';
   }
 
-  return true;
+  return {
+    success: true,
+    emailSent,
+    alreadySent,
+    message: emailMsg,
+  };
 }
 
 function updateLocalApprove(regId: string, payId: string, verBy: string, verAt: string) {
@@ -256,6 +290,7 @@ function updateLocalApprove(regId: string, payId: string, verBy: string, verAt: 
     if (idx !== -1) {
       parsed[idx].status = 'CONFIRMED';
       parsed[idx].payment_status = 'APPROVED';
+      parsed[idx].email_sent = true;
       localStorage.setItem('shield_protocol_registrations', JSON.stringify(parsed));
     }
   }
@@ -279,9 +314,7 @@ function updateLocalApprove(regId: string, payId: string, verBy: string, verAt: 
 export async function rejectPayment(
   paymentId: string,
   registrationId: string,
-  verifiedBy: string = 'Admin',
-  reason?: string,
-  targetParticipant?: RegistrationRecord
+  verifiedBy: string = 'Admin'
 ): Promise<boolean> {
   const nowStr = new Date().toISOString();
 
@@ -311,17 +344,6 @@ export async function rejectPayment(
   }
 
   updateLocalReject(registrationId, paymentId, verifiedBy, nowStr);
-
-  try {
-    const participant = targetParticipant || (await findRegistration(registrationId));
-    if (participant && participant.email) {
-      await sendPaymentRejectedEmail(participant.email, participant.full_name, registrationId, reason);
-    } else {
-      console.warn('[Rejection Email Warning]: Participant record not resolved for:', registrationId);
-    }
-  } catch (e) {
-    console.error('Email trigger error on rejection:', e);
-  }
 
   return true;
 }
