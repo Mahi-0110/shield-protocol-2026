@@ -27,14 +27,31 @@ export function getNextLocalRegistrationId(): string {
 }
 
 /**
- * CREATE REGISTRATION
+ * CREATE OR FIND REGISTRATION
  */
 export async function createRegistration(data: RegistrationInsert): Promise<RegistrationRecord> {
   const defaultStatus: ParticipantStatus = data.status || 'PARTIAL';
   const defaultPaymentStatus: PaymentStatus = data.payment_status || 'PENDING';
 
+  // 1. Check if user has an existing registration by email or phone to prevent duplicate IDs
   try {
-    // Insert into Supabase registrations table
+    const existing = await findRegistration(data.email) || (data.phone ? await findRegistration(data.phone) : null);
+    if (existing) {
+      console.log('[Registration Service] Found existing registration:', existing.registration_id);
+      // Re-trigger registration email to user with their existing registration ID & payment link
+      try {
+        await sendRegistrationReceivedEmail(existing.email, existing.full_name, existing.registration_id, existing.department);
+      } catch (e) {
+        console.error('[Registration Email Re-trigger Error]:', e);
+      }
+      return existing;
+    }
+  } catch (e) {
+    console.warn('[Registration Service] Pre-check existing query failed:', e);
+  }
+
+  // 2. Insert new registration record into Supabase
+  try {
     const { data: insertedData, error } = await supabase
       .from('registrations')
       .insert([
@@ -58,9 +75,9 @@ export async function createRegistration(data: RegistrationInsert): Promise<Regi
 
     const record: RegistrationRecord = insertedData;
 
-    // Await Email #1 dispatch to ensure delivery before completing operation
+    // Await Email #1 dispatch
     try {
-      await sendRegistrationReceivedEmail(record.email, record.full_name, record.registration_id);
+      await sendRegistrationReceivedEmail(record.email, record.full_name, record.registration_id, record.department);
     } catch (e) {
       console.error('[Registration Received Email Dispatch Error]:', e);
     }
@@ -79,6 +96,22 @@ async function saveLocalRegistration(data: RegistrationInsert): Promise<Registra
   const localData = localStorage.getItem(LOCAL_REGISTRATIONS_KEY);
   const records: RegistrationRecord[] = localData ? JSON.parse(localData) : [];
   
+  // Re-check local records to prevent duplicate ID creation in fallback mode
+  const existingLocal = records.find(
+    (r) =>
+      r.email.toLowerCase() === data.email.toLowerCase() ||
+      (data.phone && r.phone === data.phone)
+  );
+
+  if (existingLocal) {
+    try {
+      await sendRegistrationReceivedEmail(existingLocal.email, existingLocal.full_name, existingLocal.registration_id, existingLocal.department);
+    } catch (e) {
+      console.error('[Local Registration Email Error]:', e);
+    }
+    return existingLocal;
+  }
+
   const registrationId = data.registration_id || getNextLocalRegistrationId();
   
   const newRecord: RegistrationRecord = {
@@ -99,7 +132,7 @@ async function saveLocalRegistration(data: RegistrationInsert): Promise<Registra
 
   // Await Email #1 dispatch
   try {
-    await sendRegistrationReceivedEmail(newRecord.email, newRecord.full_name, newRecord.registration_id);
+    await sendRegistrationReceivedEmail(newRecord.email, newRecord.full_name, newRecord.registration_id, newRecord.department);
   } catch (e) {
     console.error('[Registration Received Email Dispatch Error]:', e);
   }
