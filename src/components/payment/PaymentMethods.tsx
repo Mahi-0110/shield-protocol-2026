@@ -14,12 +14,7 @@ import {
   ShieldAlert,
   CheckCircle2,
 } from 'lucide-react';
-import { PAYMENT_CONFIG } from '../../config/paymentConfig';
-
-const getUpiUrl = () =>
-  `upi://pay?pa=${encodeURIComponent(PAYMENT_CONFIG.upiId)}&pn=${encodeURIComponent(
-    PAYMENT_CONFIG.payeeName
-  )}&am=${PAYMENT_CONFIG.registrationFee}&cu=${PAYMENT_CONFIG.currency}`;
+import { PAYMENT_CONFIG, getStandardUpiUrl } from '../../config/paymentConfig';
 
 const UPI_APPS = [
   {
@@ -27,10 +22,6 @@ const UPI_APPS = [
     brandColor: '#4285F4',
     bgGradient: 'from-blue-600/20 to-emerald-500/10',
     borderColor: 'rgba(66, 133, 244, 0.4)',
-    getPackageIntent: () =>
-      `intent://pay?pa=${PAYMENT_CONFIG.upiId}&pn=${encodeURIComponent(
-        PAYMENT_CONFIG.payeeName
-      )}&am=${PAYMENT_CONFIG.registrationFee}&cu=${PAYMENT_CONFIG.currency}#Intent;scheme=upi;package=com.google.android.apps.nbu.paisa.user;end`,
     badge: 'Popular',
     iconLetter: 'GPay',
   },
@@ -39,10 +30,6 @@ const UPI_APPS = [
     brandColor: '#5F259F',
     bgGradient: 'from-purple-600/20 to-indigo-500/10',
     borderColor: 'rgba(95, 37, 159, 0.4)',
-    getPackageIntent: () =>
-      `intent://pay?pa=${PAYMENT_CONFIG.upiId}&pn=${encodeURIComponent(
-        PAYMENT_CONFIG.payeeName
-      )}&am=${PAYMENT_CONFIG.registrationFee}&cu=${PAYMENT_CONFIG.currency}#Intent;scheme=upi;package=com.phonepe.app;end`,
     badge: 'Fast',
     iconLetter: 'PhonePe',
   },
@@ -51,10 +38,6 @@ const UPI_APPS = [
     brandColor: '#00BAF2',
     bgGradient: 'from-sky-500/20 to-blue-600/10',
     borderColor: 'rgba(0, 186, 242, 0.4)',
-    getPackageIntent: () =>
-      `intent://pay?pa=${PAYMENT_CONFIG.upiId}&pn=${encodeURIComponent(
-        PAYMENT_CONFIG.payeeName
-      )}&am=${PAYMENT_CONFIG.registrationFee}&cu=${PAYMENT_CONFIG.currency}#Intent;scheme=upi;package=net.one97.paytm;end`,
     badge: 'Instant',
     iconLetter: 'Paytm',
   },
@@ -63,10 +46,6 @@ const UPI_APPS = [
     brandColor: '#00529C',
     bgGradient: 'from-blue-700/20 to-orange-500/10',
     borderColor: 'rgba(0, 82, 156, 0.4)',
-    getPackageIntent: () =>
-      `intent://pay?pa=${PAYMENT_CONFIG.upiId}&pn=${encodeURIComponent(
-        PAYMENT_CONFIG.payeeName
-      )}&am=${PAYMENT_CONFIG.registrationFee}&cu=${PAYMENT_CONFIG.currency}#Intent;scheme=upi;package=in.org.npci.upiapp;end`,
     badge: 'Govt NPCI',
     iconLetter: 'BHIM',
   },
@@ -75,10 +54,6 @@ const UPI_APPS = [
     brandColor: '#FF9900',
     bgGradient: 'from-amber-500/20 to-yellow-600/10',
     borderColor: 'rgba(255, 153, 0, 0.4)',
-    getPackageIntent: () =>
-      `intent://pay?pa=${PAYMENT_CONFIG.upiId}&pn=${encodeURIComponent(
-        PAYMENT_CONFIG.payeeName
-      )}&am=${PAYMENT_CONFIG.registrationFee}&cu=${PAYMENT_CONFIG.currency}#Intent;scheme=upi;package=com.amazon.mShop.android.shopping;end`,
     badge: 'Rewards',
     iconLetter: 'Amazon',
   },
@@ -93,9 +68,9 @@ const PaymentMethods: React.FC = () => {
   useEffect(() => {
     const generateQrCode = async () => {
       try {
-        const url = getUpiUrl();
-        const dataUrl = await QRCode.toDataURL(url, {
-          width: 400,
+        const upiUrl = getStandardUpiUrl();
+        const dataUrl = await QRCode.toDataURL(upiUrl, {
+          width: 450,
           margin: 2,
           color: {
             dark: '#000000',
@@ -121,22 +96,23 @@ const PaymentMethods: React.FC = () => {
   };
 
   const handleDownloadQR = () => {
+    if (!qrDataUrl) return;
     const downloadLink = document.createElement('a');
-    downloadLink.href = '/phonepe-qr.png';
-    downloadLink.download = `Shield-Protocol-PhonePe-QR.png`;
+    downloadLink.href = qrDataUrl;
+    downloadLink.download = `Shield-Protocol-QR-${PAYMENT_CONFIG.registrationFee}.png`;
     document.body.appendChild(downloadLink);
     downloadLink.click();
     document.body.removeChild(downloadLink);
   };
 
-  const handleLaunchApp = (intentUrl: string, appName: string) => {
-    // Copy UPI ID for user convenience
+  const handleLaunchApp = (appName: string) => {
+    // Copy UPI ID to clipboard so user can paste directly if needed
     navigator.clipboard.writeText(PAYMENT_CONFIG.upiId);
     setToastMessage(`Opening ${appName}... (UPI ID ${PAYMENT_CONFIG.upiId} copied)`);
     setTimeout(() => setToastMessage(null), 4000);
 
-    // Trigger redirection
-    window.location.href = intentUrl;
+    // Launch standard NPCI compliant deep link
+    window.location.href = getStandardUpiUrl();
   };
 
   return (
@@ -199,33 +175,35 @@ const PaymentMethods: React.FC = () => {
 
         {/* Primary QR & Details Container */}
         <div className="grid md:grid-cols-12 gap-8 items-center mb-10">
-          {/* Left Column: Interactive QR Code Box */}
+          {/* Left Column: Interactive Scannable NPCI QR Code Box */}
           <div className="md:col-span-5 flex flex-col items-center">
             <div className="relative group">
               <div className="absolute -inset-2 bg-gradient-to-r from-blue-primary via-blue-accent to-blue-primary rounded-3xl blur-xl opacity-40 group-hover:opacity-75 transition duration-500" />
               
               <div className="relative glass p-6 rounded-3xl border border-blue-primary/40 bg-bg-primary flex flex-col items-center">
-                {/* Scannable PhonePe Official QR Code */}
-                <div className="relative p-2 bg-black rounded-2xl shadow-2xl flex flex-col items-center justify-center border border-white/10 overflow-hidden">
-                  <img
-                    id="shield-upi-qr-img"
-                    src="/phonepe-qr.png"
-                    alt={`UPI QR Code for ${PAYMENT_CONFIG.payeeName} (${PAYMENT_CONFIG.upiId})`}
-                    className="w-[210px] h-[340px] rounded-xl object-contain"
-                    onError={(e) => {
-                      // Fallback to generated QR if image not found
-                      if (qrDataUrl) (e.currentTarget as HTMLImageElement).src = qrDataUrl;
-                    }}
-                  />
+                {/* Scannable NPCI Compliant QR Code with ₹725 Pre-configured */}
+                <div className="relative p-3 bg-white rounded-2xl shadow-2xl flex flex-col items-center justify-center border border-white/20 overflow-hidden min-h-[220px] min-w-[220px]">
+                  {qrDataUrl ? (
+                    <img
+                      id="shield-upi-qr-img"
+                      src={qrDataUrl}
+                      alt={`UPI QR Code for ${PAYMENT_CONFIG.payeeName} (${PAYMENT_CONFIG.upiId})`}
+                      className="w-[220px] h-[220px] rounded-xl object-contain"
+                    />
+                  ) : (
+                    <div className="w-[220px] h-[220px] flex items-center justify-center text-black text-xs font-mono">
+                      Generating QR...
+                    </div>
+                  )}
                 </div>
 
                 <div className="mt-3 text-center">
-                  <div className="text-[12px] font-space font-bold text-white mb-0.5">
+                  <div className="text-[13px] font-space font-bold text-white mb-0.5">
                     {PAYMENT_CONFIG.payeeName}
                   </div>
-                  <div className="text-[11px] font-space text-muted flex items-center gap-1.5 justify-center">
+                  <div className="text-[11px] font-space text-blue-accent font-semibold flex items-center gap-1.5 justify-center">
                     <Zap size={12} className="text-warning animate-pulse" />
-                    Scan & Pay using PhonePe / Any UPI App
+                    Amount Fixed: ₹{PAYMENT_CONFIG.registrationFee}
                   </div>
                 </div>
               </div>
@@ -281,7 +259,7 @@ const PaymentMethods: React.FC = () => {
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                onClick={() => handleLaunchApp(getUpiUrl(), 'UPI App')}
+                onClick={() => handleLaunchApp('UPI App')}
                 className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-gradient-to-r from-blue-primary to-blue-accent text-white font-space font-semibold text-xs shadow-[0_0_20px_rgba(14,165,233,0.4)] hover:shadow-[0_0_30px_rgba(14,165,233,0.7)] transition-all"
               >
                 <span>Open Payment App</span>
@@ -314,7 +292,7 @@ const PaymentMethods: React.FC = () => {
             {UPI_APPS.map((app) => (
               <motion.button
                 key={app.name}
-                onClick={() => handleLaunchApp(app.getPackageIntent(), app.name)}
+                onClick={() => handleLaunchApp(app.name)}
                 whileHover={{ y: -4, scale: 1.02 }}
                 whileTap={{ scale: 0.97 }}
                 className={`glass p-3.5 rounded-2xl border flex flex-col items-center text-center transition-all bg-gradient-to-b ${app.bgGradient} relative overflow-hidden group cursor-pointer w-full`}
