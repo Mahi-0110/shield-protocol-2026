@@ -1,30 +1,33 @@
 import { supabase } from './supabase';
-import { RegistrationRecord, RegistrationInsert, ParticipantStatus, PaymentStatus } from '../types/database';
+import { ParticipantStatus, PaymentStatus, RegistrationRecord } from '../types';
 import { sendRegistrationReceivedEmail } from './emailService';
 
-// Local storage key fallback when database is initializing
+export interface RegistrationInsert {
+  full_name: string;
+  email: string;
+  phone: string;
+  department: string;
+  year?: string;
+  status?: ParticipantStatus;
+  payment_status?: PaymentStatus;
+  registration_id?: string;
+}
+
 const LOCAL_REGISTRATIONS_KEY = 'shield_protocol_registrations';
+const LOCAL_ID_COUNTER_KEY = 'shield_protocol_id_counter';
 
 /**
- * Generate formatted Registration ID (SP2026-XXXXXX)
+ * Generate sequential registration ID (e.g. SP2026-000001)
  */
-
-function formatRegistrationId(counter: number): string {
-  return `SP2026-${counter.toString().padStart(6, '0')}`;
+export function getNextLocalRegistrationId(): string {
+  const currentCounter = localStorage.getItem(LOCAL_ID_COUNTER_KEY);
+  const nextNumber = currentCounter ? parseInt(currentCounter, 10) + 1 : 1;
+  localStorage.setItem(LOCAL_ID_COUNTER_KEY, nextNumber.toString());
+  return `SP2026-${nextNumber.toString().padStart(6, '0')}`;
 }
 
 /**
- * Get next fallback registration ID from localStorage
- */
-function getNextLocalRegistrationId(): string {
-  const localData = localStorage.getItem(LOCAL_REGISTRATIONS_KEY);
-  const records: RegistrationRecord[] = localData ? JSON.parse(localData) : [];
-  const counter = records.length + 1;
-  return formatRegistrationId(counter);
-}
-
-/**
- * Create a new participant registration record in Supabase 'registrations' table
+ * CREATE REGISTRATION
  */
 export async function createRegistration(data: RegistrationInsert): Promise<RegistrationRecord> {
   const defaultStatus: ParticipantStatus = data.status || 'PARTIAL';
@@ -50,25 +53,29 @@ export async function createRegistration(data: RegistrationInsert): Promise<Regi
 
     if (error) {
       console.warn('Supabase registration insert error, using local fallback:', error.message);
-      return saveLocalRegistration(data);
+      return await saveLocalRegistration(data);
     }
 
     const record: RegistrationRecord = insertedData;
 
-    // Send Email #1 asynchronously
-    sendRegistrationReceivedEmail(record.email, record.full_name, record.registration_id).catch(console.error);
+    // Await Email #1 dispatch to ensure delivery before completing operation
+    try {
+      await sendRegistrationReceivedEmail(record.email, record.full_name, record.registration_id);
+    } catch (e) {
+      console.error('[Registration Received Email Dispatch Error]:', e);
+    }
 
     return record;
   } catch (err) {
     console.error('Exception during registration insert:', err);
-    return saveLocalRegistration(data);
+    return await saveLocalRegistration(data);
   }
 }
 
 /**
  * Fallback to save registration locally if DB table is initializing
  */
-function saveLocalRegistration(data: RegistrationInsert): RegistrationRecord {
+async function saveLocalRegistration(data: RegistrationInsert): Promise<RegistrationRecord> {
   const localData = localStorage.getItem(LOCAL_REGISTRATIONS_KEY);
   const records: RegistrationRecord[] = localData ? JSON.parse(localData) : [];
   
@@ -90,8 +97,12 @@ function saveLocalRegistration(data: RegistrationInsert): RegistrationRecord {
   records.push(newRecord);
   localStorage.setItem(LOCAL_REGISTRATIONS_KEY, JSON.stringify(records));
 
-  // Trigger Email #1
-  sendRegistrationReceivedEmail(newRecord.email, newRecord.full_name, newRecord.registration_id).catch(console.error);
+  // Await Email #1 dispatch
+  try {
+    await sendRegistrationReceivedEmail(newRecord.email, newRecord.full_name, newRecord.registration_id);
+  } catch (e) {
+    console.error('[Registration Received Email Dispatch Error]:', e);
+  }
 
   return newRecord;
 }
@@ -107,13 +118,13 @@ export async function findRegistration(query: string): Promise<RegistrationRecor
     const { data, error } = await supabase
       .from('registrations')
       .select('*')
-      .or(`registration_id.eq.${cleanQuery},email.ilike.${cleanQuery},phone.eq.${cleanQuery}`)
+      .or(`registration_id.eq.${cleanQuery},email.eq.${cleanQuery},phone.eq.${cleanQuery}`)
       .order('created_at', { ascending: false })
       .limit(1)
       .maybeSingle();
 
-    if (data && !error) {
-      return data as RegistrationRecord;
+    if (!error && data) {
+      return data;
     }
   } catch (err) {
     console.warn('Error querying Supabase registration:', err);
@@ -121,22 +132,21 @@ export async function findRegistration(query: string): Promise<RegistrationRecor
 
   // Fallback to localStorage
   const localData = localStorage.getItem(LOCAL_REGISTRATIONS_KEY);
-  if (localData) {
-    const records: RegistrationRecord[] = JSON.parse(localData);
-    const match = records.find(
-      (r) =>
-        r.registration_id.toLowerCase() === cleanQuery.toLowerCase() ||
-        r.email.toLowerCase() === cleanQuery.toLowerCase() ||
-        r.phone === cleanQuery
-    );
-    if (match) return match;
-  }
+  if (!localData) return null;
 
-  return null;
+  const records: RegistrationRecord[] = JSON.parse(localData);
+  const found = records.find(
+    (r) =>
+      r.registration_id.toLowerCase() === cleanQuery.toLowerCase() ||
+      r.email.toLowerCase() === cleanQuery.toLowerCase() ||
+      r.phone === cleanQuery
+  );
+
+  return found || null;
 }
 
 /**
- * Update Registration Status
+ * Update registration status
  */
 export async function updateRegistrationStatus(
   registrationId: string,
@@ -149,16 +159,18 @@ export async function updateRegistrationStatus(
       .update({ status, payment_status: paymentStatus })
       .eq('registration_id', registrationId);
 
-    if (!error) {
+    if (error) {
+      console.warn('Supabase registration status update error:', error.message);
       updateLocalRegistrationStatus(registrationId, status, paymentStatus);
-      return true;
+    } else {
+      updateLocalRegistrationStatus(registrationId, status, paymentStatus);
     }
+    return true;
   } catch (err) {
-    console.warn('Error updating Supabase registration status:', err);
+    console.error('Exception updating registration status:', err);
+    updateLocalRegistrationStatus(registrationId, status, paymentStatus);
+    return true;
   }
-
-  updateLocalRegistrationStatus(registrationId, status, paymentStatus);
-  return true;
 }
 
 function updateLocalRegistrationStatus(
@@ -167,13 +179,14 @@ function updateLocalRegistrationStatus(
   paymentStatus: PaymentStatus
 ) {
   const localData = localStorage.getItem(LOCAL_REGISTRATIONS_KEY);
-  if (localData) {
-    const records: RegistrationRecord[] = JSON.parse(localData);
-    const index = records.findIndex((r) => r.registration_id === registrationId);
-    if (index !== -1) {
-      records[index].status = status;
-      records[index].payment_status = paymentStatus;
-      localStorage.setItem(LOCAL_REGISTRATIONS_KEY, JSON.stringify(records));
-    }
+  if (!localData) return;
+
+  const records: RegistrationRecord[] = JSON.parse(localData);
+  const index = records.findIndex((r) => r.registration_id === registrationId);
+
+  if (index !== -1) {
+    records[index].status = status;
+    records[index].payment_status = paymentStatus;
+    localStorage.setItem(LOCAL_REGISTRATIONS_KEY, JSON.stringify(records));
   }
 }

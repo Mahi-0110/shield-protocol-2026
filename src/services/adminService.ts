@@ -220,7 +220,7 @@ export async function approvePayment(
   try {
     const participant = await findRegistration(registrationId);
     if (participant) {
-      sendRegistrationConfirmedEmail(participant.email, participant.full_name, registrationId, customMessage).catch(console.error);
+      await sendRegistrationConfirmedEmail(participant.email, participant.full_name, registrationId, customMessage);
     }
   } catch (e) {
     console.error('Email trigger error on approval:', e);
@@ -295,7 +295,7 @@ export async function rejectPayment(
   try {
     const participant = await findRegistration(registrationId);
     if (participant) {
-      sendPaymentRejectedEmail(participant.email, participant.full_name, registrationId, reason).catch(console.error);
+      await sendPaymentRejectedEmail(participant.email, participant.full_name, registrationId, reason);
     }
   } catch (e) {
     console.error('Email trigger error on rejection:', e);

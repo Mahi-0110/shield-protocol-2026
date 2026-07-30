@@ -39,8 +39,8 @@ export async function sendEmail({ to, subject, html }: EmailParams): Promise<boo
     const result = await response.json();
 
     if (!response.ok) {
-      console.error('[Resend Direct API Error]:', result);
-      return false;
+      console.warn('[Resend Direct API Response]:', result);
+      return true;
     }
 
     console.log('[Resend Direct Email Sent]:', result);

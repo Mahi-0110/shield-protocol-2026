@@ -81,7 +81,11 @@ export async function submitPayment(input: PaymentSubmissionInput): Promise<{ pa
   await updateRegistrationStatus(registrationId, 'PAYMENT_SUBMITTED', 'SUBMITTED');
 
   // 5. Trigger Email #2: Payment Submitted Successfully
-  sendPaymentSubmittedEmail(input.email, registration.full_name, registrationId, input.transactionId).catch(console.error);
+  try {
+    await sendPaymentSubmittedEmail(input.email, registration.full_name, registrationId, input.transactionId, input.amount);
+  } catch (e) {
+    console.error('[Payment Submitted Email Dispatch Error]:', e);
+  }
 
   return {
     payment: paymentRecord,
