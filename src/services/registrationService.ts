@@ -1,6 +1,5 @@
 import { supabase } from './supabase';
 import { ParticipantStatus, PaymentStatus, RegistrationRecord } from '../types/database';
-import { sendRegistrationReceivedEmail } from './emailService';
 
 export interface RegistrationInsert {
   full_name: string;
@@ -55,16 +54,7 @@ export async function createRegistration(data: RegistrationInsert): Promise<Regi
       return await saveLocalRegistration(data);
     }
 
-    const record: RegistrationRecord = insertedData;
-
-    // Await Email #1 dispatch
-    try {
-      await sendRegistrationReceivedEmail(record.email, record.full_name, record.registration_id, record.department);
-    } catch (e) {
-      console.error('[Registration Received Email Dispatch Error]:', e);
-    }
-
-    return record;
+    return insertedData as RegistrationRecord;
   } catch (err) {
     console.error('Exception during registration insert:', err);
     return await saveLocalRegistration(data);
@@ -95,13 +85,6 @@ async function saveLocalRegistration(data: RegistrationInsert): Promise<Registra
 
   records.push(newRecord);
   localStorage.setItem(LOCAL_REGISTRATIONS_KEY, JSON.stringify(records));
-
-  // Await Email #1 dispatch
-  try {
-    await sendRegistrationReceivedEmail(newRecord.email, newRecord.full_name, newRecord.registration_id, newRecord.department);
-  } catch (e) {
-    console.error('[Registration Received Email Dispatch Error]:', e);
-  }
 
   return newRecord;
 }

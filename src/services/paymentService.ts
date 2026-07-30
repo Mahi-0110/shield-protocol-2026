@@ -2,7 +2,6 @@ import { supabase } from './supabase';
 import { PaymentRecord, PaymentInsert } from '../types/database';
 import { uploadPaymentProof } from './storageService';
 import { updateRegistrationStatus, findRegistration, createRegistration } from './registrationService';
-import { sendPaymentSubmittedEmail } from './emailService';
 
 const LOCAL_PAYMENTS_KEY = 'shield_protocol_payments';
 
@@ -18,34 +17,37 @@ export interface PaymentSubmissionInput {
 }
 
 /**
- * Submit manual UPI payment transaction and screenshot proof to Supabase
+ * SUBMIT PAYMENT DETAILS (UPI / Proof Upload)
  */
 export async function submitPayment(input: PaymentSubmissionInput): Promise<{ payment: PaymentRecord; registrationId: string }> {
-  // 1. Locate or create registration record to ensure valid registration_id reference
-  let registration = await findRegistration(input.registrationId || input.email);
+  // 1. Find existing registration or auto-create one
+  let registration = input.registrationId ? await findRegistration(input.registrationId) : null;
 
   if (!registration) {
-    // Auto-create registration if participant directly submitted payment
+    registration = await findRegistration(input.email) || (input.phone ? await findRegistration(input.phone) : null);
+  }
+
+  if (!registration) {
     registration = await createRegistration({
       full_name: 'Participant',
       email: input.email,
       phone: input.phone,
-      department: 'N/A',
-      year: '2026',
-      status: 'PAYMENT_SUBMITTED',
-      payment_status: 'SUBMITTED',
+      department: 'General',
     });
   }
 
   const registrationId = registration.registration_id;
 
-  // 2. Upload screenshot proof image to Supabase Storage
-  let imageUrl = input.screenshotUrl || '';
+  // 2. Upload screenshot proof if provided
+  let screenshotUrl = input.screenshotUrl || '';
   if (input.screenshotFile) {
-    imageUrl = await uploadPaymentProof(input.screenshotFile, registrationId);
+    const uploadedUrl = await uploadPaymentProof(input.screenshotFile, registrationId);
+    if (uploadedUrl) {
+      screenshotUrl = uploadedUrl;
+    }
   }
 
-  // 3. Insert payment record into Supabase payments table
+  // 3. Insert payment record
   const paymentPayload: PaymentInsert = {
     registration_id: registrationId,
     participant_email: input.email,
@@ -53,7 +55,7 @@ export async function submitPayment(input: PaymentSubmissionInput): Promise<{ pa
     utr_number: input.transactionId,
     amount: input.amount,
     payment_date: input.paymentDate,
-    payment_screenshot: imageUrl,
+    payment_screenshot: screenshotUrl,
     verification_status: 'PENDING',
   };
 
@@ -80,13 +82,6 @@ export async function submitPayment(input: PaymentSubmissionInput): Promise<{ pa
   // 4. Update registration statuses
   await updateRegistrationStatus(registrationId, 'PAYMENT_SUBMITTED', 'SUBMITTED');
 
-  // 5. Trigger Email #2: Payment Submitted Successfully
-  try {
-    await sendPaymentSubmittedEmail(input.email, registration.full_name, registrationId, input.transactionId, input.amount);
-  } catch (e) {
-    console.error('[Payment Submitted Email Dispatch Error]:', e);
-  }
-
   return {
     payment: paymentRecord,
     registrationId,
@@ -101,7 +96,7 @@ function saveLocalPayment(data: PaymentInsert): PaymentRecord {
   const records: PaymentRecord[] = localData ? JSON.parse(localData) : [];
 
   const newRecord: PaymentRecord = {
-    id: `local-pay-${Date.now()}`,
+    id: `pay-${Date.now()}`,
     registration_id: data.registration_id,
     participant_email: data.participant_email,
     participant_phone: data.participant_phone,
@@ -109,7 +104,7 @@ function saveLocalPayment(data: PaymentInsert): PaymentRecord {
     amount: data.amount,
     payment_date: data.payment_date,
     payment_screenshot: data.payment_screenshot,
-    verification_status: 'PENDING',
+    verification_status: data.verification_status || 'PENDING',
     created_at: new Date().toISOString(),
   };
 
