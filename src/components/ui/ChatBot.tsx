@@ -13,6 +13,7 @@ interface Message {
 }
 
 const QUICK_PROMPTS = [
+  'Submit UTR Verification',
   'How to Register?',
   'Registration Fee',
   'Hackathon & CTF',
@@ -22,6 +23,12 @@ const QUICK_PROMPTS = [
 ]
 
 const KNOWLEDGE_BASE = [
+  {
+    keywords: ['utr', 'submit utr', 'verify payment', 'already registered', 'reference id', 'transaction id', 'already paid'],
+    text: `Already registered and want to submit your payment UTR ID?\n\n1. Go to the **Register** section.\n2. Click **Already Registered? Submit UTR**.\n3. Enter your **Registration ID, Email, or Phone** along with your **12-digit UTR ID**.\n4. Submit for instant verification — no duplicate registration needed!`,
+    actionUrl: '#register',
+    actionText: 'Submit UTR Verification'
+  },
   {
     keywords: ['register', 'registration', 'join', 'sign up', 'apply', 'enroll', 'book', 'slot'],
     text: `To register for **The Shield Protocol 2026**:\n\n1. Scroll down to the **Register Now** section.\n2. Click the **Register & Pay Fee** button.\n3. Fill in your details (Name, Email, Phone, College, Year).\n4. Complete your payment of **₹${PAYMENT_CONFIG.registrationFee}** on our secure UPI portal.\n5. Save your Registration ID & QR code for event entry!`,

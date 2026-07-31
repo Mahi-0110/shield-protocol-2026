@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Shield, Award, Users, Zap, CheckCircle, ArrowRight, UserCheck } from 'lucide-react'
+import { Shield, Award, Users, Zap, CheckCircle, ArrowRight, UserCheck, ShieldCheck } from 'lucide-react'
 import SectionHeader from '../ui/SectionHeader'
 import { PAYMENT_CONFIG } from '../../config/paymentConfig'
 import RegistrationModal from '../registration/RegistrationModal'
+import VerifyUTRModal from '../registration/VerifyUTRModal'
 import { RegistrationRecord } from '../../types/database'
 
 const perks = [
@@ -19,6 +20,7 @@ interface RegistrationProps {
 
 const Registration: React.FC<RegistrationProps> = ({ onOpenPaymentPortal }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isVerifyModalOpen, setIsVerifyModalOpen] = useState(false);
 
   const handleRegistrationSuccess = (_record: RegistrationRecord) => {
     setIsModalOpen(false);
@@ -99,6 +101,14 @@ const Registration: React.FC<RegistrationProps> = ({ onOpenPaymentPortal }) => {
                   <span>Register & Pay Fee (₹{PAYMENT_CONFIG.registrationFee})</span>
                   <ArrowRight size={18} />
                 </button>
+
+                <button
+                  onClick={() => setIsVerifyModalOpen(true)}
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-4 rounded-xl glass border border-cyan-400/40 text-cyan-300 font-space font-semibold text-sm hover:bg-cyan-500/10 hover:border-cyan-400 transition-all cursor-pointer"
+                >
+                  <ShieldCheck size={18} className="text-cyan-400" />
+                  <span>Already Registered? Submit UTR</span>
+                </button>
               </div>
 
               <p className="text-xs text-muted font-space mt-4">
@@ -114,6 +124,12 @@ const Registration: React.FC<RegistrationProps> = ({ onOpenPaymentPortal }) => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSuccess={handleRegistrationSuccess}
+      />
+
+      {/* Standalone UTR Verification Modal */}
+      <VerifyUTRModal
+        isOpen={isVerifyModalOpen}
+        onClose={() => setIsVerifyModalOpen(false)}
       />
     </>
   )
