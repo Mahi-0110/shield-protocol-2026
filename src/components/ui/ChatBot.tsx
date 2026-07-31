@@ -88,7 +88,7 @@ const ChatBot: React.FC = () => {
     {
       id: 'welcome',
       sender: 'bot',
-      text: `Hello! 👋 Welcome to **The Shield Protocol 2026**.\nHow can I help you today? Select a topic below or ask me any question!`,
+      text: `Hello!I am Cipher \nWelcome to **The Shield Protocol 2026**.\nHow can I help you today? Select a topic below or ask me any question!`,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     }
   ])
@@ -108,7 +108,7 @@ const ChatBot: React.FC = () => {
 
   const findBestResponse = (query: string): { text: string; actionUrl?: string; actionText?: string } => {
     const q = query.toLowerCase()
-    
+
     // Check against knowledge base
     for (const item of KNOWLEDGE_BASE) {
       if (item.keywords.some(k => q.includes(k))) {
@@ -122,9 +122,9 @@ const ChatBot: React.FC = () => {
 
     // Default Fallback
     return {
-      text: `I'm not completely sure about that specific question, but I can help you with:\n\n• **Registration & Fees** (₹${PAYMENT_CONFIG.registrationFee})\n• **Hackathon & CTF Details**\n• **Event Schedule & Workshops**\n• **Contact & Support**\n\nFeel free to choose a topic or visit our FAQ section!`,
-      actionUrl: '#faqs',
-      actionText: 'View Frequently Asked Questions'
+      text: `I'm not completely sure about that specific question, but I can help you with:\n\n• **Registration & Fees** (₹${PAYMENT_CONFIG.registrationFee})\n• **Hackathon & CTF Details**\n• **Event Schedule & Workshops**\n• **Contact & Support**\n\nFeel free to choose a topic or Contact our support team below!`,
+      actionUrl: '#contact',
+      actionText: 'Contact Support Team'
     }
   }
 
@@ -187,7 +187,7 @@ const ChatBot: React.FC = () => {
       {
         id: 'welcome-' + Date.now(),
         sender: 'bot',
-        text: `Chat reset! 👋 Ask me anything about **The Shield Protocol 2026**, registrations, or hackathon.`,
+        text: `Hi! I am Cipher , your AI guide for The Shield Protocol ask me about \n **The Shield Protocol 2026**, registrations, or hackathon.`,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       }
     ])
@@ -204,7 +204,7 @@ const ChatBot: React.FC = () => {
             className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#051329]/90 border border-cyan-500/40 backdrop-blur-md shadow-lg text-xs font-space text-cyan-300"
           >
             <Sparkles size={13} className="text-cyan-400 animate-pulse" />
-            <span>Need Help? Chat with AI</span>
+            <span>Need Help? Chat with Cipher</span>
           </motion.div>
         )}
 
@@ -213,7 +213,7 @@ const ChatBot: React.FC = () => {
           whileTap={{ scale: 0.92 }}
           onClick={() => setIsOpen(!isOpen)}
           className="relative p-4 rounded-full bg-gradient-to-r from-blue-600 to-cyan-500 text-white shadow-[0_0_25px_rgba(14,165,233,0.7)] border border-cyan-300/40 cursor-pointer flex items-center justify-center group"
-          aria-label="Toggle Shield AI Assistant Chat"
+          aria-label="Toggle Cipher AI Assistant Chat"
         >
           <div className="absolute inset-0 rounded-full bg-cyan-400/20 animate-ping pointer-events-none" />
           {isOpen ? (
@@ -243,7 +243,7 @@ const ChatBot: React.FC = () => {
                 </div>
                 <div>
                   <h4 className="font-space font-bold text-sm text-white flex items-center gap-1.5">
-                    Shield AI Assistant
+                    Cipher AI Assistant
                     <ShieldCheck size={14} className="text-cyan-400" />
                   </h4>
                   <p className="text-[11px] text-cyan-300/80 font-space">Official Event Guide & FAQ</p>
@@ -280,22 +280,20 @@ const ChatBot: React.FC = () => {
                   className={`flex items-start gap-2.5 ${msg.sender === 'user' ? 'flex-row-reverse' : ''}`}
                 >
                   <div
-                    className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 text-xs ${
-                      msg.sender === 'user'
-                        ? 'bg-blue-600 text-white'
-                        : 'bg-cyan-950 text-cyan-400 border border-cyan-500/30'
-                    }`}
+                    className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 text-xs ${msg.sender === 'user'
+                      ? 'bg-blue-600 text-white'
+                      : 'bg-cyan-950 text-cyan-400 border border-cyan-500/30'
+                      }`}
                   >
                     {msg.sender === 'user' ? <User size={14} /> : <Bot size={14} />}
                   </div>
 
                   <div className={`max-w-[82%] ${msg.sender === 'user' ? 'items-end' : 'items-start'}`}>
                     <div
-                      className={`p-3 rounded-2xl text-xs sm:text-sm leading-relaxed whitespace-pre-line ${
-                        msg.sender === 'user'
-                          ? 'bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-tr-none shadow-md'
-                          : 'bg-[#091f3d]/80 text-gray-200 border border-cyan-500/20 rounded-tl-none'
-                      }`}
+                      className={`p-3 rounded-2xl text-xs sm:text-sm leading-relaxed whitespace-pre-line ${msg.sender === 'user'
+                        ? 'bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-tr-none shadow-md'
+                        : 'bg-[#091f3d]/80 text-gray-200 border border-cyan-500/20 rounded-tl-none'
+                        }`}
                     >
                       {msg.text}
 
