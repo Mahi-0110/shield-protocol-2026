@@ -51,7 +51,7 @@ const VerifyUTRModal: React.FC<VerifyUTRModalProps> = ({ isOpen, onClose, onSucc
     try {
       // 1. Check if existing registration exists
       const existingReg = await findRegistration(lookupQuery);
-      
+
       if (!existingReg) {
         setLoading(false);
         setErrors({
@@ -218,9 +218,8 @@ const VerifyUTRModal: React.FC<VerifyUTRModalProps> = ({ isOpen, onClose, onSucc
                     placeholder="e.g. SP2026-000001 or registered email"
                     value={lookupQuery}
                     onChange={(e) => setLookupQuery(e.target.value)}
-                    className={`w-full pl-10 pr-4 py-3 rounded-xl input-cyber text-sm ${
-                      errors.lookupQuery ? 'border-red-500' : ''
-                    }`}
+                    className={`w-full pl-10 pr-4 py-3 rounded-xl input-cyber text-sm ${errors.lookupQuery ? 'border-red-500' : ''
+                      }`}
                   />
                 </div>
                 {errors.lookupQuery ? (
@@ -249,9 +248,8 @@ const VerifyUTRModal: React.FC<VerifyUTRModalProps> = ({ isOpen, onClose, onSucc
                     placeholder="e.g. 405612345678 (12 digits)"
                     value={transactionId}
                     onChange={(e) => setTransactionId(e.target.value)}
-                    className={`w-full pl-10 pr-4 py-3 rounded-xl input-cyber font-mono text-sm uppercase tracking-wider ${
-                      errors.transactionId ? 'border-red-500' : ''
-                    }`}
+                    className={`w-full pl-10 pr-4 py-3 rounded-xl input-cyber font-mono text-sm uppercase tracking-wider ${errors.transactionId ? 'border-red-500' : ''
+                      }`}
                   />
                 </div>
                 {errors.transactionId ? (
@@ -302,10 +300,10 @@ const VerifyUTRModal: React.FC<VerifyUTRModalProps> = ({ isOpen, onClose, onSucc
                 </div>
               </div>
 
-              {/* Field 5: Optional Screenshot Upload */}
+              {/* Field 5:  Screenshot Upload */}
               <div>
                 <label className="block text-xs font-space font-semibold text-white uppercase tracking-wider mb-1.5">
-                  Payment Receipt Image <span className="text-muted text-[10px] lowercase">(optional)</span>
+                  Payment Receipt Image <span className="text-muted text-[10px] lowercase">(required)</span>
                 </label>
                 <div className="relative border border-dashed border-white/20 rounded-xl p-3 text-center bg-white/5">
                   <input
