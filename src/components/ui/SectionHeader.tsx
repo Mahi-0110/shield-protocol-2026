@@ -39,7 +39,7 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.6, delay: 0.1 }}
-        className="section-title text-2xl xs:text-3xl sm:text-4xl lg:text-5xl text-white mb-3 sm:mb-4 leading-tight tracking-tight max-w-full px-2 sm:px-0 font-extrabold"
+        className="section-title text-xl xs:text-2xl sm:text-4xl lg:text-5xl text-white mb-2.5 sm:mb-4 leading-snug tracking-tight max-w-full px-2 sm:px-0 font-extrabold"
       >
         {title}{' '}
         {highlight && (
@@ -53,7 +53,7 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="text-muted text-sm sm:text-base md:text-lg max-w-2xl mx-auto leading-relaxed px-2 sm:px-0"
+          className="text-muted text-xs sm:text-sm md:text-base max-w-2xl mx-auto leading-relaxed px-3 sm:px-0 font-outfit"
         >
           {subtitle}
         </motion.p>

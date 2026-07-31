@@ -42,11 +42,24 @@ const Contact: React.FC = () => {
             <div className="glass-card p-6">
               <h4 className="font-space font-semibold text-white mb-4">Follow Us</h4>
               <div className="flex flex-wrap gap-3">
-                {['Instagram', 'WhatsApp'].map(social => (
-                  <button key={social} className="px-4 py-2 glass rounded-lg border border-white/10 text-xs font-space text-muted hover:text-blue-accent hover:border-blue-primary/30 transition-all">
-                    {social}
-                  </button>
-                ))}
+                <a
+                  href="https://www.instagram.com/bits_vizag_official/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-4 py-2 glass rounded-lg border border-white/10 text-xs font-space text-muted hover:text-blue-accent hover:border-blue-primary/30 transition-all inline-flex items-center gap-1.5"
+                >
+                  <span>Instagram</span>
+                  <ExternalLink size={13} />
+                </a>
+                <a
+                  href="https://www.whatsapp.com/channel/0029VaU1VjEJkK7Gz9iBjP1B"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-4 py-2 glass rounded-lg border border-white/10 text-xs font-space text-muted hover:text-blue-accent hover:border-blue-primary/30 transition-all inline-flex items-center gap-1.5"
+                >
+                  <span>WhatsApp</span>
+                  <ExternalLink size={13} />
+                </a>
               </div>
             </div>
           </motion.div>

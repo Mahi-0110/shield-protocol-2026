@@ -11,8 +11,8 @@ const quickLinks = [
 ]
 
 const socials = [
-  { label: 'Instagram', href: '#' },
-  { label: 'WhatsApp', href: '#' },
+  { label: 'Instagram', href: 'https://www.instagram.com/bits_vizag_official/' },
+  { label: 'WhatsApp', href: 'https://www.whatsapp.com/channel/0029VaU1VjEJkK7Gz9iBjP1B' },
 ]
 
 const Footer: React.FC = () => {
@@ -38,7 +38,14 @@ const Footer: React.FC = () => {
             </p>
             <div className="flex flex-wrap gap-2">
               {socials.map(s => (
-                <a key={s.label} href={s.href} className="text-xs px-3 py-1.5 glass rounded-lg border border-white/10 text-muted hover:text-blue-accent hover:border-blue-primary/30 transition-all" aria-label={`Follow on ${s.label}`}>
+                <a
+                  key={s.label}
+                  href={s.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs px-3 py-1.5 glass rounded-lg border border-white/10 text-muted hover:text-blue-accent hover:border-blue-primary/30 transition-all inline-flex items-center gap-1.5"
+                  aria-label={`Follow on ${s.label}`}
+                >
                   {s.label}
                 </a>
               ))}

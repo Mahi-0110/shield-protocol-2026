@@ -2,6 +2,7 @@ import { supabase } from './supabase';
 import { RegistrationRecord, PaymentRecord, AdminStats, AdminFilterOptions } from '../types/database';
 import { sendConfirmationEmail } from './emailService';
 import { findRegistration } from './registrationService';
+import { PAYMENT_CONFIG } from '../config/paymentConfig';
 
 const ADMIN_SESSION_KEY = 'shield_admin_authenticated';
 const DEFAULT_ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || 'shieldadmin2026';
@@ -82,13 +83,13 @@ export async function getAdminStats(): Promise<AdminStats> {
   const rejectedCount = payments.filter((p) => p.verification_status === 'REJECTED').length;
 
   // Accurately calculate verified revenue:
-  // Sum up all approved payments (defaulting to ₹725 if amount field is empty/0)
+  // Sum up all approved payments (defaulting to PAYMENT_CONFIG.registrationFee if amount field is empty/0)
   let totalCollectedFee = payments
     .filter((p) => p.verification_status === 'APPROVED')
-    .reduce((sum, p) => sum + (Number(p.amount) > 0 ? Number(p.amount) : 725), 0);
+    .reduce((sum, p) => sum + (Number(p.amount) > 0 ? Number(p.amount) : PAYMENT_CONFIG.registrationFee), 0);
 
-  // Guarantee that verified revenue matches at least confirmedCount * ₹725
-  const minExpectedRevenue = confirmedCount * 725;
+  // Guarantee that verified revenue matches at least confirmedCount * PAYMENT_CONFIG.registrationFee
+  const minExpectedRevenue = confirmedCount * PAYMENT_CONFIG.registrationFee;
   if (totalCollectedFee < minExpectedRevenue) {
     totalCollectedFee = minExpectedRevenue;
   }

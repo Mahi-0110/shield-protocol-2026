@@ -149,18 +149,18 @@ const LightBeams: React.FC = () => (
 
 const CountdownUnit: React.FC<{ value: number; label: string }> = ({ value, label }) => (
   <div className="flex flex-col items-center">
-    <div className="glass-card w-16 h-16 md:w-20 md:h-20 flex items-center justify-center mb-2 border border-blue-primary/20">
+    <div className="glass-card w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 flex items-center justify-center mb-1.5 sm:mb-2 border border-blue-primary/20">
       <motion.span
         key={value}
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.3 }}
-        className="font-sora font-bold text-2xl md:text-3xl text-white"
+        className="font-sora font-bold text-lg sm:text-2xl md:text-3xl text-white"
       >
         {String(value).padStart(2, '0')}
       </motion.span>
     </div>
-    <span className="text-muted text-xs font-space uppercase tracking-wider">{label}</span>
+    <span className="text-muted text-[10px] sm:text-xs font-space uppercase tracking-wider">{label}</span>
   </div>
 )
 
@@ -270,17 +270,17 @@ const Hero: React.FC = () => {
       />
 
       {/* Content */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16 flex flex-col items-center text-center">
+      <div className="relative z-10 max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pt-20 sm:pt-24 pb-12 sm:pb-16 flex flex-col items-center text-center">
 
         {/* Badge */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="inline-flex items-center gap-2 glass px-4 py-2 rounded-full border border-blue-primary/20 mb-8"
+          className="inline-flex items-center gap-2 glass px-3 py-1.5 sm:px-4 sm:py-2 rounded-full border border-blue-primary/20 mb-6 sm:mb-8"
         >
-          <Zap size={14} className="text-blue-accent" />
-          <span className="text-xs font-space font-semibold text-blue-accent tracking-widest uppercase">
+          <Zap size={13} className="text-blue-accent shrink-0" />
+          <span className="text-[10px] sm:text-xs font-space font-semibold text-blue-accent tracking-wider sm:tracking-widest uppercase">
             Flagship Cybersecurity Event 2026
           </span>
         </motion.div>
@@ -290,21 +290,21 @@ const Hero: React.FC = () => {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, delay: 0.1 }}
-          className="mb-8"
+          className="mb-6 sm:mb-8"
         >
-          <ShieldLogo size={120} animated glow className="mx-auto mb-6" />
+          <ShieldLogo size={96} animated glow className="mx-auto mb-4 sm:mb-6 sm:w-[120px] sm:h-[120px]" />
         </motion.div>
 
         <motion.h1
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="font-sora font-bold tracking-tight mb-4"
+          className="font-sora font-bold tracking-tight mb-4 px-2"
         >
-          <span className="block text-5xl sm:text-6xl md:text-7xl lg:text-8xl text-white leading-none">
+          <span className="block text-3xl xs:text-4xl sm:text-6xl md:text-7xl lg:text-8xl text-white leading-tight sm:leading-none">
             THE SHIELD
           </span>
-          <span className="block text-5xl sm:text-6xl md:text-7xl lg:text-8xl gradient-text leading-none">
+          <span className="block text-3xl xs:text-4xl sm:text-6xl md:text-7xl lg:text-8xl gradient-text leading-tight sm:leading-none">
             PROTOCOL 2026
           </span>
         </motion.h1>
@@ -313,14 +313,14 @@ const Hero: React.FC = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4 }}
-          className="neon-line w-48 mx-auto mb-8"
+          className="neon-line w-32 sm:w-48 mx-auto mb-6 sm:mb-8"
         />
 
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.5 }}
-          className="text-muted text-lg md:text-xl max-w-3xl leading-relaxed mb-4"
+          className="text-muted text-sm sm:text-base md:text-xl max-w-3xl leading-relaxed mb-4 px-3 sm:px-0"
         >
           The flagship cybersecurity and innovation event of the college — where students,
           developers, ethical hackers, AI enthusiasts, and industry experts converge to
@@ -331,7 +331,7 @@ const Hero: React.FC = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 0.5 }}
           transition={{ delay: 0.6 }}
-          className="flex items-center gap-4 text-xs font-space text-muted mb-10 flex-wrap justify-center"
+          className="flex items-center gap-2 sm:gap-4 text-[11px] sm:text-xs font-space text-muted mb-8 sm:mb-10 flex-wrap justify-center px-2"
         >
           {['August 11-13 & 14 2026', 'Bits Vizag Campus'].map((item, i) => (
             <span key={i} className="flex items-center gap-2">
@@ -346,18 +346,18 @@ const Hero: React.FC = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.9 }}
-          className="mb-16"
+          className="mb-12 sm:mb-16"
         >
-          <p className="text-xs font-space text-muted uppercase tracking-widest mb-6">
+          <p className="text-[10px] sm:text-xs font-space text-muted uppercase tracking-widest mb-4 sm:mb-6">
             Event begins in
           </p>
-          <div className="flex items-center gap-3 md:gap-6">
+          <div className="flex items-center gap-2 sm:gap-4 md:gap-6">
             <CountdownUnit value={countdown.days} label="Days" />
-            <span className="text-blue-primary text-2xl font-bold pb-6">:</span>
+            <span className="text-blue-primary text-base sm:text-2xl font-bold pb-4 sm:pb-6">:</span>
             <CountdownUnit value={countdown.hours} label="Hours" />
-            <span className="text-blue-primary text-2xl font-bold pb-6">:</span>
+            <span className="text-blue-primary text-base sm:text-2xl font-bold pb-4 sm:pb-6">:</span>
             <CountdownUnit value={countdown.minutes} label="Minutes" />
-            <span className="text-blue-primary text-2xl font-bold pb-6">:</span>
+            <span className="text-blue-primary text-base sm:text-2xl font-bold pb-4 sm:pb-6">:</span>
             <CountdownUnit value={countdown.seconds} label="Seconds" />
           </div>
         </motion.div>
