@@ -68,7 +68,7 @@ const Registration: React.FC<RegistrationProps> = ({ onOpenPaymentPortal }) => {
               <div className="absolute top-0 right-0 w-64 h-64 bg-blue-primary/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl pointer-events-none" />
 
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-primary/10 text-blue-accent border border-blue-primary/20 text-xs font-space font-semibold mb-6">
-                <CheckCircle size={14} /> Registration & Checkout Open
+                <CheckCircle size={14} /> Registration & Payment Verification Open
               </div>
 
               <h3 className="font-sora font-bold text-2xl md:text-4xl text-white mb-4">
@@ -104,10 +104,10 @@ const Registration: React.FC<RegistrationProps> = ({ onOpenPaymentPortal }) => {
 
                 <button
                   onClick={() => setIsVerifyModalOpen(true)}
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-4 rounded-xl glass border border-cyan-400/40 text-cyan-300 font-space font-semibold text-sm hover:bg-cyan-500/10 hover:border-cyan-400 transition-all cursor-pointer"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-4 rounded-xl glass border border-cyan-400/40 text-cyan-300 font-space font-semibold text-sm hover:bg-cyan-500/10 hover:border-cyan-400 transition-all cursor-pointer shadow-[0_0_20px_rgba(6,182,212,0.2)] hover:shadow-[0_0_25px_rgba(6,182,212,0.4)]"
                 >
                   <ShieldCheck size={18} className="text-cyan-400" />
-                  <span>Already Registered? Submit UTR</span>
+                  <span>Already Paid? Submit UTR</span>
                 </button>
               </div>
 
@@ -126,7 +126,7 @@ const Registration: React.FC<RegistrationProps> = ({ onOpenPaymentPortal }) => {
         onSuccess={handleRegistrationSuccess}
       />
 
-      {/* Standalone UTR Verification Modal */}
+      {/* Standalone UTR / Transaction Details Submission Modal */}
       <VerifyUTRModal
         isOpen={isVerifyModalOpen}
         onClose={() => setIsVerifyModalOpen(false)}

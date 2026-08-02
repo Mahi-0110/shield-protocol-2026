@@ -134,7 +134,6 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ onSubmitSuccess }) =>
         {/* Form Title Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
           <div>
-            <div className="section-badge mb-1">FINAL VERIFICATION STEP</div>
             <h2 className="font-sora font-bold text-2xl text-white">
               Already Paid? Submit Transaction Details
             </h2>

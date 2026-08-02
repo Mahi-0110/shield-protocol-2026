@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Search, CheckCircle2, AlertCircle, Hash, Mail, Phone, Calendar, IndianRupee, FileImage, Upload, ShieldCheck, Lock, ArrowRight } from 'lucide-react';
+import { X, Search, CheckCircle2, AlertCircle, Hash, Calendar, IndianRupee, Upload, ShieldCheck, Lock, ArrowRight } from 'lucide-react';
 import { PAYMENT_CONFIG } from '../../config/paymentConfig';
 import { submitPayment } from '../../services/paymentService';
 import { findRegistration } from '../../services/registrationService';
@@ -50,7 +50,7 @@ const VerifyUTRModal: React.FC<VerifyUTRModalProps> = ({ isOpen, onClose, onSucc
 
     try {
       // 1. Check if existing registration exists
-      const existingReg = await findRegistration(lookupQuery);
+      const existingReg = await findRegistration(lookupQuery.trim());
 
       if (!existingReg) {
         setLoading(false);
@@ -179,10 +179,6 @@ const VerifyUTRModal: React.FC<VerifyUTRModalProps> = ({ isOpen, onClose, onSucc
                 </div>
               </div>
 
-              <p className="text-xs text-muted">
-                Need to submit another UTR or check status? Contact support at <strong className="text-white">theshieldprotocol@bitsvizag.com</strong>.
-              </p>
-
               <button
                 onClick={() => {
                   handleReset();
@@ -300,10 +296,10 @@ const VerifyUTRModal: React.FC<VerifyUTRModalProps> = ({ isOpen, onClose, onSucc
                 </div>
               </div>
 
-              {/* Field 5:  Screenshot Upload */}
+              {/* Field 5: Screenshot Upload */}
               <div>
                 <label className="block text-xs font-space font-semibold text-white uppercase tracking-wider mb-1.5">
-                  Payment Receipt Image <span className="text-muted text-[10px] lowercase">(required)</span>
+                  Payment Receipt Image <span className="text-muted text-[10px] lowercase">(optional)</span>
                 </label>
                 <div className="relative border border-dashed border-white/20 rounded-xl p-3 text-center bg-white/5">
                   <input
@@ -373,3 +369,4 @@ const VerifyUTRModal: React.FC<VerifyUTRModalProps> = ({ isOpen, onClose, onSucc
 };
 
 export default VerifyUTRModal;
+

@@ -7,8 +7,6 @@ import HeroPaymentCard from '../components/payment/HeroPaymentCard';
 import PaymentMethods from '../components/payment/PaymentMethods';
 import SecurityPanel from '../components/payment/SecurityPanel';
 import PaymentInstructions from '../components/payment/PaymentInstructions';
-import TransactionForm, { SubmissionData } from '../components/payment/TransactionForm';
-import SuccessState from '../components/payment/SuccessState';
 import FloatingStatusCard from '../components/payment/FloatingStatusCard';
 import RightSidebar from '../components/payment/RightSidebar';
 import MobilePaymentBar from '../components/payment/MobilePaymentBar';
@@ -20,26 +18,10 @@ interface PaymentPortalPageProps {
 }
 
 const PaymentPortalPage: React.FC<PaymentPortalPageProps> = ({ onBackToHome }) => {
-  const [currentStep, setCurrentStep] = useState<PaymentStep>('payment');
-  const [submissionData, setSubmissionData] = useState<SubmissionData | null>(null);
+  const [currentStep] = useState<PaymentStep>('payment');
 
-  const formRef = useRef<HTMLDivElement>(null);
-
-  const scrollToForm = () => {
-    if (formRef.current) {
-      formRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
-  const handleSubmission = (data: SubmissionData) => {
-    setSubmissionData(data);
-    setCurrentStep('verification');
-    window.scrollTo({ top: 300, behavior: 'smooth' });
-  };
-
-  const handleResetForm = () => {
-    setSubmissionData(null);
-    setCurrentStep('payment');
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
@@ -135,8 +117,8 @@ const PaymentPortalPage: React.FC<PaymentPortalPageProps> = ({ onBackToHome }) =
 
         {/* Hero Payment Card */}
         <HeroPaymentCard
-          statusText={submissionData ? 'Under Verification' : 'Waiting for Payment'}
-          isSubmitted={!!submissionData}
+          statusText="Waiting for Payment"
+          isSubmitted={false}
         />
 
         {/* Main Grid: Left Column Payment Steps + Right Sidebar Summary */}
@@ -148,24 +130,6 @@ const PaymentPortalPage: React.FC<PaymentPortalPageProps> = ({ onBackToHome }) =
 
             {/* Payment Instructions Timeline */}
             <PaymentInstructions />
-
-            {/* Transaction Form OR Success State */}
-            <div ref={formRef}>
-              <AnimatePresence mode="wait">
-                {submissionData ? (
-                  <SuccessState
-                    key="success"
-                    data={submissionData}
-                    onReset={handleResetForm}
-                  />
-                ) : (
-                  <TransactionForm
-                    key="form"
-                    onSubmitSuccess={handleSubmission}
-                  />
-                )}
-              </AnimatePresence>
-            </div>
           </div>
 
           {/* Right Sidebar Column (4 cols) */}
@@ -181,8 +145,8 @@ const PaymentPortalPage: React.FC<PaymentPortalPageProps> = ({ onBackToHome }) =
 
       {/* Mobile Sticky Payment Bar */}
       <MobilePaymentBar
-        isSubmitted={!!submissionData}
-        onScrollToForm={scrollToForm}
+        isSubmitted={false}
+        onScrollToForm={scrollToTop}
       />
     </div>
   );
