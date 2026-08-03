@@ -1,5 +1,5 @@
 import { supabase } from './supabase';
-import { PaymentRecord, PaymentInsert } from '../types/database';
+import { PaymentRecord, PaymentInsert, RegistrationRecord } from '../types/database';
 import { uploadPaymentProof } from './storageService';
 import { updateRegistrationStatus, findRegistration, createRegistration } from './registrationService';
 
@@ -20,23 +20,36 @@ export interface PaymentSubmissionInput {
  * SUBMIT PAYMENT DETAILS (UPI / Proof Upload)
  */
 export async function submitPayment(input: PaymentSubmissionInput): Promise<{ payment: PaymentRecord; registrationId: string }> {
-  // 1. Find existing registration or auto-create one
-  let registration = input.registrationId ? await findRegistration(input.registrationId) : null;
+  const cleanEmail = input.email.trim().toLowerCase();
+  const cleanPhone = input.phone.trim();
+  const cleanUtr = input.transactionId.trim();
 
-  if (!registration) {
-    registration = await findRegistration(input.email) || (input.phone ? await findRegistration(input.phone) : null);
+  // 1. Find existing registration or auto-create one
+  let registration: RegistrationRecord | null = null;
+  if (input.registrationId) {
+    registration = await findRegistration(input.registrationId.trim());
+  }
+
+  if (!registration && cleanEmail) {
+    registration = await findRegistration(cleanEmail);
+  }
+
+  if (!registration && cleanPhone) {
+    registration = await findRegistration(cleanPhone);
   }
 
   if (!registration) {
     registration = await createRegistration({
       full_name: 'Participant',
-      email: input.email,
-      phone: input.phone,
+      email: cleanEmail,
+      phone: cleanPhone,
       department: 'General',
     });
   }
 
   const registrationId = registration.registration_id;
+  const participantEmail = registration.email || cleanEmail;
+  const participantPhone = registration.phone || cleanPhone;
 
   // 2. Upload screenshot proof if provided
   let screenshotUrl = input.screenshotUrl || '';
@@ -50,9 +63,9 @@ export async function submitPayment(input: PaymentSubmissionInput): Promise<{ pa
   // 3. Insert payment record
   const paymentPayload: PaymentInsert = {
     registration_id: registrationId,
-    participant_email: input.email,
-    participant_phone: input.phone,
-    utr_number: input.transactionId,
+    participant_email: participantEmail,
+    participant_phone: participantPhone,
+    utr_number: cleanUtr,
     amount: input.amount,
     payment_date: input.paymentDate,
     payment_screenshot: screenshotUrl,

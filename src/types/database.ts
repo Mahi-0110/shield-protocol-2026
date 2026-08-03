@@ -1,5 +1,5 @@
 export type ParticipantStatus = 
-  | 'PARTIAL' 
+  | 'REGISTERED' 
   | 'PAYMENT_PENDING' 
   | 'PAYMENT_SUBMITTED' 
   | 'CONFIRMED' 

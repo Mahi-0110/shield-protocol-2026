@@ -23,7 +23,7 @@ const PaymentMethods: React.FC = () => {
       try {
         const upiUrl = getStandardUpiUrl();
         const dataUrl = await QRCode.toDataURL(upiUrl, {
-          width: 450,
+          width: 700,
           margin: 2,
           color: {
             dark: '#000000',
@@ -101,16 +101,16 @@ const PaymentMethods: React.FC = () => {
               
               <div className="relative glass p-6 rounded-3xl border border-blue-primary/40 bg-bg-primary flex flex-col items-center">
                 {/* Scannable NPCI Compliant QR Code with ₹725 Pre-configured */}
-                <div className="relative p-3 bg-white rounded-2xl shadow-2xl flex flex-col items-center justify-center border border-white/20 overflow-hidden min-h-[220px] min-w-[220px]">
+                <div className="relative p-4 bg-white rounded-3xl shadow-2xl flex flex-col items-center justify-center border border-white/20 overflow-hidden min-h-[280px] min-w-[280px] sm:min-h-[320px] sm:min-w-[320px]">
                   {qrDataUrl ? (
                     <img
                       id="shield-upi-qr-img"
                       src={qrDataUrl}
                       alt={`UPI QR Code for ${PAYMENT_CONFIG.payeeName} (${PAYMENT_CONFIG.upiId})`}
-                      className="w-[220px] h-[220px] rounded-xl object-contain"
+                      className="w-[280px] h-[280px] sm:w-[320px] sm:h-[320px] rounded-xl object-contain"
                     />
                   ) : (
-                    <div className="w-[220px] h-[220px] flex items-center justify-center text-black text-xs font-mono">
+                    <div className="w-[280px] h-[280px] flex items-center justify-center text-black text-xs font-mono">
                       Generating QR...
                     </div>
                   )}

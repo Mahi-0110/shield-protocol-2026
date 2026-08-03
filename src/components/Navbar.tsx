@@ -19,7 +19,7 @@ const navLinks = [
   { label: 'Gallery', href: '#gallery' },
   { label: 'Testimonials', href: '#testimonials' },
   { label: 'FAQs', href: '#faqs' },
-  { label: 'Register', href: '#register' },
+  { label: 'Pay & Register', href: '#register' },
   { label: 'Contact', href: '#contact' },
 ]
 

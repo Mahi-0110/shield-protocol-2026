@@ -49,17 +49,24 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ onSubmitSuccess }) =>
 
   const validate = () => {
     const errs: Record<string, string> = {};
-    if (!formData.email || !/\S+@\S+\.\S+/.test(formData.email)) {
+    const cleanEmail = formData.email.trim();
+    const cleanPhone = formData.phone.trim();
+    const cleanTxId = formData.transactionId.trim();
+
+    if (!cleanEmail || !/\S+@\S+\.\S+/.test(cleanEmail)) {
       errs.email = 'Please enter a valid registration email address';
     }
-    if (!formData.phone || formData.phone.length < 10) {
+    if (!cleanPhone || cleanPhone.length < 10) {
       errs.phone = 'Please enter a valid 10-digit mobile number';
     }
-    if (!formData.transactionId || formData.transactionId.trim().length < 8) {
+    if (!cleanTxId || cleanTxId.length < 8) {
       errs.transactionId = 'Please enter valid UTR / Transaction ID (min 8-12 digits)';
     }
     if (!formData.amount || Number(formData.amount) <= 0) {
       errs.amount = 'Please enter valid amount';
+    }
+    if (!selectedFile) {
+      errs.screenshot = 'Payment receipt image screenshot is required';
     }
     return errs;
   };
@@ -100,10 +107,14 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ onSubmitSuccess }) =>
     setLoading(true);
 
     try {
+      const cleanEmail = formData.email.trim();
+      const cleanPhone = formData.phone.trim();
+      const cleanTxId = formData.transactionId.trim();
+
       const { registrationId } = await submitPayment({
-        email: formData.email,
-        phone: formData.phone,
-        transactionId: formData.transactionId,
+        email: cleanEmail,
+        phone: cleanPhone,
+        transactionId: cleanTxId,
         amount: Number(formData.amount),
         paymentDate: formData.paymentDate,
         screenshotFile: selectedFile || undefined,
@@ -111,9 +122,9 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ onSubmitSuccess }) =>
 
       setLoading(false);
       onSubmitSuccess({
-        email: formData.email,
-        phone: formData.phone,
-        transactionId: formData.transactionId,
+        email: cleanEmail,
+        phone: cleanPhone,
+        transactionId: cleanTxId,
         amount: Number(formData.amount),
         paymentDate: formData.paymentDate,
         screenshotName: selectedFile ? selectedFile.name : undefined,
@@ -271,10 +282,10 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ onSubmitSuccess }) =>
             </div>
           </div>
 
-          {/* Field 6: Screenshot Upload (Optional Dropzone) */}
+          {/* Field 6: Screenshot Upload (Required) */}
           <div>
             <label className="block text-xs font-space font-semibold text-white uppercase tracking-wider mb-2">
-              Payment Screenshot <span className="text-muted text-[10px] uppercase font-normal">(Optional but recommended)</span>
+              Payment Screenshot <span className="text-blue-accent">* (Required)</span>
             </label>
 
             <div
@@ -287,6 +298,8 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ onSubmitSuccess }) =>
                   ? 'border-blue-primary bg-blue-primary/10'
                   : selectedFile
                   ? 'border-success/50 bg-success/5'
+                  : errors.screenshot
+                  ? 'border-red-500 bg-red-500/5'
                   : 'border-white/10 hover:border-blue-primary/40'
               }`}
             >

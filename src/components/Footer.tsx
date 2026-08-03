@@ -7,7 +7,7 @@ const quickLinks = [
   { label: 'Home', href: '#home' }, { label: 'About', href: '#about' },
   { label: 'Previous Event', href: '#previous-event' }, { label: 'Hackathon', href: '#hackathon' },
   { label: 'Current Event', href: '#current-event' }, { label: 'Gallery', href: '#gallery' },
-  { label: 'Register', href: '#register' }, { label: 'Contact', href: '#contact' },
+  { label: 'Pay & Register', href: '#register' }, { label: 'Contact', href: '#contact' },
 ]
 
 const socials = [

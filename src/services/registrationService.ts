@@ -29,35 +29,62 @@ export function getNextLocalRegistrationId(): string {
  * CREATE REGISTRATION
  */
 export async function createRegistration(data: RegistrationInsert): Promise<RegistrationRecord> {
-  const defaultStatus: ParticipantStatus = data.status || 'PARTIAL';
-  const defaultPaymentStatus: PaymentStatus = data.payment_status || 'PENDING';
+  const cleanFullName = data.full_name.trim();
+  const cleanEmail = data.email.trim().toLowerCase();
+  const cleanPhone = data.phone.trim();
+  const cleanDept = data.department.trim();
+  const defaultStatus: ParticipantStatus = data.status || 'PAYMENT_SUBMITTED';
+  const defaultPaymentStatus: PaymentStatus = data.payment_status || 'SUBMITTED';
+
+  // Check if participant already registered with this email or phone
+  try {
+    const existing = await findRegistration(cleanEmail);
+    if (existing) {
+      console.log('Existing registration found for email, returning existing record:', existing.registration_id);
+      return existing;
+    }
+  } catch (err) {
+    console.warn('Pre-registration lookup warning:', err);
+  }
 
   try {
     const { data: insertedData, error } = await supabase
       .from('registrations')
       .insert([
         {
-          full_name: data.full_name,
-          email: data.email,
-          phone: data.phone,
-          department: data.department,
-          year: data.year,
+          full_name: cleanFullName,
+          email: cleanEmail,
+          phone: cleanPhone,
+          department: cleanDept,
+          year: data.year || '3rd Year',
           status: defaultStatus,
           payment_status: defaultPaymentStatus,
         },
       ])
       .select()
-      .single();
+      .limit(1);
 
-    if (error) {
-      console.warn('Supabase registration insert error, using local fallback:', error.message);
-      return await saveLocalRegistration(data);
+    if (error || !insertedData || insertedData.length === 0) {
+      console.warn('Supabase registration insert error or empty response, using local fallback:', error?.message);
+      return await saveLocalRegistration({
+        ...data,
+        full_name: cleanFullName,
+        email: cleanEmail,
+        phone: cleanPhone,
+        department: cleanDept,
+      });
     }
 
-    return insertedData as RegistrationRecord;
+    return insertedData[0] as RegistrationRecord;
   } catch (err) {
     console.error('Exception during registration insert:', err);
-    return await saveLocalRegistration(data);
+    return await saveLocalRegistration({
+      ...data,
+      full_name: cleanFullName,
+      email: cleanEmail,
+      phone: cleanPhone,
+      department: cleanDept,
+    });
   }
 }
 
@@ -68,18 +95,24 @@ async function saveLocalRegistration(data: RegistrationInsert): Promise<Registra
   const localData = localStorage.getItem(LOCAL_REGISTRATIONS_KEY);
   const records: RegistrationRecord[] = localData ? JSON.parse(localData) : [];
   
+  const cleanEmail = data.email.trim().toLowerCase();
+  const existingLocal = records.find((r) => r.email?.trim().toLowerCase() === cleanEmail);
+  if (existingLocal) {
+    return existingLocal;
+  }
+
   const registrationId = data.registration_id || getNextLocalRegistrationId();
   
   const newRecord: RegistrationRecord = {
     id: `local-${Date.now()}`,
     registration_id: registrationId,
-    full_name: data.full_name,
-    email: data.email,
-    phone: data.phone,
-    department: data.department,
-    year: data.year || '4th Year',
-    status: data.status || 'PARTIAL',
-    payment_status: data.payment_status || 'PENDING',
+    full_name: data.full_name.trim(),
+    email: cleanEmail,
+    phone: data.phone.trim(),
+    department: data.department.trim(),
+    year: data.year || '3rd Year',
+    status: data.status || 'PAYMENT_SUBMITTED',
+    payment_status: data.payment_status || 'SUBMITTED',
     created_at: new Date().toISOString(),
   };
 
@@ -90,52 +123,86 @@ async function saveLocalRegistration(data: RegistrationInsert): Promise<Registra
 }
 
 /**
- * Find existing registration by Registration ID, Email, or Phone
+ * Find existing registration by Registration ID, Email, or Phone (case-insensitive & duplicate-safe)
  */
 export async function findRegistration(query: string): Promise<RegistrationRecord | null> {
   const cleanQuery = query.trim();
   if (!cleanQuery) return null;
 
-  // 1. Direct registration_id match
+  const lowerQuery = cleanQuery.toLowerCase();
+  const digits = cleanQuery.replace(/\D/g, '');
+  const phoneLast10 = digits.length >= 7 ? digits.slice(-10) : '';
+
+  // 1. Unified case-insensitive search via Supabase
   try {
-    const { data: regIdData } = await supabase
+    const orConditions = [
+      `registration_id.ilike.${cleanQuery}`,
+      `email.ilike.${cleanQuery}`
+    ];
+    if (phoneLast10) {
+      orConditions.push(`phone.ilike.%${phoneLast10}%`);
+    } else {
+      orConditions.push(`phone.ilike.${cleanQuery}`);
+    }
+
+    const { data: matchedRows, error } = await supabase
       .from('registrations')
       .select('*')
-      .eq('registration_id', cleanQuery)
-      .maybeSingle();
+      .or(orConditions.join(','))
+      .order('created_at', { ascending: false })
+      .limit(1);
 
-    if (regIdData) return regIdData;
+    if (!error && matchedRows && matchedRows.length > 0) {
+      return matchedRows[0] as RegistrationRecord;
+    }
   } catch (err) {
-    console.warn('Supabase reg_id query warning:', err);
+    console.warn('Supabase unified registration query warning:', err);
   }
 
-  // 2. Direct email match
+  // 2. Fallback to individual Supabase queries with limit(1) to avoid PGRST116 errors
+  // Email match
   try {
     const { data: emailData } = await supabase
       .from('registrations')
       .select('*')
-      .eq('email', cleanQuery)
-      .maybeSingle();
+      .ilike('email', cleanQuery)
+      .order('created_at', { ascending: false })
+      .limit(1);
 
-    if (emailData) return emailData;
+    if (emailData && emailData.length > 0) return emailData[0] as RegistrationRecord;
   } catch (err) {
-    console.warn('Supabase email query warning:', err);
+    console.warn('Supabase email fallback query warning:', err);
   }
 
-  // 3. Direct phone match
+  // Registration ID match
   try {
+    const { data: regIdData } = await supabase
+      .from('registrations')
+      .select('*')
+      .ilike('registration_id', cleanQuery)
+      .limit(1);
+
+    if (regIdData && regIdData.length > 0) return regIdData[0] as RegistrationRecord;
+  } catch (err) {
+    console.warn('Supabase reg_id fallback query warning:', err);
+  }
+
+  // Phone match
+  try {
+    const phoneQuery = phoneLast10 ? `%${phoneLast10}%` : cleanQuery;
     const { data: phoneData } = await supabase
       .from('registrations')
       .select('*')
-      .eq('phone', cleanQuery)
-      .maybeSingle();
+      .ilike('phone', phoneQuery)
+      .order('created_at', { ascending: false })
+      .limit(1);
 
-    if (phoneData) return phoneData;
+    if (phoneData && phoneData.length > 0) return phoneData[0] as RegistrationRecord;
   } catch (err) {
-    console.warn('Supabase phone query warning:', err);
+    console.warn('Supabase phone fallback query warning:', err);
   }
 
-  // 4. Fallback to localStorage
+  // 3. Fallback to localStorage
   const localData = localStorage.getItem(LOCAL_REGISTRATIONS_KEY);
   if (!localData) return null;
 
@@ -143,9 +210,10 @@ export async function findRegistration(query: string): Promise<RegistrationRecor
     const records: RegistrationRecord[] = JSON.parse(localData);
     const found = records.find(
       (r) =>
-        r.registration_id?.toLowerCase() === cleanQuery.toLowerCase() ||
-        r.email?.toLowerCase() === cleanQuery.toLowerCase() ||
-        r.phone === cleanQuery
+        r.registration_id?.toLowerCase() === lowerQuery ||
+        r.email?.trim().toLowerCase() === lowerQuery ||
+        r.phone?.trim() === cleanQuery ||
+        (phoneLast10 && r.phone?.replace(/\D/g, '').endsWith(phoneLast10))
     );
     return found || null;
   } catch (e) {
@@ -198,3 +266,4 @@ function updateLocalRegistrationStatus(
     localStorage.setItem(LOCAL_REGISTRATIONS_KEY, JSON.stringify(records));
   }
 }
+

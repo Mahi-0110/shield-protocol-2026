@@ -69,7 +69,7 @@ const ScrollToRegister: React.FC = () => {
               <div className="text-left font-space leading-none">
                 <div className="text-[10px] text-muted tracking-wider uppercase">Scroll Down</div>
                 <div className="text-xs sm:text-sm font-bold text-white mt-0.5">
-                  Scroll to <span className="gradient-text">Register</span>
+                  Scroll to <span className="gradient-text">Pay & Register</span>
                 </div>
               </div>
 

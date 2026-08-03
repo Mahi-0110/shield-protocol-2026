@@ -34,6 +34,9 @@ const VerifyUTRModal: React.FC<VerifyUTRModalProps> = ({ isOpen, onClose, onSucc
     if (!transactionId || transactionId.trim().length < 8) {
       errs.transactionId = 'Please enter a valid 12-digit UTR / Reference ID';
     }
+    if (!selectedFile) {
+      errs.screenshot = 'Payment receipt image screenshot is required';
+    }
     return errs;
   };
 
@@ -299,12 +302,13 @@ const VerifyUTRModal: React.FC<VerifyUTRModalProps> = ({ isOpen, onClose, onSucc
               {/* Field 5: Screenshot Upload */}
               <div>
                 <label className="block text-xs font-space font-semibold text-white uppercase tracking-wider mb-1.5">
-                  Payment Receipt Image <span className="text-muted text-[10px] lowercase">(optional)</span>
+                  Payment Receipt Image <span className="text-cyan-400">* (Required)</span>
                 </label>
-                <div className="relative border border-dashed border-white/20 rounded-xl p-3 text-center bg-white/5">
+                <div className={`relative border border-dashed rounded-xl p-3 text-center bg-white/5 ${errors.screenshot ? 'border-red-500' : 'border-white/20'}`}>
                   <input
                     type="file"
                     accept="image/*"
+                    required
                     onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                   />
@@ -329,6 +333,11 @@ const VerifyUTRModal: React.FC<VerifyUTRModalProps> = ({ isOpen, onClose, onSucc
                     </div>
                   )}
                 </div>
+                {errors.screenshot && (
+                  <span className="text-[11px] font-space text-red-400 mt-1 block">
+                    {errors.screenshot}
+                  </span>
+                )}
               </div>
 
               {/* Security info */}

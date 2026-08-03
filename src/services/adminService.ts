@@ -153,7 +153,7 @@ export async function getParticipantsList(options?: Partial<AdminFilterOptions>)
         records = records.filter(
           (r) =>
             r.status === 'PAYMENT_SUBMITTED' ||
-            r.status === 'PARTIAL' ||
+            r.status === 'REGISTERED' ||
             r.status === 'PAYMENT_PENDING' ||
             r.payment_status === 'SUBMITTED' ||
             r.payment_status === 'PENDING'

@@ -16,8 +16,8 @@ CREATE TABLE IF NOT EXISTS public.registrations (
     phone TEXT NOT NULL,
     department TEXT NOT NULL,
     year TEXT NOT NULL,
-    status TEXT NOT NULL DEFAULT 'PARTIAL',
-    payment_status TEXT NOT NULL DEFAULT 'PENDING',
+    status TEXT NOT NULL DEFAULT 'PAYMENT_SUBMITTED',
+    payment_status TEXT NOT NULL DEFAULT 'SUBMITTED',
     email_sent BOOLEAN NOT NULL DEFAULT FALSE,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
@@ -62,8 +62,10 @@ CREATE TABLE IF NOT EXISTS public.payments (
 
 -- 5. Indexes for fast lookup & high performance
 CREATE INDEX IF NOT EXISTS idx_registrations_email ON public.registrations(email);
+CREATE INDEX IF NOT EXISTS idx_registrations_email_lower ON public.registrations(LOWER(email));
 CREATE INDEX IF NOT EXISTS idx_registrations_phone ON public.registrations(phone);
 CREATE INDEX IF NOT EXISTS idx_registrations_reg_id ON public.registrations(registration_id);
+CREATE INDEX IF NOT EXISTS idx_registrations_reg_id_lower ON public.registrations(LOWER(registration_id));
 CREATE INDEX IF NOT EXISTS idx_payments_reg_id ON public.payments(registration_id);
 CREATE INDEX IF NOT EXISTS idx_payments_utr ON public.payments(utr_number);
 
