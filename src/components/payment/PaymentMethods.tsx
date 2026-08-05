@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import QRCode from 'qrcode';
 import {
   Copy,
   Check,
@@ -15,30 +14,8 @@ import { PAYMENT_CONFIG, getStandardUpiUrl } from '../../config/paymentConfig';
 
 const PaymentMethods: React.FC = () => {
   const [copied, setCopied] = useState(false);
-  const [qrDataUrl, setQrDataUrl] = useState<string>('');
   const [toastMessage, setToastMessage] = useState<string | null>(null);
-
-  useEffect(() => {
-    const generateQrCode = async () => {
-      try {
-        const upiUrl = getStandardUpiUrl();
-        const dataUrl = await QRCode.toDataURL(upiUrl, {
-          width: 700,
-          margin: 2,
-          color: {
-            dark: '#000000',
-            light: '#FFFFFF',
-          },
-          errorCorrectionLevel: 'H',
-        });
-        setQrDataUrl(dataUrl);
-      } catch (err) {
-        console.error('Failed to generate QR Code', err);
-      }
-    };
-
-    generateQrCode();
-  }, []);
+  const qrDataUrl = '/phonepe-qr.png';
 
   const handleCopyUPI = () => {
     navigator.clipboard.writeText(PAYMENT_CONFIG.upiId);
