@@ -11,7 +11,7 @@ const DEFAULT_ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || 'shieldadm
  * Verify Admin Password
  */
 export function verifyAdminPassword(password: string): boolean {
-  if (password === DEFAULT_ADMIN_PASSWORD || password === 'admin123' || password === 'shield2026') {
+  if (password === DEFAULT_ADMIN_PASSWORD && password !== '') {
     sessionStorage.setItem(ADMIN_SESSION_KEY, 'true');
     return true;
   }
