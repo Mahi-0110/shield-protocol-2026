@@ -12,19 +12,61 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess }) => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [lockoutTimer, setLockoutTimer] = useState<number>(0);
+
+  // Load lockout state on mount
+  React.useEffect(() => {
+    const lockoutEnd = localStorage.getItem('admin_lockout_end');
+    if (lockoutEnd) {
+      const remaining = parseInt(lockoutEnd) - Date.now();
+      if (remaining > 0) {
+        setLockoutTimer(Math.ceil(remaining / 1000));
+      } else {
+        localStorage.removeItem('admin_lockout_end');
+        localStorage.removeItem('admin_failed_attempts');
+      }
+    }
+  }, []);
+
+  // Countdown timer for lockout
+  React.useEffect(() => {
+    if (lockoutTimer > 0) {
+      const timer = setTimeout(() => setLockoutTimer((prev) => prev - 1), 1000);
+      return () => clearTimeout(timer);
+    } else if (lockoutTimer === 0) {
+      localStorage.removeItem('admin_lockout_end');
+      localStorage.removeItem('admin_failed_attempts');
+    }
+  }, [lockoutTimer]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (lockoutTimer > 0) return;
+
     setError('');
     setLoading(true);
 
     setTimeout(() => {
       if (verifyAdminPassword(password)) {
         setLoading(false);
+        localStorage.removeItem('admin_failed_attempts');
+        localStorage.removeItem('admin_lockout_end');
         onLoginSuccess();
       } else {
         setLoading(false);
-        setError('Invalid Organizer Security Passcode. Access Denied.');
+        
+        // Handle brute-force attempts
+        const attempts = parseInt(localStorage.getItem('admin_failed_attempts') || '0') + 1;
+        localStorage.setItem('admin_failed_attempts', attempts.toString());
+        
+        if (attempts >= 5) {
+          const lockoutTime = Date.now() + 5 * 60 * 1000; // 5 minutes
+          localStorage.setItem('admin_lockout_end', lockoutTime.toString());
+          setLockoutTimer(5 * 60);
+          setError('Too many failed attempts. Dashboard locked for 5 minutes.');
+        } else {
+          setError(`Invalid Security Passcode. ${5 - attempts} attempts remaining.`);
+        }
       }
     }, 400);
   };
@@ -76,11 +118,16 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess }) => {
 
           <button
             type="submit"
-            disabled={loading}
-            className="w-full py-4 px-6 rounded-xl glow-btn text-white font-space font-bold text-sm flex items-center justify-center gap-2 shadow-[0_0_25px_rgba(14,165,233,0.5)] cursor-pointer disabled:opacity-50"
+            disabled={loading || lockoutTimer > 0}
+            className="w-full py-4 px-6 rounded-xl glow-btn text-white font-space font-bold text-sm flex items-center justify-center gap-2 shadow-[0_0_25px_rgba(14,165,233,0.5)] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-all"
           >
             {loading ? (
               <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            ) : lockoutTimer > 0 ? (
+              <>
+                <Lock size={16} />
+                <span>Locked ({Math.floor(lockoutTimer / 60)}:{(lockoutTimer % 60).toString().padStart(2, '0')})</span>
+              </>
             ) : (
               <>
                 <Lock size={16} />
