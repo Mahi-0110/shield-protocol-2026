@@ -60,8 +60,8 @@ const Registration: React.FC<RegistrationProps> = ({ onOpenPaymentPortal }) => {
             >
               <div className="absolute top-0 right-0 w-64 h-64 bg-blue-primary/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl pointer-events-none" />
 
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-primary/10 text-blue-accent border border-blue-primary/20 text-xs font-space font-semibold mb-6">
-                <CheckCircle size={14} /> Registrations Open
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-500/10 text-red-500 border border-red-500/20 text-xs font-space font-semibold mb-6">
+                <XCircle size={14} /> Registrations Closed
               </div>
 
               <h3 className="font-sora font-bold text-2xl md:text-4xl text-white mb-4">
@@ -87,12 +87,11 @@ const Registration: React.FC<RegistrationProps> = ({ onOpenPaymentPortal }) => {
               {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                 <button
-                  onClick={onOpenPaymentPortal || (() => setIsModalOpen(true))}
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-4 rounded-xl bg-blue-primary text-white font-space font-bold text-base hover:bg-blue-accent hover:-translate-y-1 transition-all duration-300 shadow-glow"
+                  disabled
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-4 rounded-xl bg-white/5 border border-white/10 text-muted font-space font-bold text-base cursor-not-allowed"
                 >
-                  <UserCheck size={20} />
-                  <span>Register & Pay Fee</span>
-                  <ArrowRight size={18} className="ml-1" />
+                  <Lock size={20} />
+                  <span>Registrations Closed</span>
                 </button>
               </div>
 
