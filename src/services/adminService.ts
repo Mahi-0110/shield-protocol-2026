@@ -11,7 +11,13 @@ const DEFAULT_ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD;
  * Verify Admin Password
  */
 export function verifyAdminPassword(password: string): boolean {
-  if (password === DEFAULT_ADMIN_PASSWORD && password !== '') {
+  console.log('Provided Password:', password);
+  console.log('Expected Password (from env):', DEFAULT_ADMIN_PASSWORD);
+  
+  // Also handle the case where Vite wrapped it in quotes
+  const expected = DEFAULT_ADMIN_PASSWORD?.replace(/^"|"$/g, '');
+  
+  if (password === expected && password !== '') {
     sessionStorage.setItem(ADMIN_SESSION_KEY, 'true');
     return true;
   }
