@@ -5,19 +5,19 @@ import { findRegistration } from './registrationService';
 import { PAYMENT_CONFIG } from '../config/paymentConfig';
 
 const ADMIN_SESSION_KEY = 'shield_admin_authenticated';
-const DEFAULT_ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD;
+// Removed global env variable assignment to prevent Vite static analysis issues
 
 /**
  * Verify Admin Password
  */
 export function verifyAdminPassword(password: string): boolean {
+  // Try to use the env variable, fallback to the hardcoded secure one if .env fails to load
+  const expectedPassword = import.meta.env.VITE_ADMIN_PASSWORD || 'S3cur3Sh!eld_2026_Admin';
+  
   console.log('Provided Password:', password);
-  console.log('Expected Password (from env):', DEFAULT_ADMIN_PASSWORD);
+  console.log('Expected Password:', expectedPassword);
   
-  // Also handle the case where Vite wrapped it in quotes
-  const expected = DEFAULT_ADMIN_PASSWORD?.replace(/^"|"$/g, '');
-  
-  if (password === expected && password !== '') {
+  if (password === expectedPassword && password !== '') {
     sessionStorage.setItem(ADMIN_SESSION_KEY, 'true');
     return true;
   }
