@@ -13,44 +13,40 @@ const scheduleData = [
     day: 'Day 1',
     date: 'Aug 11, 2026',
     events: [
-      { time: '9:00 AM', title: 'Podcast with Santosh Chaluvadi', type: 'Podcast', duration: '2h', venue: 'Seminar hall' },
-      { time: '11:30 AM', title: 'Workshop: Penetration Testing Fundamentals', type: 'workshop', duration: '2h', venue: 'Lab 1' },
-      { time: '2:00 PM', title: 'Talk: AI in Cybersecurity', type: 'talk', duration: '1.5h', venue: 'Seminar Hall' },
-      { time: '4:00 PM', title: 'Workshop: Cloud Security Best Practices', type: 'workshop', duration: '2h', venue: 'Lab 2' },
-      { time: '6:00 PM', title: 'Hackathon Kickoff & Team Formation', type: 'hackathon', duration: '2h', venue: 'Main Auditorium' },
-      { time: '8:00 PM', title: 'Networking Dinner', type: 'networking', duration: '2h', venue: 'Cafeteria' },
+      { title: 'Podcast with Santosh Chaluvadi', type: 'Podcast', venue: 'Seminar hall' },
+      { title: 'INTRODUCTION TO WEB APP PENTESTING ', type: 'workshop', venue: 'Seminar hall' },
+      { title: 'AUTOMATED TESTING', type: 'workshop', venue: 'Seminar Hall' },
+      { title: 'MANUAL TESTING ', type: 'workshop', venue: 'Seminar Hall' },
+      { title: 'OWASP TOP 10 ', type: 'workshop', venue: 'Seminar Hall' },
+
     ],
   },
   {
     day: 'Day 2',
     date: 'Aug 12, 2026',
     events: [
-      { time: '9:00 AM', title: 'CTF Competition Launch', type: 'ctf', duration: '8h', venue: 'Online + Lab 3' },
-      { time: '10:00 AM', title: 'Workshop: Digital Forensics', type: 'workshop', duration: '2h', venue: 'Lab 1' },
-      { time: '12:00 PM', title: 'Panel: Careers in Cybersecurity', type: 'panel', duration: '2h', venue: 'Seminar Hall' },
-      { time: '2:00 PM', title: 'Workshop: Secure Code Review', type: 'workshop', duration: '2h', venue: 'Lab 2' },
-      { time: '4:00 PM', title: 'Hackathon Checkpoint', type: 'hackathon', duration: '1h', venue: 'Main Hall' },
-      { time: '5:00 PM', title: 'Bug Hunt Competition', type: 'ctf', duration: '3h', venue: 'Online' },
+      { title: 'OWASP TOP 10 2025 ', type: 'workshop', venue: 'Seminar Hall' },
+      { title: 'SQL INJECTIONS ', type: 'workshop', venue: 'Seminar Hall' },
+      { title: 'BUSINESS LOGIC VULNERABILITIES ', type: 'workshop', venue: 'Seminar Hall' },
+      { title: 'REPORT WRITING ', type: 'workshop', venue: 'Seminar Hall' },
     ],
   },
   {
     day: 'Day 3',
     date: 'Aug 13, 2026',
     events: [
-      { time: '9:00 AM', title: 'Hackathon Final Submissions', type: 'hackathon', duration: '2h', venue: 'Main Hall' },
-      { time: '11:00 AM', title: 'Hackathon Demo Day & Judging', type: 'hackathon', duration: '3h', venue: 'Main Auditorium' },
-      { time: '2:00 PM', title: 'CTF Prize Ceremony', type: 'ctf', duration: '1h', venue: 'Main Auditorium' },
-      { time: '3:00 PM', title: 'Talk: Future of Cybersecurity', type: 'talk', duration: '1h', venue: 'Seminar Hall' },
-      { time: '4:30 PM', title: 'Prize Distribution Ceremony', type: 'ceremony', duration: '1.5h', venue: 'Main Auditorium' },
-      { time: '6:00 PM', title: 'Closing Ceremony', type: 'ceremony', duration: '1h', venue: 'Main Auditorium' },
+      { title: 'FUNDAMENTALS OF CYBER FORENSICS ', type: 'workshop', venue: 'Seminar Hall' },
+      { title: 'EVIDENCE ACQUISITION ', type: 'workshop', venue: 'Seminar Hall' },
+      { title: 'PASSWORD RECOVERY', type: 'workshop', venue: 'Seminar Hall' },
+      { title: 'CYBER CRIME ANALYSIS ', type: 'workshop', venue: 'Seminar Hall' },
     ],
   },
   {
     day: 'Day 4',
     date: 'Aug 14, 2026',
     events: [
-      { time: '10:00 AM', title: 'Shield-X', type: 'hackathon', duration: '9hrs', venue: 'Seminar Hall' },
-      { time: '6:00 PM', title: 'closing ceremony', type: 'ceremony', duration: '1hr', venue: 'Seminar Hall' }
+      { title: ' Shield-X Hackathon', type: 'Hackathon', venue: 'Seminar Hall' },
+      { title: 'Closing Ceremony', type: 'ceremony', venue: 'Seminar Hall' }
     ]
   }
 ]
@@ -166,8 +162,8 @@ const CurrentEvent: React.FC = () => {
                     bg: 'bg-blue-accent/10 border-blue-accent/20',
                     label: ev.type || 'Event',
                   }
-                  // Day 1, 9:00 AM (activeDay === 0 && i === 0) is UNLOCKED. All others are LOCKED.
-                  const isLocked = !(activeDay === 0 && i === 0)
+                  // All events are currently UNLOCKED.
+                  const isLocked = false
 
                   return (
                     <motion.div
@@ -185,11 +181,6 @@ const CurrentEvent: React.FC = () => {
                     >
                       {/* Inner event content (blurred if locked) */}
                       <div className={`flex items-center gap-4 w-full ${isLocked ? 'filter blur-[5px] opacity-30 select-none pointer-events-none' : ''}`}>
-                        <div className="w-20 shrink-0 text-center">
-                          <div className="font-space text-sm font-semibold text-white">{ev.time}</div>
-                          <div className="text-xs text-muted mt-0.5">{ev.duration}</div>
-                        </div>
-                        <div className="w-px h-10 bg-white/10 shrink-0" />
                         <div className="flex-1 min-w-0">
                           <div className="font-space font-semibold text-white truncate">{ev.title}</div>
                           <div className="flex items-center gap-3 mt-1">
@@ -423,11 +414,6 @@ const CurrentEvent: React.FC = () => {
                   <div className="flex items-center justify-between text-muted border-b border-white/5 pb-2">
                     <span className="font-space font-medium">Schedule Day:</span>
                     <span className="text-white font-medium">{selectedEvent.day} ({selectedEvent.date})</span>
-                  </div>
-
-                  <div className="flex items-center justify-between text-muted border-b border-white/5 pb-2">
-                    <span className="font-space font-medium">Time & Duration:</span>
-                    <span className="text-white font-medium">{selectedEvent.event.time} ({selectedEvent.event.duration})</span>
                   </div>
 
                   <div className="flex items-center justify-between text-muted">
