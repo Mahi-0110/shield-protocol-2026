@@ -5,7 +5,7 @@ import { findRegistration } from './registrationService';
 import { PAYMENT_CONFIG } from '../config/paymentConfig';
 
 const ADMIN_SESSION_KEY = 'shield_admin_authenticated';
-const DEFAULT_ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || 'shieldadmin2026';
+const DEFAULT_ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD;
 
 /**
  * Verify Admin Password
